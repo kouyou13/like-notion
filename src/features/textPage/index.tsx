@@ -99,6 +99,14 @@ const TextPage = () => {
               if (e.key === 'Backspace' && block.content === '') {
                 e.preventDefault()
                 deleteBlock({ id: block.id })
+              } else if (e.key === 'ArrowUp' && index > 0) {
+                e.preventDefault()
+                const prevInput = document.querySelectorAll('input')[index]
+                prevInput.focus()
+              } else if (e.key === 'ArrowDown' && index < blocks.length - 1) {
+                e.preventDefault()
+                const nextInput = document.querySelectorAll('input')[index + 2]
+                nextInput.focus()
               }
             }}
           />
