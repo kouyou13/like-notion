@@ -1,59 +1,109 @@
-import { Box, Button, Input, HStack } from '@chakra-ui/react'
+import { Box, Input, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
 
 import { AiOutlinePlus, AiOutlineHolder } from 'react-icons/ai'
-// import { useJsonStore } from '../../stores/useJsonStore'
+import { useJsonStore } from '../../stores/useJsonStore'
 
 const TextPage = () => {
-  // const { blocks, addBlock, updateBlock } = useJsonStore()
+  const { blocks, addBlock, updateBlock, deleteBlock } = useJsonStore()
   const [title, setTitle] = useState('')
 
   return (
-    <Box px="25vw" pt="10vh" w="100%">
+    <Box
+      w="100vw"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      mt={160}
+    >
       <Input
         placeholder="新規ページ"
         value={title}
         onChange={(e) => {
           setTitle(e.target.value)
         }}
-        size="2xl"
+        size="xl"
         border="none"
         outline="none"
         fontSize="4xl"
         p={0}
         fontWeight="bold"
         _placeholder={{ color: 'gray.200' }}
-        pl="3.3vw"
+        mb={2}
+        w={650}
+        textAlign="left"
       />
-      {/* <Button
-        colorScheme="blue"
-        onClick={() => {
-          addBlock(title)
-        }}
-      >
-        追加
-      </Button>
-
-      {blocks.map((block) => (
-        <Box key={block.id} p={2} border="1px solid gray" borderRadius="md">
-          {block.content}
-        </Box>
-      ))} */}
-      <HStack gap={0}>
-        <Button bgColor="white" color="black" size="2xs" _hover={{ bgColor: 'gray.100' }}>
-          <AiOutlinePlus />
-        </Button>
-        <Button bgColor="white" color="black" size="2xs" _hover={{ bgColor: 'gray.100' }}>
-          <AiOutlineHolder />
-        </Button>
-        <Input
-          size="lg"
-          border="none"
-          outline="none"
-          placeholder="入力して、AIはスペースキーを、コマンドは半角の「/」を押す..."
-          p={0}
-        />
-      </HStack>
+      {blocks.map((block, index) => (
+        <HStack key={block.id} gap={0}>
+          <HStack w={50} gap={0}>
+            <Box
+              _hover={{ bgColor: 'gray.100' }}
+              p={1}
+              borderRadius="md"
+              onClick={() => {
+                addBlock({ index: index + 1, content: '' })
+              }}
+            >
+              <AiOutlinePlus color="gray" />
+            </Box>
+            <Box
+              _hover={{ bgColor: 'gray.100' }}
+              py={1}
+              borderRadius="md"
+              cursor="grab"
+              onMouseDown={(e) => {
+                e.currentTarget.style.cursor = 'grabbing'
+              }}
+              onMouseUp={(e) => {
+                e.currentTarget.style.cursor = 'grab'
+              }}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('text/plain', index.toString())
+              }}
+              onDragOver={(e) => {
+                e.preventDefault()
+              }}
+              onDrop={(e) => {
+                e.preventDefault()
+                const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10)
+                const toIndex = index
+                if (fromIndex !== toIndex) {
+                  useJsonStore.getState().moveBlock({ fromIndex, toIndex })
+                }
+              }}
+            >
+              <AiOutlineHolder color="gray" />
+            </Box>
+          </HStack>
+          <Input
+            size="lg"
+            border="none"
+            outline="none"
+            p={0}
+            w={650}
+            mr={50}
+            onBlur={(e) => {
+              e.target.placeholder = ''
+            }}
+            onFocus={(e) => {
+              e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
+            }}
+            value={block.content}
+            h={8}
+            onChange={(e) => {
+              updateBlock({ id: block.id, content: e.target.value })
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace' && block.content === '') {
+                e.preventDefault()
+                deleteBlock({ id: block.id })
+              }
+            }}
+          />
+        </HStack>
+      ))}
     </Box>
   )
 }
