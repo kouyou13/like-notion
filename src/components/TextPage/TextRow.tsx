@@ -1,4 +1,5 @@
-import { Box, Input, HStack } from '@chakra-ui/react'
+import { Box, Input, HStack, Text } from '@chakra-ui/react'
+import { Tooltip } from '@chakra-ui/tooltip'
 import React from 'react'
 import { AiOutlinePlus, AiOutlineHolder } from 'react-icons/ai'
 import type { Block } from '../../stores/types'
@@ -38,16 +39,31 @@ const TextRowComponent = ({
     >
       {hoverRowIndex === index ? (
         <HStack w={50} gap={0}>
-          <Box
-            _hover={{ bgColor: 'gray.100' }}
-            p={1}
-            borderRadius="md"
-            onClick={() => {
-              addBlock({ index: index + 1, content: '' })
-            }}
+          <Tooltip
+            label={
+              <Box textAlign="center" fontSize="xs" p={1} alignContent="center">
+                <HStack justify="center" align="center" gap={0}>
+                  クリックして<Text color="gray">下に追加</Text>
+                </HStack>
+                <HStack gap={0}>
+                  Opt+クリック/Alt+クリックで<Text color="gray">上に追加</Text>
+                </HStack>
+              </Box>
+            }
+            bgColor="black"
+            color="white"
           >
-            <AiOutlinePlus color="gray" size={20} />
-          </Box>
+            <Box
+              _hover={{ bgColor: 'gray.100' }}
+              p={1}
+              borderRadius="full"
+              onClick={() => {
+                console.log('aaa')
+              }}
+            >
+              <AiOutlinePlus color="gray" size={20} />
+            </Box>
+          </Tooltip>
           <Box
             _hover={{ bgColor: 'gray.100' }}
             py={1}
