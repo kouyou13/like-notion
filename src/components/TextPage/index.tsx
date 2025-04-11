@@ -4,9 +4,10 @@ import TextRow from './TextRow'
 import { useJsonStore } from '../../stores/useJsonStore'
 
 const TextPageComponent = () => {
-  const { blocks, addBlock, updateBlock, deleteBlock } = useJsonStore()
+  const { blocks, addBlock, updateBlock, deleteBlock, moveBlock } = useJsonStore()
   const [title, setTitle] = useState('')
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
+  const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   return (
     <Box
@@ -52,8 +53,11 @@ const TextPageComponent = () => {
           addBlock={addBlock}
           updateBlock={updateBlock}
           deleteBlock={deleteBlock}
+          moveBlock={moveBlock}
           hoverRowIndex={hoverRowIndex}
           setHoverRowIndex={setHoverRowIndex}
+          grabbedRowIndex={grabbedRowIndex}
+          setGrabbedRowIndex={setGrabbedRowIndex}
           inputRefs={inputRefs}
           rowLength={blocks.length}
         />

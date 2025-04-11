@@ -3,7 +3,6 @@ import { Tooltip } from '@chakra-ui/tooltip'
 import React from 'react'
 import { AiOutlinePlus, AiOutlineHolder } from 'react-icons/ai'
 import type { Block } from '../../stores/types'
-import { useJsonStore } from '../../stores/useJsonStore'
 
 type TextRowProps = {
   block: Block
@@ -11,8 +10,11 @@ type TextRowProps = {
   addBlock: (payload: { index: number; content: string }) => void
   updateBlock: (payload: { id: string; content: string }) => void
   deleteBlock: (payload: { id: string }) => void
+  moveBlock: (payload: { fromIndex: number; toIndex: number }) => void
   hoverRowIndex: number | null
   setHoverRowIndex: React.Dispatch<React.SetStateAction<number | null>>
+  grabbedRowIndex: number | null
+  setGrabbedRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   inputRefs: React.RefObject<(HTMLInputElement | null)[]>
   rowLength: number
 }
@@ -22,8 +24,11 @@ const TextRowComponent = ({
   addBlock,
   updateBlock,
   deleteBlock,
+  moveBlock,
   hoverRowIndex,
   setHoverRowIndex,
+  grabbedRowIndex,
+  setGrabbedRowIndex,
   inputRefs,
   rowLength,
 }: TextRowProps) => {
@@ -35,6 +40,18 @@ const TextRowComponent = ({
       }}
       onMouseLeave={() => {
         setHoverRowIndex(null)
+      }}
+      onDragStart={() => {
+        setGrabbedRowIndex(index)
+      }}
+      onDragOver={(e) => {
+        e.preventDefault()
+      }}
+      onDrop={() => {
+        if (grabbedRowIndex !== null && grabbedRowIndex !== index) {
+          moveBlock({ fromIndex: grabbedRowIndex, toIndex: index })
+          setGrabbedRowIndex(null)
+        }
       }}
     >
       {hoverRowIndex === index ? (
@@ -60,7 +77,7 @@ const TextRowComponent = ({
               p={1}
               borderRadius="full"
               onClick={() => {
-                console.log('aaa')
+                addBlock({ index: index + 1, content: '' })
               }}
             >
               <AiOutlinePlus color="gray" size={20} />
@@ -78,20 +95,6 @@ const TextRowComponent = ({
               e.currentTarget.style.cursor = 'grab'
             }}
             draggable
-            onDragStart={(e) => {
-              e.dataTransfer.setData('text/plain', index.toString())
-            }}
-            onDragOver={(e) => {
-              e.preventDefault()
-            }}
-            onDrop={(e) => {
-              e.preventDefault()
-              const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10)
-              const toIndex = index
-              if (fromIndex !== toIndex) {
-                useJsonStore.getState().moveBlock({ fromIndex, toIndex })
-              }
-            }}
           >
             <AiOutlineHolder color="gray" size={20} />
           </Box>

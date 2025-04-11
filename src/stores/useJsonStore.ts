@@ -63,9 +63,24 @@ export const useJsonStore = create<JsonState>((set) => ({
   },
   moveBlock: ({ fromIndex, toIndex }) => {
     set((state) => {
-      const blocks = [...state.blocks]
-      const [movedBlock] = blocks.splice(fromIndex, 1)
-      blocks.splice(toIndex, 0, movedBlock)
+      if (fromIndex === toIndex) return state
+      const targetBlock = state.blocks[fromIndex]
+      const blocks =
+        fromIndex < toIndex
+          ? [
+              ...state.blocks.slice(0, fromIndex),
+              ...(fromIndex + 1 !== toIndex
+                ? state.blocks.slice(fromIndex + 1, toIndex + 1)
+                : [state.blocks[toIndex]]),
+              targetBlock,
+              ...state.blocks.slice(toIndex + 1),
+            ]
+          : [
+              ...state.blocks.slice(0, toIndex),
+              targetBlock,
+              ...state.blocks.slice(toIndex, fromIndex),
+              ...state.blocks.slice(fromIndex + 1),
+            ]
       return {
         blocks: blocks.map((block, index) => ({ ...block, index })),
       }
