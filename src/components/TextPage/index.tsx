@@ -18,11 +18,14 @@ const TextPageComponent = () => {
       mt={160}
     >
       <Input
-        placeholder="新規ページ" value={title}
+        placeholder="新規ページ"
+        value={title}
         onChange={(e) => {
           setTitle(e.target.value)
         }}
-        size="xl" border="none" outline="none"
+        size="xl"
+        border="none"
+        outline="none"
         fontSize="4xl"
         p={0}
         fontWeight="bold"
