@@ -1,6 +1,6 @@
 'use client'
 
-import TextPage from '../features/textPage'
+import TextPage from '../components/TextPage'
 
 const Home = () => {
   return (

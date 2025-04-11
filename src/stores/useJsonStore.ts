@@ -1,11 +1,6 @@
 import { v4 } from 'uuid'
 import { create } from 'zustand'
-
-type Block = {
-  id: string
-  index: number
-  content: string
-}
+import type { Block } from './types'
 
 type JsonState = {
   blocks: Block[]
@@ -15,22 +10,38 @@ type JsonState = {
   moveBlock: (payload: { fromIndex: number; toIndex: number }) => void
 }
 
+const defaultBlocks: Block[] = [
+  {
+    id: v4(),
+    type: 'text',
+    index: 0,
+    content: '',
+  },
+  {
+    id: v4(),
+    type: 'text',
+    index: 1,
+    content: '',
+  },
+  {
+    id: v4(),
+    type: 'text',
+    index: 2,
+    content: '',
+  },
+]
+
 export const useJsonStore = create<JsonState>((set) => ({
-  blocks: [
-    {
-      id: v4(),
-      index: 0,
-      content: '1行目',
-    },
-  ],
+  blocks: defaultBlocks,
   addBlock: ({ index, content }) => {
-    set((state) => ({
-      blocks: [
-        ...state.blocks.slice(0, index),
-        { id: v4(), index: state.blocks.length, content },
-        ...state.blocks.slice(index),
-      ].map((block, index) => ({ ...block, index })),
-    }))
+    set((state) => {
+      const newBlock: Block = { id: v4(), type: 'text', index: state.blocks.length, content }
+      return {
+        blocks: [...state.blocks.slice(0, index), newBlock, ...state.blocks.slice(index)].map(
+          (block, index) => ({ ...block, index }),
+        ),
+      }
+    })
   },
   updateBlock: ({ id, content }) => {
     set((state) => ({
@@ -38,9 +49,17 @@ export const useJsonStore = create<JsonState>((set) => ({
     }))
   },
   deleteBlock: ({ id }) => {
-    set((state) => ({
-      blocks: state.blocks.filter((b) => b.id !== id).map((block, index) => ({ ...block, index })),
-    }))
+    set((state) => {
+      const newBlocks = state.blocks
+        .filter((b) => b.id !== id)
+        .map((block, index) => ({ ...block, index }))
+      if (newBlocks.length === 0) {
+        newBlocks.push({ id: v4(), type: 'text', index: 0, content: '' })
+      }
+      return {
+        blocks: newBlocks,
+      }
+    })
   },
   moveBlock: ({ fromIndex, toIndex }) => {
     set((state) => {
