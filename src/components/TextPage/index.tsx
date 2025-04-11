@@ -10,12 +10,21 @@ const TextPageComponent = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   return (
     <Box
-      w="100vw"
+      w="100vw" h="85vh"
+      overflow="scroll"
       display="flex"
-      justifyContent="center"
+      justifyContent="start"
       alignItems="center"
       flexDirection="column"
-      mt={160}
+      pt="15vh"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          const prevInput = inputRefs.current.slice(-1)[0]
+          if (prevInput) {
+            prevInput.focus()
+          }
+        }
+      }}
     >
       <Input
         placeholder="新規ページ"
