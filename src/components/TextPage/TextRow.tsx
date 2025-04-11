@@ -41,7 +41,7 @@ const TextRowComponent = ({
         <HStack w={50} gap={0}>
           <Tooltip
             label={
-              <Box textAlign="center" fontSize="xs" p={1} alignContent="center">
+              <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
                 <HStack justify="center" align="center" gap={0}>
                   クリックして<Text color="gray">下に追加</Text>
                 </HStack>
@@ -52,6 +52,8 @@ const TextRowComponent = ({
             }
             bgColor="black"
             color="white"
+            borderRadius={5}
+            borderColor="black"
           >
             <Box
               _hover={{ bgColor: 'gray.100' }}
