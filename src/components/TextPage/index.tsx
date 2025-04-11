@@ -10,7 +10,8 @@ const TextPageComponent = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   return (
     <Box
-      w="100vw" h="85vh"
+      w="100vw"
+      h="85vh"
       overflow="scroll"
       display="flex"
       justifyContent="start"
