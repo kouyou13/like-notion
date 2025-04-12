@@ -13,3 +13,8 @@ Notionみたいなアプリです
 - prettier
 
 - zustand
+
+```
+  npm i . //モジュールのインストール（クローン時に実行する）
+  npm run dev //サーバー起動
+```
