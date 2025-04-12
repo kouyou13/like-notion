@@ -1,16 +1,14 @@
 import { Box, Input, HStack, Text } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import React from 'react'
-import { AiOutlinePlus, AiOutlineHolder } from 'react-icons/ai'
-import type { Block } from '../../stores/types'
+import { GrAdd, GrDrag } from 'react-icons/gr'
+import type { Block } from '../../../stores/types'
+import { useJsonStore } from '../../../stores/useJsonStore'
 
 type TextRowProps = {
+  pageId: string
   block: Block
   index: number
-  addBlock: (payload: { index: number; content: string }) => void
-  updateBlock: (payload: { id: string; content: string }) => void
-  deleteBlock: (payload: { id: string }) => void
-  moveBlock: (payload: { fromIndex: number; toIndex: number }) => void
   hoverRowIndex: number | null
   setHoverRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   grabbedRowIndex: number | null
@@ -19,12 +17,9 @@ type TextRowProps = {
   rowLength: number
 }
 const TextRowComponent = ({
+  pageId,
   block,
   index,
-  addBlock,
-  updateBlock,
-  deleteBlock,
-  moveBlock,
   hoverRowIndex,
   setHoverRowIndex,
   grabbedRowIndex,
@@ -32,6 +27,7 @@ const TextRowComponent = ({
   inputRefs,
   rowLength,
 }: TextRowProps) => {
+  const { addBlock, updateBlock, deleteBlock, moveBlock } = useJsonStore()
   return (
     <HStack
       gap={0}
@@ -52,7 +48,7 @@ const TextRowComponent = ({
       }}
       onDrop={() => {
         if (grabbedRowIndex !== null && grabbedRowIndex !== index) {
-          moveBlock({ fromIndex: grabbedRowIndex, toIndex: index })
+          moveBlock({ pageId, fromIndex: grabbedRowIndex, toIndex: index })
           setGrabbedRowIndex(null)
         }
         setHoverRowIndex(null)
@@ -62,7 +58,7 @@ const TextRowComponent = ({
       }
     >
       {hoverRowIndex === index ? (
-        <HStack w={50} gap={0}>
+        <HStack w={50} gap={1}>
           <Tooltip
             label={
               <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
@@ -82,12 +78,12 @@ const TextRowComponent = ({
             <Box
               _hover={{ bgColor: 'gray.100' }}
               p={1}
-              borderRadius="full"
+              borderRadius="md"
               onClick={() => {
-                addBlock({ index: index + 1, content: '' })
+                addBlock({ pageId, index: index + 1, content: '' })
               }}
             >
-              <AiOutlinePlus color="gray" size={20} />
+              <GrAdd color="gray" size={16} />
             </Box>
           </Tooltip>
           <Tooltip
@@ -119,7 +115,7 @@ const TextRowComponent = ({
               }}
               draggable
             >
-              <AiOutlineHolder color="gray" size={20} />
+              <GrDrag color="gray" size={16} />
             </Box>
           </Tooltip>
         </HStack>
@@ -145,12 +141,12 @@ const TextRowComponent = ({
         value={block.content}
         h={8}
         onChange={(e) => {
-          updateBlock({ id: block.id, content: e.target.value })
+          updateBlock({ pageId, blockId: block.id, content: e.target.value })
         }}
         onKeyDown={(e) => {
           if (e.key === 'Backspace' && block.content === '') {
             e.preventDefault()
-            deleteBlock({ id: block.id })
+            deleteBlock({ pageId, blockId: block.id })
             const prevInput = index > 0 ? inputRefs.current[index - 1] : inputRefs.current[1]
             if (prevInput) {
               prevInput.focus()
@@ -168,7 +164,7 @@ const TextRowComponent = ({
               nextInput.focus()
             }
           } else if (e.key === 'Enter') {
-            addBlock({ index: index + 1, content: '' })
+            addBlock({ pageId, index: index + 1, content: '' })
             setTimeout(() => {
               const nextInput = inputRefs.current[index + 1]
               if (nextInput) {

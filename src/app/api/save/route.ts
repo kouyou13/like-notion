@@ -5,7 +5,7 @@ import path from 'path'
 export async function POST(request: Request) {
   try {
     // リクエストボディをJSONとして解析
-    const { blocks } = await request.json()
+    const { pages } = await request.json()
 
     // 保存先パス
     const filePath = path.join(process.cwd(), 'data', 'contents.json')
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     fs.mkdirSync(path.dirname(filePath), { recursive: true })
 
     // 非同期でファイル書き込み
-    await fs.promises.writeFile(filePath, JSON.stringify(blocks, null, 2))
+    await fs.promises.writeFile(filePath, JSON.stringify(pages, null, 2))
 
     // 正常なレスポンスを返す
     return NextResponse.json({ message: '保存成功' })

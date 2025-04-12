@@ -11,14 +11,14 @@ export function GET() {
 
     // ファイルが存在しない場合は初期データを返す
     if (!fs.existsSync(filePath)) {
-      return NextResponse.json({ blocks: [] })
+      return NextResponse.json({ pages: [] })
     }
 
     // ファイルが存在する場合、データを読み込み
-    const blocks = fs.readFileSync(filePath, 'utf-8')
-    return NextResponse.json({ blocks: JSON.parse(blocks) })
+    const pages = fs.readFileSync(filePath, 'utf-8')
+    return NextResponse.json({ pages: JSON.parse(pages) })
   } catch (err) {
     console.error('ファイル読み込みエラー:', err)
-    return NextResponse.json({ blocks: [] }, { status: 500 })
+    return NextResponse.json({ pages: [] }, { status: 500 })
   }
 }

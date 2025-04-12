@@ -1,25 +1,27 @@
 import { Box, Input } from '@chakra-ui/react'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import TextRow from './TextRow'
-import { useJsonStore } from '../../stores/useJsonStore'
+import { useJsonStore } from '../../../stores/useJsonStore'
 
-const TextPageComponent = () => {
-  const { blocks, addBlock, updateBlock, deleteBlock, moveBlock } = useJsonStore()
-  const [title, setTitle] = useState('')
+type TextPageProps = {
+  pageId: string
+}
+const TextPageComponent = ({ pageId }: TextPageProps) => {
+  const { pages, editPageTitle } = useJsonStore()
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
-  console.log('blocks', blocks)
+  const page = useMemo(() => pages.find((page) => page.id === pageId), [pages, pageId])
+  const blocks = useMemo(() => page?.blocks ?? [], [page])
   return (
     <Box
-      w="100vw"
       h="85vh"
       overflow="scroll"
       display="flex"
       justifyContent="start"
       alignItems="center"
       flexDirection="column"
-      pt="15vh"
+      pt="10vh"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           const prevInput = inputRefs.current.slice(-1)[0]
@@ -31,11 +33,11 @@ const TextPageComponent = () => {
     >
       <Input
         placeholder="新規ページ"
-        value={title}
+        value={page?.title}
         onChange={(e) => {
-          setTitle(e.target.value)
+          editPageTitle(pageId, e.target.value)
         }}
-        size="xl"
+        size="2xl"
         border="none"
         outline="none"
         fontSize="4xl"
@@ -49,12 +51,9 @@ const TextPageComponent = () => {
       {blocks.map((block, index) => (
         <TextRow
           key={block.id}
+          pageId={pageId}
           block={block}
           index={index}
-          addBlock={addBlock}
-          updateBlock={updateBlock}
-          deleteBlock={deleteBlock}
-          moveBlock={moveBlock}
           hoverRowIndex={hoverRowIndex}
           setHoverRowIndex={setHoverRowIndex}
           grabbedRowIndex={grabbedRowIndex}

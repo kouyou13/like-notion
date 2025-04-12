@@ -1,12 +1,10 @@
 'use client'
 
-import TextPage from '../components/TextPage'
+import React from 'react'
 
-const Home = () => {
-  return (
-    <>
-      <TextPage />
-    </>
-  )
+import Home from '../features/HomeMutate/components'
+
+const App = () => {
+  return <Home />
 }
-export default Home
+export default App
