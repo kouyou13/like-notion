@@ -53,11 +53,8 @@ export const useJsonStore = create<JsonState>((set) => ({
       const newBlocks = state.blocks
         .filter((b) => b.id !== id)
         .map((block, index) => ({ ...block, index }))
-      if (newBlocks.length === 0) {
-        newBlocks.push({ id: v4(), type: 'text', index: 0, content: '' })
-      }
       return {
-        blocks: newBlocks,
+        blocks: [...newBlocks, ...(newBlocks.length === 0 ? [defaultBlocks[0]] : [])],
       }
     })
   },
@@ -67,7 +64,8 @@ export const useJsonStore = create<JsonState>((set) => ({
       const targetBlock = state.blocks[fromIndex]
       const blocks =
         fromIndex < toIndex
-          ? [
+          ? // 下に動かした時
+            [
               ...state.blocks.slice(0, fromIndex),
               ...(fromIndex + 1 !== toIndex
                 ? state.blocks.slice(fromIndex + 1, toIndex + 1)
@@ -75,7 +73,8 @@ export const useJsonStore = create<JsonState>((set) => ({
               targetBlock,
               ...state.blocks.slice(toIndex + 1),
             ]
-          : [
+          : // 上に動かした時
+            [
               ...state.blocks.slice(0, toIndex),
               targetBlock,
               ...state.blocks.slice(toIndex, fromIndex),
@@ -87,3 +86,21 @@ export const useJsonStore = create<JsonState>((set) => ({
     })
   },
 }))
+
+const response = await fetch('/api/load')
+if (response.ok && response.status === 200) {
+  const data: { blocks: Block[] } = await response.json()
+  if (data.blocks.length > 0) {
+    useJsonStore.setState({ blocks: data.blocks })
+  }
+}
+
+useJsonStore.subscribe((state) => {
+  fetch('/api/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ blocks: state.blocks }),
+  }).catch((err: unknown) => {
+    console.error('保存に失敗しました:', err)
+  })
+})

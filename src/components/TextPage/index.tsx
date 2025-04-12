@@ -9,6 +9,7 @@ const TextPageComponent = () => {
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+  console.log('blocks', blocks)
   return (
     <Box
       w="100vw"

@@ -46,13 +46,20 @@ const TextRowComponent = ({
       }}
       onDragOver={(e) => {
         e.preventDefault()
+        if (grabbedRowIndex !== null && grabbedRowIndex !== index) {
+          setHoverRowIndex(index)
+        }
       }}
       onDrop={() => {
         if (grabbedRowIndex !== null && grabbedRowIndex !== index) {
           moveBlock({ fromIndex: grabbedRowIndex, toIndex: index })
           setGrabbedRowIndex(null)
         }
+        setHoverRowIndex(null)
       }}
+      borderBottom={
+        grabbedRowIndex != null && hoverRowIndex === index ? '4px solid #e4edfa' : 'none'
+      }
     >
       {hoverRowIndex === index ? (
         <HStack w={50} gap={0}>
@@ -83,24 +90,41 @@ const TextRowComponent = ({
               <AiOutlinePlus color="gray" size={20} />
             </Box>
           </Tooltip>
-          <Box
-            _hover={{ bgColor: 'gray.100' }}
-            py={1}
-            borderRadius="md"
-            cursor="grab"
-            onMouseDown={(e) => {
-              e.currentTarget.style.cursor = 'grabbing'
-            }}
-            onMouseUp={(e) => {
-              e.currentTarget.style.cursor = 'grab'
-            }}
-            draggable
+          <Tooltip
+            label={
+              <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
+                <HStack justify="center" align="center" gap={0}>
+                  ドラッグして<Text color="gray">移動する</Text>
+                </HStack>
+                <HStack gap={0}>
+                  クリックして<Text color="gray">メニューを開く</Text>
+                </HStack>
+              </Box>
+            }
+            bgColor="black"
+            color="white"
+            borderRadius={5}
+            borderColor="black"
           >
-            <AiOutlineHolder color="gray" size={20} />
-          </Box>
+            <Box
+              _hover={{ bgColor: 'gray.100' }}
+              py={1}
+              borderRadius="md"
+              cursor="grab"
+              onMouseDown={(e) => {
+                e.currentTarget.style.cursor = 'grabbing'
+              }}
+              onMouseUp={(e) => {
+                e.currentTarget.style.cursor = 'grab'
+              }}
+              draggable
+            >
+              <AiOutlineHolder color="gray" size={20} />
+            </Box>
+          </Tooltip>
         </HStack>
       ) : (
-        <Box w={50}></Box>
+        <Box w={50} />
       )}
       <Input
         ref={(el) => {
@@ -127,7 +151,7 @@ const TextRowComponent = ({
           if (e.key === 'Backspace' && block.content === '') {
             e.preventDefault()
             deleteBlock({ id: block.id })
-            const prevInput = inputRefs.current[index - 1]
+            const prevInput = index > 0 ? inputRefs.current[index - 1] : inputRefs.current[1]
             if (prevInput) {
               prevInput.focus()
             }
