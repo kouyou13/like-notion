@@ -1,4 +1,3 @@
-// 今後利用
 export type Page = {
   id: string
   title: string

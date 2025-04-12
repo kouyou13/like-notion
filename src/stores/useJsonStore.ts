@@ -87,12 +87,16 @@ export const useJsonStore = create<JsonState>((set) => ({
   },
 }))
 
-const response = await fetch('/api/load')
-if (response.ok && response.status === 200) {
-  const data: { blocks: Block[] } = await response.json()
-  if (data.blocks.length > 0) {
-    useJsonStore.setState({ blocks: data.blocks })
+try {
+  const response = await fetch('/api/load')
+  if (response.ok && response.status === 200) {
+    const data: { blocks: Block[] } = await response.json()
+    if (data.blocks.length > 0) {
+      useJsonStore.setState({ blocks: data.blocks })
+    }
   }
+} catch (err: unknown) {
+  console.error('初期データの取得に失敗しました:', err)
 }
 
 useJsonStore.subscribe((state) => {

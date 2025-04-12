@@ -2,6 +2,8 @@ import fs from 'fs'
 import { NextResponse } from 'next/server'
 import path from 'path'
 
+export const runtime = 'nodejs'
+
 export function GET() {
   try {
     // ファイルの保存先パス
