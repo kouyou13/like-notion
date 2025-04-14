@@ -6,7 +6,7 @@ export const defaultBlocks: Block[] = [
     id: v4(),
     blockType: 'text',
     order: 0,
-    text: {
+    texts: {
       id: v4(),
       content: '',
     },
@@ -15,7 +15,7 @@ export const defaultBlocks: Block[] = [
     id: v4(),
     blockType: 'text',
     order: 1,
-    text: {
+    texts: {
       id: v4(),
       content: '',
     },
@@ -24,7 +24,7 @@ export const defaultBlocks: Block[] = [
     id: v4(),
     blockType: 'text',
     order: 2,
-    text: {
+    texts: {
       id: v4(),
       content: '',
     },
@@ -34,5 +34,5 @@ export const defaultBlocks: Block[] = [
 export const defaultPage: PageWithBlocks = {
   id: v4(),
   title: '',
-  pageBlock: defaultBlocks,
+  pageBlocks: defaultBlocks,
 }

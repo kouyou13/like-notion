@@ -144,7 +144,7 @@ const TextRowComponent = ({
         onFocus={(e) => {
           e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
         }}
-        value={block.text.content}
+        value={block.texts.content}
         h={8}
         onChange={(e) => {
           dispatch({
@@ -154,7 +154,7 @@ const TextRowComponent = ({
           })
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Backspace' && block.text.content === '') {
+          if (e.key === 'Backspace' && block.texts.content === '') {
             e.preventDefault()
             dispatch({
               type: 'deleteBlock',

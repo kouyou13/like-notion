@@ -17,12 +17,13 @@ const TextPageComponent = () => {
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const [blocks, dispatch] = useReducer(blocksReducer, [])
+  const previousBlocksRef = useRef(blocks) // 前回の blocks を保持
 
   useEffect(() => {
     const fetchPages = async () => {
       const { data: page, error: pageError } = await supabase
-        .from('page')
-        .select('*, page_block(*, text(*))')
+        .from('pages')
+        .select('*, page_blocks(*, texts(*))')
         .eq('id', pageId)
         .single()
       if (pageError) {
@@ -32,7 +33,7 @@ const TextPageComponent = () => {
         setPageTitle(camelData.title)
         dispatch({
           type: 'initBlocks',
-          blocks: camelData.pageBlock,
+          blocks: camelData.pageBlocks,
         })
       }
     }
@@ -41,11 +42,60 @@ const TextPageComponent = () => {
 
   const handleEditPageTitle = useCallback(
     async (newTitle: string) => {
-      await supabase.from('page').update({ title: newTitle }).eq('id', pageId)
+      await supabase.from('pages').update({ title: newTitle }).eq('id', pageId)
       setPageTitle(newTitle)
     },
     [supabase, pageId],
   )
+
+  useEffect(() => {
+    const saveBlocks = async () => {
+      // blocks が変更されていない場合は保存をスキップ
+      if (JSON.stringify(previousBlocksRef.current) === JSON.stringify(blocks)) {
+        return
+      }
+
+      try {
+        const updates = blocks.map((block) => ({
+          id: block.id,
+          block_type: block.blockType,
+          order: block.order,
+          page_id: pageId,
+        }))
+        const updateTexts = blocks.map((block) => ({
+          id: block.texts.id,
+          content: block.texts.content,
+          page_block_id: block.id,
+        }))
+
+        const { error } = await supabase.from('page_blocks').upsert(updates, {
+          onConflict: 'id',
+        })
+        const { error: textsError } = await supabase.from('texts').upsert(updateTexts, {
+          onConflict: 'id',
+        })
+
+        if (error || textsError) {
+          console.error('ブロックの保存に失敗しました:', error)
+          console.error('テキストの保存に失敗しました:', textsError)
+        }
+
+        previousBlocksRef.current = blocks
+      } catch (err) {
+        console.error('ブロックの保存中にエラーが発生しました:', err)
+      }
+    }
+
+    const interval = setInterval(() => {
+      void saveBlocks()
+    }, 3000)
+
+    // クリーンアップ
+    return () => {
+      clearInterval(interval)
+    }
+  }, [blocks, pageId, supabase])
+
   return (
     <Box
       h="85vh"

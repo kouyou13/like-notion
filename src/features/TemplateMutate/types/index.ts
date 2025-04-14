@@ -9,7 +9,7 @@ export type Block = {
   id: string
   blockType: BlockType
   order: number
-  text: Text
+  texts: Text
 }
 
 export type Text = {
@@ -18,5 +18,5 @@ export type Text = {
 }
 
 export type PageWithBlocks = Page & {
-  pageBlock: Block[]
+  pageBlocks: Block[]
 }

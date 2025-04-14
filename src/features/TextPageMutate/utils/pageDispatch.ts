@@ -40,8 +40,8 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
         if (block.id === action.blockId) {
           return {
             ...block,
-            text: {
-              ...block.text,
+            texts: {
+              ...block.texts,
               content: action.newContent,
             },
           }
@@ -87,7 +87,7 @@ const defaultBlock = (order: number): Block => ({
   id: v4(),
   blockType: 'text',
   order,
-  text: {
+  texts: {
     id: v4(),
     content: '',
   },

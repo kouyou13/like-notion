@@ -15,6 +15,7 @@ import { defaultPage } from '../utils/defaultProps'
 type TemplateProps = {
   children: React.ReactNode
 }
+
 const Template = ({ children }: TemplateProps) => {
   const supabase = createSupabaseClient()
 
@@ -25,37 +26,57 @@ const Template = ({ children }: TemplateProps) => {
 
   useEffect(() => {
     const fetchPages = async () => {
-      const { data, error } = await supabase.from('page').select('id, title')
+      const { data, error } = await supabase.from('pages').select('id, title')
       if (error) {
         console.error(error)
       } else {
         setPages(data)
       }
+      setIsLoading(false)
     }
-    setIsLoading(false)
+
     void fetchPages()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+
+    // リアルタイムに更新
+    const channel = supabase
+      .channel('pages')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pages' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setPages((prev) => [...prev, payload.new as Page])
+        } else if (payload.eventType === 'UPDATE') {
+          setPages((prev) =>
+            prev.map((page) => (page.id === payload.new.id ? (payload.new as Page) : page)),
+          )
+        } else {
+          setPages((prev) => prev.filter((page) => page.id !== payload.old.id))
+        }
+      })
+      .subscribe()
+
+    // クリーンアップ
+    return () => {
+      void supabase.removeChannel(channel)
+    }
+  }, [supabase])
 
   const handleAddPage = useCallback(async () => {
     const newPage: PageWithBlocks = defaultPage
-    await supabase.from('page').insert([{ id: newPage.id, title: newPage.title }])
-    await supabase.from('page_block').insert(
-      newPage.pageBlock.map((block) => ({
+    await supabase.from('pages').insert([{ id: newPage.id, title: newPage.title }])
+    await supabase.from('page_blocks').insert(
+      newPage.pageBlocks.map((block) => ({
         id: block.id,
         block_type: block.blockType,
         order: block.order,
         page_id: newPage.id,
       })),
     )
-    await supabase.from('text').insert(
-      newPage.pageBlock.map((block) => ({
-        content: block.text.content,
+    await supabase.from('texts').insert(
+      newPage.pageBlocks.map((block) => ({
+        content: block.texts.content,
         page_block_id: block.id,
       })),
     )
-    setPages([...pages, newPage])
-  }, [pages, supabase])
+  }, [supabase])
 
   return (
     <Box w="100vw" h="100vh">
@@ -98,7 +119,7 @@ const Template = ({ children }: TemplateProps) => {
                 ホーム
               </Text>
             </HStack>
-            {/* プライベート */}
+            {/* プライベート */}
             <HStack gap={1} borderRadius="md" p={1} _hover={{ bgColor: 'gray.200' }}>
               <Text fontSize="xs" color="gray.600">
                 プライベート
@@ -159,4 +180,5 @@ const Template = ({ children }: TemplateProps) => {
     </Box>
   )
 }
+
 export default Template
