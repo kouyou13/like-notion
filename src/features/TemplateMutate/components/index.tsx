@@ -1,24 +1,62 @@
 'use client'
 
-import { Box, HStack, Spacer, Text } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import { Box, HStack, Spacer, Text, Skeleton } from '@chakra-ui/react'
+import { useRouter } from 'next/navigation'
+import React, { useState, useEffect, useCallback } from 'react'
 import { AiOutlineDoubleLeft } from 'react-icons/ai'
 import { FaRegFileAlt } from 'react-icons/fa'
 import { GrHomeRounded, GrMore, GrAdd } from 'react-icons/gr'
 
-import { useJsonStore } from '../../../stores/useJsonStore'
+import { createSupabaseClient } from '../../../lib/supabase'
 import TopBar from '../../TopBarMutate/components'
-
-import { useRouter } from 'next/navigation'
+import type { PageWithBlocks, Page } from '../types/index'
+import { defaultPage } from '../utils/defaultProps'
 
 type TemplateProps = {
   children: React.ReactNode
 }
-
 const Template = ({ children }: TemplateProps) => {
+  const supabase = createSupabaseClient()
+
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
-  const { pages, addPage } = useJsonStore()
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+  const [pages, setPages] = useState<Page[]>([])
+
+  useEffect(() => {
+    const fetchPages = async () => {
+      const { data, error } = await supabase.from('page').select('id, title')
+      if (error) {
+        console.error(error)
+      } else {
+        setPages(data)
+      }
+    }
+    setIsLoading(false)
+    void fetchPages()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleAddPage = useCallback(async () => {
+    const newPage: PageWithBlocks = defaultPage
+    await supabase.from('page').insert([{ id: newPage.id, title: newPage.title }])
+    await supabase.from('page_block').insert(
+      newPage.pageBlock.map((block) => ({
+        id: block.id,
+        block_type: block.blockType,
+        order: block.order,
+        page_id: newPage.id,
+      })),
+    )
+    await supabase.from('text').insert(
+      newPage.pageBlock.map((block) => ({
+        content: block.text.content,
+        page_block_id: block.id,
+      })),
+    )
+    setPages([...pages, newPage])
+  }, [pages, supabase])
+
   return (
     <Box w="100vw" h="100vh">
       <HStack gap={0}>
@@ -69,38 +107,40 @@ const Template = ({ children }: TemplateProps) => {
               <Box borderRadius="md" p={1} _hover={{ bgColor: 'gray.300' }}>
                 <GrMore color="gray" size={13} />
               </Box>
-              <Box borderRadius="md" p={1} _hover={{ bgColor: 'gray.300' }} onClick={addPage}>
+              <Box borderRadius="md" p={1} _hover={{ bgColor: 'gray.300' }} onClick={handleAddPage}>
                 <GrAdd color="gray" size={13} />
               </Box>
             </HStack>
-            {pages.map((page) => (
-              <HStack
-                key={page.id}
-                gap={1}
-                borderRadius="md"
-                px={2}
-                py={1}
-                _hover={{ bgColor: 'gray.200' }}
-                onClick={() => {
-                  router.push(`/${page.id}`)
-                }}
-              >
-                <FaRegFileAlt size={16} color="gray" />
-                <Text
-                  color="black"
-                  fontSize="sm"
-                  ml={2}
-                  _hover={{ textDecoration: 'none' }}
-                  _focus={{ boxShadow: 'none', outline: 'none' }}
-                  textDecoration="none"
+            <Skeleton loading={isLoading}>
+              {pages.map((page) => (
+                <HStack
+                  key={page.id}
+                  gap={1}
+                  borderRadius="md"
+                  px={2}
+                  py={1}
+                  _hover={{ bgColor: 'gray.200' }}
+                  onClick={() => {
+                    router.push(`/${page.id}`)
+                  }}
                 >
-                  {page.title}
-                </Text>
-              </HStack>
-            ))}
+                  <FaRegFileAlt size={16} color="gray" />
+                  <Text
+                    color="black"
+                    fontSize="sm"
+                    ml={2}
+                    _hover={{ textDecoration: 'none' }}
+                    _focus={{ boxShadow: 'none', outline: 'none' }}
+                    textDecoration="none"
+                  >
+                    {page.title}
+                  </Text>
+                </HStack>
+              ))}
+            </Skeleton>
             <HStack gap={1} borderRadius="md" p={1} _hover={{ bgColor: 'gray.200' }}>
               <GrAdd size={16} color="gray" />
-              <Text color="gray.800" fontSize="sm" ml={2} onClick={addPage}>
+              <Text color="gray.800" fontSize="sm" ml={2} onClick={handleAddPage}>
                 新規ページを追加
               </Text>
             </HStack>

@@ -1,18 +1,51 @@
 import { Box, Input } from '@chakra-ui/react'
-import React, { useState, useRef, useMemo } from 'react'
+import camelcaseKeys from 'camelcase-keys'
+import { useParams } from 'next/navigation'
+import React, { useState, useRef, useEffect, useCallback, useReducer } from 'react'
 import TextRow from './TextRow'
-import { useJsonStore } from '../../../stores/useJsonStore'
 
-type TextPageProps = {
-  pageId: string
-}
-const TextPageComponent = ({ pageId }: TextPageProps) => {
-  const { pages, editPageTitle } = useJsonStore()
+import { createSupabaseClient } from '../../../lib/supabase'
+import type { PageWithBlocks } from '../../TemplateMutate/types'
+
+import { blocksReducer } from '../utils/pageDispatch'
+
+const TextPageComponent = () => {
+  const supabase = createSupabaseClient()
+  const { pageId }: { pageId: string } = useParams()
+  const [pageTitle, setPageTitle] = useState('')
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
-  const page = useMemo(() => pages.find((page) => page.id === pageId), [pages, pageId])
-  const blocks = useMemo(() => page?.blocks ?? [], [page])
+  const [blocks, dispatch] = useReducer(blocksReducer, [])
+
+  useEffect(() => {
+    const fetchPages = async () => {
+      const { data: page, error: pageError } = await supabase
+        .from('page')
+        .select('*, page_block(*, text(*))')
+        .eq('id', pageId)
+        .single()
+      if (pageError) {
+        console.error(pageError)
+      } else {
+        const camelData: PageWithBlocks = camelcaseKeys(page, { deep: true })
+        setPageTitle(camelData.title)
+        dispatch({
+          type: 'initBlocks',
+          blocks: camelData.pageBlock,
+        })
+      }
+    }
+    void fetchPages()
+  }, [pageId, supabase])
+
+  const handleEditPageTitle = useCallback(
+    async (newTitle: string) => {
+      await supabase.from('page').update({ title: newTitle }).eq('id', pageId)
+      setPageTitle(newTitle)
+    },
+    [supabase, pageId],
+  )
   return (
     <Box
       h="85vh"
@@ -33,9 +66,9 @@ const TextPageComponent = ({ pageId }: TextPageProps) => {
     >
       <Input
         placeholder="新規ページ"
-        value={page?.title}
-        onChange={(e) => {
-          editPageTitle(pageId, e.target.value)
+        value={pageTitle}
+        onChange={async (e) => {
+          await handleEditPageTitle(e.target.value)
         }}
         size="2xl"
         border="none"
@@ -48,12 +81,11 @@ const TextPageComponent = ({ pageId }: TextPageProps) => {
         w={650}
         textAlign="left"
       />
-      {blocks.map((block, index) => (
+      {blocks.map((block) => (
         <TextRow
           key={block.id}
-          pageId={pageId}
           block={block}
-          index={index}
+          dispatch={dispatch}
           hoverRowIndex={hoverRowIndex}
           setHoverRowIndex={setHoverRowIndex}
           grabbedRowIndex={grabbedRowIndex}

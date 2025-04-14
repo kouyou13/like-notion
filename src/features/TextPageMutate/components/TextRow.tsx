@@ -2,13 +2,14 @@ import { Box, Input, HStack, Text } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import React from 'react'
 import { GrAdd, GrDrag } from 'react-icons/gr'
-import type { Block } from '../../../stores/types'
-import { useJsonStore } from '../../../stores/useJsonStore'
+
+import type { Block } from '../../TemplateMutate/types'
+
+import type { Action } from '../utils/pageDispatch'
 
 type TextRowProps = {
-  pageId: string
   block: Block
-  index: number
+  dispatch: React.ActionDispatch<[action: Action]>
   hoverRowIndex: number | null
   setHoverRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   grabbedRowIndex: number | null
@@ -17,9 +18,8 @@ type TextRowProps = {
   rowLength: number
 }
 const TextRowComponent = ({
-  pageId,
   block,
-  index,
+  dispatch,
   hoverRowIndex,
   setHoverRowIndex,
   grabbedRowIndex,
@@ -27,37 +27,40 @@ const TextRowComponent = ({
   inputRefs,
   rowLength,
 }: TextRowProps) => {
-  const { addBlock, updateBlock, deleteBlock, moveBlock } = useJsonStore()
   return (
     <HStack
       gap={0}
       onMouseEnter={() => {
-        setHoverRowIndex(index)
+        setHoverRowIndex(block.order)
       }}
       onMouseLeave={() => {
         setHoverRowIndex(null)
       }}
       onDragStart={() => {
-        setGrabbedRowIndex(index)
+        setGrabbedRowIndex(block.order)
       }}
       onDragOver={(e) => {
         e.preventDefault()
-        if (grabbedRowIndex !== null && grabbedRowIndex !== index) {
-          setHoverRowIndex(index)
+        if (grabbedRowIndex !== null && grabbedRowIndex !== block.order) {
+          setHoverRowIndex(block.order)
         }
       }}
       onDrop={() => {
-        if (grabbedRowIndex !== null && grabbedRowIndex !== index) {
-          moveBlock({ pageId, fromIndex: grabbedRowIndex, toIndex: index })
+        if (grabbedRowIndex !== null && grabbedRowIndex !== block.order) {
+          dispatch({
+            type: 'moveBlock',
+            fromIndex: grabbedRowIndex,
+            toIndex: block.order,
+          })
           setGrabbedRowIndex(null)
         }
         setHoverRowIndex(null)
       }}
       borderBottom={
-        grabbedRowIndex != null && hoverRowIndex === index ? '4px solid #e4edfa' : 'none'
+        grabbedRowIndex != null && hoverRowIndex === block.order ? '4px solid #e4edfa' : 'none'
       }
     >
-      {hoverRowIndex === index ? (
+      {hoverRowIndex === block.order ? (
         <HStack w={50} gap={1}>
           <Tooltip
             label={
@@ -80,7 +83,10 @@ const TextRowComponent = ({
               p={1}
               borderRadius="md"
               onClick={() => {
-                addBlock({ pageId, index: index + 1, content: '' })
+                dispatch({
+                  type: 'addBlock',
+                  order: block.order + 1,
+                })
               }}
             >
               <GrAdd color="gray" size={16} />
@@ -124,7 +130,7 @@ const TextRowComponent = ({
       )}
       <Input
         ref={(el) => {
-          inputRefs.current[index] = el
+          inputRefs.current[block.order] = el
         }}
         size="lg"
         border="none"
@@ -138,35 +144,46 @@ const TextRowComponent = ({
         onFocus={(e) => {
           e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
         }}
-        value={block.content}
+        value={block.text.content}
         h={8}
         onChange={(e) => {
-          updateBlock({ pageId, blockId: block.id, content: e.target.value })
+          dispatch({
+            type: 'updateBlock',
+            blockId: block.id,
+            newContent: e.target.value,
+          })
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Backspace' && block.content === '') {
+          if (e.key === 'Backspace' && block.text.content === '') {
             e.preventDefault()
-            deleteBlock({ pageId, blockId: block.id })
-            const prevInput = index > 0 ? inputRefs.current[index - 1] : inputRefs.current[1]
+            dispatch({
+              type: 'deleteBlock',
+              blockId: block.id,
+            })
+            const prevInput =
+              block.order > 0 ? inputRefs.current[block.order - 1] : inputRefs.current[1]
             if (prevInput) {
               prevInput.focus()
             }
-          } else if (e.key === 'ArrowUp' && index > 0) {
+          } else if (e.key === 'ArrowUp' && block.order > 0) {
             e.preventDefault()
-            const prevInput = inputRefs.current[index - 1]
+            const prevInput = inputRefs.current[block.order - 1]
             if (prevInput) {
               prevInput.focus()
             }
-          } else if (e.key === 'ArrowDown' && index < rowLength - 1) {
+          } else if (e.key === 'ArrowDown' && block.order < rowLength - 1) {
             e.preventDefault()
-            const nextInput = inputRefs.current[index + 1]
+            const nextInput = inputRefs.current[block.order + 1]
             if (nextInput) {
               nextInput.focus()
             }
           } else if (e.key === 'Enter') {
-            addBlock({ pageId, index: index + 1, content: '' })
+            dispatch({
+              type: 'addBlock',
+              order: block.order + 1,
+            })
             setTimeout(() => {
-              const nextInput = inputRefs.current[index + 1]
+              const nextInput = inputRefs.current[block.order + 1]
               if (nextInput) {
                 nextInput.focus()
               }
