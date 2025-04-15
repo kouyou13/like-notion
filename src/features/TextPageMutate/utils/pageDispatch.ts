@@ -62,7 +62,7 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
       if (action.fromIndex < action.toIndex) {
         return [
           ...blocks.slice(0, action.fromIndex),
-          ...blocks.slice(action.fromIndex, action.toIndex + 1),
+          ...blocks.slice(action.fromIndex + 1, action.toIndex + 1),
           targetBlock,
           ...blocks.slice(action.toIndex + 1),
         ].map((b, index) => ({ ...b, order: index }))

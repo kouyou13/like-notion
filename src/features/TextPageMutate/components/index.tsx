@@ -1,12 +1,11 @@
 import { Box, Input } from '@chakra-ui/react'
-import camelcaseKeys from 'camelcase-keys'
 import { useParams } from 'next/navigation'
 import React, { useState, useRef, useEffect, useCallback, useReducer } from 'react'
 import TextRow from './TextRow'
 
 import { createSupabaseClient } from '../../../lib/supabase'
-import type { PageWithBlocks } from '../../TemplateMutate/types'
 
+import selectPageWithBlocks from '../hooks/selectPageWithBlocks'
 import { blocksReducer } from '../utils/pageDispatch'
 
 const TextPageComponent = () => {
@@ -21,19 +20,12 @@ const TextPageComponent = () => {
 
   useEffect(() => {
     const fetchPages = async () => {
-      const { data: page, error: pageError } = await supabase
-        .from('pages')
-        .select('*, page_blocks(*, texts(*))')
-        .eq('id', pageId)
-        .single()
-      if (pageError) {
-        console.error(pageError)
-      } else {
-        const camelData: PageWithBlocks = camelcaseKeys(page, { deep: true })
-        setPageTitle(camelData.title)
+      const page = await selectPageWithBlocks(pageId)
+      if (page) {
+        setPageTitle(page.title)
         dispatch({
           type: 'initBlocks',
-          blocks: camelData.pageBlocks,
+          blocks: page.pageBlocks,
         })
       }
     }
