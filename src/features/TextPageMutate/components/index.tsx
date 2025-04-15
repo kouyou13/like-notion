@@ -1,6 +1,7 @@
 import { Box, Input } from '@chakra-ui/react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import React, { useState, useRef, useEffect, useCallback, useReducer } from 'react'
+import { useDebounce } from 'use-debounce'
 
 import TextRow from './TextRow'
 import { createSupabaseClient } from '../../../lib/supabase'
@@ -9,27 +10,34 @@ import { blocksReducer } from '../utils/pageDispatch'
 
 const TextPageComponent = () => {
   const supabase = createSupabaseClient()
+  const router = useRouter()
   const { pageId }: { pageId: string } = useParams()
   const [pageTitle, setPageTitle] = useState('')
-  const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
-  const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const [blocks, dispatch] = useReducer(blocksReducer, [])
-  const previousBlocksRef = useRef(blocks) // 前回の blocks を保持
+  const previousBlocksRef = useRef(blocks)
+  const [debouncedBlocks] = useDebounce(blocks, 1000)
+
+  const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
+  const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
+  const [isOpenBlockSettingIndex, setIsOpenBlockSettingIndex] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchPages = async () => {
-      const page = await selectPageWithBlocks(pageId)
+      const { data: page, error } = await selectPageWithBlocks(pageId)
+      if (error) {
+        router.push('/')
+      }
       if (page) {
         setPageTitle(page.title)
         dispatch({
           type: 'initBlocks',
-          blocks: page.pageBlocks,
+          blocks: page.pageBlocks.sort((a, b) => a.order - b.order),
         })
       }
     }
     void fetchPages()
-  }, [pageId, supabase])
+  }, [pageId, supabase, router])
 
   const handleEditPageTitle = useCallback(
     async (newTitle: string) => {
@@ -41,19 +49,20 @@ const TextPageComponent = () => {
 
   useEffect(() => {
     const saveBlocks = async () => {
-      // blocks が変更されていない場合は保存をスキップ
-      if (JSON.stringify(previousBlocksRef.current) === JSON.stringify(blocks)) {
-        return
-      }
+      if (JSON.stringify(previousBlocksRef.current) === JSON.stringify(debouncedBlocks)) return
+
+      const prevIds = previousBlocksRef.current.map((b) => b.id)
+      const currentIds = debouncedBlocks.map((b) => b.id)
+      const deletedIds = prevIds.filter((id) => !currentIds.includes(id))
 
       try {
-        const updates = blocks.map((block) => ({
+        const updates = debouncedBlocks.map((block) => ({
           id: block.id,
           block_type: block.blockType,
           order: block.order,
           page_id: pageId,
         }))
-        const updateTexts = blocks.map((block) => ({
+        const updateTexts = debouncedBlocks.map((block) => ({
           id: block.texts.id,
           content: block.texts.content,
           page_block_id: block.id,
@@ -67,25 +76,29 @@ const TextPageComponent = () => {
         })
 
         if (error || textsError) {
-          console.error('ブロックの保存に失敗しました:', error)
-          console.error('テキストの保存に失敗しました:', textsError)
+          console.error('保存失敗:', error)
+          console.error('保存失敗:', textsError)
         }
 
-        previousBlocksRef.current = blocks
+        previousBlocksRef.current = debouncedBlocks
+
+        if (deletedIds.length > 0) {
+          const { error: deleteError } = await supabase
+            .from('page_blocks')
+            .update({ is_deleted: `{${new Date().toISOString()}}` })
+            .in('id', deletedIds)
+
+          if (deleteError) {
+            console.error('削除マークの更新に失敗:', deleteError)
+          }
+        }
       } catch (err) {
-        console.error('ブロックの保存中にエラーが発生しました:', err)
+        console.error('保存エラー:', err)
       }
     }
 
-    const interval = setInterval(() => {
-      void saveBlocks()
-    }, 3000)
-
-    // クリーンアップ
-    return () => {
-      clearInterval(interval)
-    }
-  }, [blocks, pageId, supabase])
+    void saveBlocks()
+  }, [debouncedBlocks, pageId, supabase])
 
   return (
     <Box
@@ -131,6 +144,8 @@ const TextPageComponent = () => {
           setHoverRowIndex={setHoverRowIndex}
           grabbedRowIndex={grabbedRowIndex}
           setGrabbedRowIndex={setGrabbedRowIndex}
+          isOpenBlockSettingIndex={isOpenBlockSettingIndex}
+          setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
           inputRefs={inputRefs}
           rowLength={blocks.length}
         />

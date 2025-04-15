@@ -1,13 +1,14 @@
 'use client'
 
 import { Box, HStack } from '@chakra-ui/react'
+import { useRouter } from 'next/navigation'
 import React, { useState, useEffect, useCallback } from 'react'
+import { v4 } from 'uuid'
 
 import SidebarComponent from './Sidebar'
 import { createSupabaseClient } from '../../../lib/supabase'
 import TopBar from '../../TopBarMutate/components'
 import type { PageWithBlocks, Page } from '../types/index'
-import { defaultPage } from '../utils/defaultProps'
 
 type TemplateProps = {
   children: React.ReactNode
@@ -15,6 +16,7 @@ type TemplateProps = {
 
 const Template = ({ children }: TemplateProps) => {
   const supabase = createSupabaseClient()
+  const router = useRouter()
 
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
@@ -22,7 +24,10 @@ const Template = ({ children }: TemplateProps) => {
 
   useEffect(() => {
     const fetchPages = async () => {
-      const { data, error } = await supabase.from('pages').select('id, title')
+      const { data, error } = await supabase
+        .from('pages')
+        .select('id, title')
+        .filter('is_deleted', 'is', null)
       if (error) {
         console.error(error)
       } else {
@@ -56,6 +61,39 @@ const Template = ({ children }: TemplateProps) => {
   }, [supabase])
 
   const handleAddPage = useCallback(async () => {
+    const defaultPage: PageWithBlocks = {
+      id: v4(),
+      title: '',
+      pageBlocks: [
+        {
+          id: v4(),
+          blockType: 'text',
+          order: 0,
+          texts: {
+            id: v4(),
+            content: '',
+          },
+        },
+        {
+          id: v4(),
+          blockType: 'text',
+          order: 1,
+          texts: {
+            id: v4(),
+            content: '',
+          },
+        },
+        {
+          id: v4(),
+          blockType: 'text',
+          order: 2,
+          texts: {
+            id: v4(),
+            content: '',
+          },
+        },
+      ],
+    }
     const newPage: PageWithBlocks = defaultPage
     await supabase.from('pages').insert([{ id: newPage.id, title: newPage.title }])
     await supabase.from('page_blocks').insert(
@@ -72,7 +110,8 @@ const Template = ({ children }: TemplateProps) => {
         page_block_id: block.id,
       })),
     )
-  }, [supabase])
+    router.push(`/${newPage.id}`)
+  }, [supabase, router])
 
   return (
     <Box w="100vw" h="100vh">

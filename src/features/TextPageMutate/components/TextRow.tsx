@@ -1,4 +1,4 @@
-import { Box, Input, HStack, Text } from '@chakra-ui/react'
+import { Box, Input, HStack, Text, Popover, Portal, Button } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import React from 'react'
 import { GrAdd, GrDrag } from 'react-icons/gr'
@@ -13,6 +13,8 @@ type TextRowProps = {
   setHoverRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   grabbedRowIndex: number | null
   setGrabbedRowIndex: React.Dispatch<React.SetStateAction<number | null>>
+  isOpenBlockSettingIndex: number | null
+  setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
   inputRefs: React.RefObject<(HTMLInputElement | null)[]>
   rowLength: number
 }
@@ -23,6 +25,8 @@ const TextRowComponent = ({
   setHoverRowIndex,
   grabbedRowIndex,
   setGrabbedRowIndex,
+  isOpenBlockSettingIndex,
+  setIsOpenBlockSettingIndex,
   inputRefs,
   rowLength,
 }: TextRowProps) => {
@@ -30,17 +34,20 @@ const TextRowComponent = ({
     <HStack
       gap={0}
       onMouseEnter={() => {
-        setHoverRowIndex(block.order)
+        if (isOpenBlockSettingIndex == null) {
+          setHoverRowIndex(block.order)
+        }
       }}
       onMouseLeave={() => {
         setHoverRowIndex(null)
+        setGrabbedRowIndex(null)
       }}
       onDragStart={() => {
         setGrabbedRowIndex(block.order)
       }}
       onDragOver={(e) => {
         e.preventDefault()
-        if (grabbedRowIndex !== null && grabbedRowIndex !== block.order) {
+        if (grabbedRowIndex !== null) {
           setHoverRowIndex(block.order)
         }
       }}
@@ -56,41 +63,73 @@ const TextRowComponent = ({
         setHoverRowIndex(null)
       }}
       borderBottom={
-        grabbedRowIndex != null && hoverRowIndex === block.order ? '4px solid #e4edfa' : 'none'
+        grabbedRowIndex != null &&
+        grabbedRowIndex !== hoverRowIndex &&
+        hoverRowIndex === block.order
+          ? '4px solid #e4edfa'
+          : 'none'
       }
     >
-      {hoverRowIndex === block.order ? (
+      {hoverRowIndex === block.order || isOpenBlockSettingIndex === block.order ? (
         <HStack w={50} gap={1}>
-          <Tooltip
-            label={
-              <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
-                <HStack justify="center" align="center" gap={0}>
-                  クリックして<Text color="gray">下に追加</Text>
-                </HStack>
-                <HStack gap={0}>
-                  Opt+クリック/Alt+クリックで<Text color="gray">上に追加</Text>
-                </HStack>
-              </Box>
-            }
-            bgColor="black"
-            color="white"
-            borderRadius={5}
-            borderColor="black"
+          <Popover.Root
+            positioning={{ placement: 'bottom-start' }}
+            onOpenChange={(isOpen) => {
+              if (isOpen.open) {
+                if (block.texts.content !== '') {
+                  dispatch({
+                    type: 'addBlock',
+                    order: block.order + 1,
+                  })
+                  setIsOpenBlockSettingIndex(block.order + 1)
+                } else {
+                  setIsOpenBlockSettingIndex(block.order)
+                }
+              } else {
+                setIsOpenBlockSettingIndex(null)
+              }
+            }}
           >
-            <Box
-              _hover={{ bgColor: 'gray.100' }}
-              p={1}
-              borderRadius="md"
-              onClick={() => {
-                dispatch({
-                  type: 'addBlock',
-                  order: block.order + 1,
-                })
-              }}
-            >
-              <GrAdd color="gray" size={16} />
-            </Box>
-          </Tooltip>
+            <Popover.Trigger asChild>
+              <Button
+                variant="ghost"
+                size="2xs"
+                p={1}
+                _hover={{ bgColor: 'gray.100' }}
+                borderRadius="md"
+              >
+                <Tooltip
+                  label={
+                    <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
+                      <HStack justify="center" align="center" gap={0}>
+                        クリックして<Text color="gray">下に追加</Text>
+                      </HStack>
+                      <HStack gap={0}>
+                        Opt+クリック/Alt+クリックで<Text color="gray">上に追加</Text>
+                      </HStack>
+                    </Box>
+                  }
+                  bgColor="black"
+                  color="white"
+                  borderRadius={5}
+                  borderColor="black"
+                >
+                  <GrAdd color="gray" size={16} />
+                </Tooltip>
+              </Button>
+            </Popover.Trigger>
+            <Portal>
+              <Popover.Positioner>
+                <Popover.Content>
+                  <Popover.Body>
+                    <Text fontSize="xs" color="gray.600">
+                      基本
+                    </Text>
+                  </Popover.Body>
+                </Popover.Content>
+              </Popover.Positioner>
+            </Portal>
+          </Popover.Root>
           <Tooltip
             label={
               <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
