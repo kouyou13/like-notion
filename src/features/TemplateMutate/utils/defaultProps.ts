@@ -1,4 +1,5 @@
 import { v4 } from 'uuid'
+
 import type { PageWithBlocks, Block } from '../types/index'
 
 export const defaultBlocks: Block[] = [

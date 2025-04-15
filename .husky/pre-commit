@@ -3,4 +3,10 @@
 
 npm run fmt
 
+npx eslint . --fix
+if [ $? -ne 0 ]; then
+  echo "ESLint によるエラーまたは警告が検出されました。コミットを中断します。"
+  exit 1
+fi
+
 git add .

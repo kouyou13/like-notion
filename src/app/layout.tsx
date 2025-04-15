@@ -1,7 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Providers } from './providers'
 
+import { Providers } from './providers'
 import Template from '../features/TemplateMutate/components'
 
 export const metadata: Metadata = {

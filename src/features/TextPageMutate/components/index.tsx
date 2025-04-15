@@ -1,10 +1,9 @@
 import { Box, Input } from '@chakra-ui/react'
 import { useParams } from 'next/navigation'
 import React, { useState, useRef, useEffect, useCallback, useReducer } from 'react'
+
 import TextRow from './TextRow'
-
 import { createSupabaseClient } from '../../../lib/supabase'
-
 import selectPageWithBlocks from '../hooks/selectPageWithBlocks'
 import { blocksReducer } from '../utils/pageDispatch'
 

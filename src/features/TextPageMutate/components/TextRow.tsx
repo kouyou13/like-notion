@@ -4,7 +4,6 @@ import React from 'react'
 import { GrAdd, GrDrag } from 'react-icons/gr'
 
 import type { Block } from '../../TemplateMutate/types'
-
 import type { Action } from '../utils/pageDispatch'
 
 type TextRowProps = {
