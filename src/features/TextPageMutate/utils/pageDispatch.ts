@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 
-import type { Block } from '../../TemplateMutate/types'
+import type { Block } from '../../../types'
 
 export type Action =
   | {
@@ -85,7 +85,7 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
 
 const defaultBlock = (order: number): Block => ({
   id: v4(),
-  blockType: 'text',
+  blockType: 'Text',
   order,
   texts: {
     id: v4(),

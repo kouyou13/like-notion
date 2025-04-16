@@ -5,7 +5,7 @@ import { AiOutlineDoubleLeft } from 'react-icons/ai'
 import { FaRegFileAlt } from 'react-icons/fa'
 import { GrHomeRounded, GrMore, GrAdd } from 'react-icons/gr'
 
-import type { Page } from '../types/index'
+import type { Page } from '../../../types'
 
 type SidebarProps = {
   isOpenSidebar: boolean

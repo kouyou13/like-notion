@@ -3,7 +3,21 @@ export type Page = {
   title: string
 }
 
-export type BlockType = 'text'
+export type BlockType =
+  | 'Text'
+  | 'H1'
+  | 'H2'
+  | 'H3'
+  | 'List'
+  | 'ListNumbers'
+  | 'TodoList'
+  | 'ToggleList'
+  | 'Page'
+  | 'Callout'
+  | 'Citing'
+  | 'Table'
+  | 'Separator'
+  | 'PageLink'
 
 export type Block = {
   id: string

@@ -1,7 +1,7 @@
 import camelcaseKeys from 'camelcase-keys'
 
 import { createSupabaseClient } from '../../../lib/supabase'
-import type { PageWithBlocks, BlockType } from '../../TemplateMutate/types'
+import type { PageWithBlocks, BlockType } from '../../../types'
 
 type Page_Snake = {
   id: string

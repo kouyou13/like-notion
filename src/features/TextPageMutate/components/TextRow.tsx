@@ -1,9 +1,10 @@
-import { Box, Input, HStack, Text, Popover, Portal, Button } from '@chakra-ui/react'
+import { Box, Input, HStack, Text } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import React from 'react'
-import { GrAdd, GrDrag } from 'react-icons/gr'
+import { GrDrag } from 'react-icons/gr'
 
-import type { Block } from '../../TemplateMutate/types'
+import AddBlockMenu from './AddBlockMenu'
+import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
 type TextRowProps = {
@@ -72,64 +73,11 @@ const TextRowComponent = ({
     >
       {hoverRowIndex === block.order || isOpenBlockSettingIndex === block.order ? (
         <HStack w={50} gap={1}>
-          <Popover.Root
-            positioning={{ placement: 'bottom-start' }}
-            onOpenChange={(isOpen) => {
-              if (isOpen.open) {
-                if (block.texts.content !== '') {
-                  dispatch({
-                    type: 'addBlock',
-                    order: block.order + 1,
-                  })
-                  setIsOpenBlockSettingIndex(block.order + 1)
-                } else {
-                  setIsOpenBlockSettingIndex(block.order)
-                }
-              } else {
-                setIsOpenBlockSettingIndex(null)
-              }
-            }}
-          >
-            <Popover.Trigger asChild>
-              <Button
-                variant="ghost"
-                size="2xs"
-                p={1}
-                _hover={{ bgColor: 'gray.100' }}
-                borderRadius="md"
-              >
-                <Tooltip
-                  label={
-                    <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
-                      <HStack justify="center" align="center" gap={0}>
-                        クリックして<Text color="gray">下に追加</Text>
-                      </HStack>
-                      <HStack gap={0}>
-                        Opt+クリック/Alt+クリックで<Text color="gray">上に追加</Text>
-                      </HStack>
-                    </Box>
-                  }
-                  bgColor="black"
-                  color="white"
-                  borderRadius={5}
-                  borderColor="black"
-                >
-                  <GrAdd color="gray" size={16} />
-                </Tooltip>
-              </Button>
-            </Popover.Trigger>
-            <Portal>
-              <Popover.Positioner>
-                <Popover.Content>
-                  <Popover.Body>
-                    <Text fontSize="xs" color="gray.600">
-                      基本
-                    </Text>
-                  </Popover.Body>
-                </Popover.Content>
-              </Popover.Positioner>
-            </Portal>
-          </Popover.Root>
+          <AddBlockMenu
+            block={block}
+            dispatch={dispatch}
+            setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
+          />
           <Tooltip
             label={
               <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
