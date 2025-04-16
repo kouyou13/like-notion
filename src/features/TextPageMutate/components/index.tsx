@@ -1,6 +1,6 @@
 import { Box, Input } from '@chakra-ui/react'
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState, useRef, useEffect, useCallback, useReducer } from 'react'
+import React, { useState, useRef, useEffect, useReducer } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import TextRow from './TextRow'
@@ -16,7 +16,9 @@ const TextPageComponent = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const [blocks, dispatch] = useReducer(blocksReducer, [])
   const previousBlocksRef = useRef(blocks)
-  const [debouncedBlocks] = useDebounce(blocks, 1000)
+
+  const [debouncedPageTitle] = useDebounce(pageTitle, 1000) // 編集後1秒間の遅延を設定
+  const [debouncedBlocks] = useDebounce(blocks, 1000) // 編集後1秒間の遅延を設定
 
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
@@ -39,14 +41,22 @@ const TextPageComponent = () => {
     void fetchPages()
   }, [pageId, supabase, router])
 
-  const handleEditPageTitle = useCallback(
-    async (newTitle: string) => {
-      await supabase.from('pages').update({ title: newTitle }).eq('id', pageId)
-      setPageTitle(newTitle)
-    },
-    [supabase, pageId],
-  )
+  // 定期的にタイトルを保存
+  useEffect(() => {
+    const saveTitle = async () => {
+      if (debouncedPageTitle === '') return
+      const { error } = await supabase
+        .from('pages')
+        .update({ title: debouncedPageTitle })
+        .eq('id', pageId)
+      if (error) {
+        console.error(error)
+      }
+    }
+    void saveTitle()
+  }, [debouncedPageTitle, supabase, pageId])
 
+  // 定期的にブロックの情報を保存
   useEffect(() => {
     const saveBlocks = async () => {
       if (JSON.stringify(previousBlocksRef.current) === JSON.stringify(debouncedBlocks)) return
@@ -121,8 +131,8 @@ const TextPageComponent = () => {
       <Input
         placeholder="新規ページ"
         value={pageTitle}
-        onChange={async (e) => {
-          await handleEditPageTitle(e.target.value)
+        onChange={(e) => {
+          setPageTitle(e.target.value)
         }}
         size="2xl"
         border="none"
