@@ -1,6 +1,7 @@
 export type Page = {
   id: string
   title: string
+  order: number
 }
 
 export type BlockType =

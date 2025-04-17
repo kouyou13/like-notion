@@ -26,12 +26,12 @@ const Template = ({ children }: TemplateProps) => {
     const fetchPages = async () => {
       const { data, error } = await supabase
         .from('pages')
-        .select('id, title')
+        .select('id, title, order')
         .filter('is_deleted', 'is', null)
       if (error) {
         console.error(error)
       } else {
-        setPages(data)
+        setPages(data.sort((a, b) => a.order - b.order))
       }
       setIsLoading(false)
     }
@@ -64,6 +64,7 @@ const Template = ({ children }: TemplateProps) => {
     const defaultPage: PageWithBlocks = {
       id: v4(),
       title: '',
+      order: pages.length,
       pageBlocks: [
         {
           id: v4(),
@@ -111,7 +112,7 @@ const Template = ({ children }: TemplateProps) => {
       })),
     )
     router.push(`/${newPage.id}`)
-  }, [supabase, router])
+  }, [supabase, router, pages])
 
   return (
     <Box w="100vw" h="100vh">
