@@ -67,7 +67,7 @@ const Template = ({ children }: TemplateProps) => {
       pageBlocks: [
         {
           id: v4(),
-          blockType: 'text',
+          blockType: 'Text',
           order: 0,
           texts: {
             id: v4(),
@@ -76,7 +76,7 @@ const Template = ({ children }: TemplateProps) => {
         },
         {
           id: v4(),
-          blockType: 'text',
+          blockType: 'Text',
           order: 1,
           texts: {
             id: v4(),
@@ -85,7 +85,7 @@ const Template = ({ children }: TemplateProps) => {
         },
         {
           id: v4(),
-          blockType: 'text',
+          blockType: 'Text',
           order: 2,
           texts: {
             id: v4(),
