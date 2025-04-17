@@ -16,7 +16,8 @@ type TextRowProps = {
   setGrabbedRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   isOpenBlockSettingIndex: number | null
   setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
-  inputRefs: React.RefObject<(HTMLInputElement | null)[]>
+  titleRef: React.RefObject<HTMLInputElement | null>
+  blockRefs: React.RefObject<(HTMLInputElement | null)[]>
   rowLength: number
 }
 const TextRowComponent = ({
@@ -28,7 +29,8 @@ const TextRowComponent = ({
   setGrabbedRowIndex,
   isOpenBlockSettingIndex,
   setIsOpenBlockSettingIndex,
-  inputRefs,
+  titleRef,
+  blockRefs,
   rowLength,
 }: TextRowProps) => {
   return (
@@ -116,7 +118,7 @@ const TextRowComponent = ({
       )}
       <Input
         ref={(el) => {
-          inputRefs.current[block.order] = el
+          blockRefs.current[block.order] = el
         }}
         size="lg"
         border="none"
@@ -147,19 +149,23 @@ const TextRowComponent = ({
               blockId: block.id,
             })
             const prevInput =
-              block.order > 0 ? inputRefs.current[block.order - 1] : inputRefs.current[1]
+              block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
             if (prevInput) {
               prevInput.focus()
             }
-          } else if (e.key === 'ArrowUp' && block.order > 0) {
+          } else if (e.key === 'ArrowUp') {
             e.preventDefault()
-            const prevInput = inputRefs.current[block.order - 1]
-            if (prevInput) {
-              prevInput.focus()
+            if (block.order > 0) {
+              const prevInput = blockRefs.current[block.order - 1]
+              if (prevInput) {
+                prevInput.focus()
+              }
+            } else if (block.order === 0) {
+              titleRef.current?.focus()
             }
           } else if (e.key === 'ArrowDown' && block.order < rowLength - 1) {
             e.preventDefault()
-            const nextInput = inputRefs.current[block.order + 1]
+            const nextInput = blockRefs.current[block.order + 1]
             if (nextInput) {
               nextInput.focus()
             }
@@ -169,7 +175,7 @@ const TextRowComponent = ({
               order: block.order + 1,
             })
             setTimeout(() => {
-              const nextInput = inputRefs.current[block.order + 1]
+              const nextInput = blockRefs.current[block.order + 1]
               if (nextInput) {
                 nextInput.focus()
               }

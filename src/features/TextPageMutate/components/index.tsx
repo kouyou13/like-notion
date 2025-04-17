@@ -13,13 +13,14 @@ const TextPageComponent = () => {
   const router = useRouter()
   const { pageId }: { pageId: string } = useParams()
   const [pageTitle, setPageTitle] = useState('')
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const [blocks, dispatch] = useReducer(blocksReducer, [])
   const previousBlocksRef = useRef(blocks)
 
   const [debouncedPageTitle] = useDebounce(pageTitle, 1000) // 編集後1秒間の遅延を設定
   const [debouncedBlocks] = useDebounce(blocks, 1000) // 編集後1秒間の遅延を設定
 
+  const titleRef = useRef<HTMLInputElement | null>(null)
+  const blockRefs = useRef<(HTMLInputElement | null)[]>([])
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const [isOpenBlockSettingIndex, setIsOpenBlockSettingIndex] = useState<number | null>(null)
@@ -121,7 +122,7 @@ const TextPageComponent = () => {
       pt="10vh"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
-          const prevInput = inputRefs.current.slice(-1)[0]
+          const prevInput = blockRefs.current.slice(-1)[0]
           if (prevInput) {
             prevInput.focus()
           }
@@ -129,6 +130,9 @@ const TextPageComponent = () => {
       }}
     >
       <Input
+        ref={(el) => {
+          titleRef.current = el
+        }}
         placeholder="新規ページ"
         value={pageTitle}
         onChange={(e) => {
@@ -144,6 +148,11 @@ const TextPageComponent = () => {
         mb={2}
         w={650}
         textAlign="left"
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowDown') {
+            blockRefs.current[0]?.focus()
+          }
+        }}
       />
       {blocks.map((block) => (
         <TextRow
@@ -156,7 +165,8 @@ const TextPageComponent = () => {
           setGrabbedRowIndex={setGrabbedRowIndex}
           isOpenBlockSettingIndex={isOpenBlockSettingIndex}
           setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
-          inputRefs={inputRefs}
+          titleRef={titleRef}
+          blockRefs={blockRefs}
           rowLength={blocks.length}
         />
       ))}
