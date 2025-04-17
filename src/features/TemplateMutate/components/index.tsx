@@ -21,17 +21,22 @@ const Template = ({ children }: TemplateProps) => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [pages, setPages] = useState<Page[]>([])
+  console.log(pages)
 
   useEffect(() => {
     const fetchPages = async () => {
       const { data, error } = await supabase
         .from('pages')
-        .select('id, title, order')
+        .select('id, title, order, is_deleted')
         .filter('is_deleted', 'is', null)
       if (error) {
         console.error(error)
       } else {
-        setPages(data.sort((a, b) => a.order - b.order))
+        setPages(
+          data
+            .map((data) => ({ ...data, isDeleted: data.is_deleted }))
+            .sort((a, b) => a.order - b.order),
+        )
       }
       setIsLoading(false)
     }
@@ -43,13 +48,26 @@ const Template = ({ children }: TemplateProps) => {
       .channel('pages')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'pages' }, (payload) => {
         if (payload.eventType === 'INSERT') {
-          setPages((prev) => [...prev, payload.new as Page])
-        } else if (payload.eventType === 'UPDATE') {
+          const newPage: Page = {
+            id: payload.new.id,
+            title: payload.new.title,
+            order: payload.new.order,
+            isDeleted: payload.new.is_deleted,
+          }
+          setPages((prev) => [...prev, newPage])
+        } else if (payload.eventType == 'UPDATE') {
+          const newPage: Page = {
+            id: payload.new.id,
+            title: payload.new.title,
+            order: payload.new.order,
+            isDeleted: payload.new.is_deleted,
+          }
           setPages((prev) =>
-            prev.map((page) => (page.id === payload.new.id ? (payload.new as Page) : page)),
+            prev
+              .map((page) => (page.id === newPage.id ? newPage : page))
+              .filter((page) => page.isDeleted == null),
           )
-        } else {
-          setPages((prev) => prev.filter((page) => page.id !== payload.old.id))
+          router.push('/')
         }
       })
       .subscribe()
@@ -58,13 +76,14 @@ const Template = ({ children }: TemplateProps) => {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [supabase])
+  }, [supabase, router])
 
   const handleAddPage = useCallback(async () => {
-    const defaultPage: PageWithBlocks = {
+    const newPage: PageWithBlocks = {
       id: v4(),
       title: '',
-      order: pages.length,
+      order: pages.length + 1,
+      isDeleted: null,
       pageBlocks: [
         {
           id: v4(),
@@ -95,7 +114,6 @@ const Template = ({ children }: TemplateProps) => {
         },
       ],
     }
-    const newPage: PageWithBlocks = defaultPage
     await supabase.from('pages').insert([{ id: newPage.id, title: newPage.title }])
     await supabase.from('page_blocks').insert(
       newPage.pageBlocks.map((block) => ({
@@ -112,7 +130,7 @@ const Template = ({ children }: TemplateProps) => {
       })),
     )
     router.push(`/${newPage.id}`)
-  }, [supabase, router, pages])
+  }, [supabase, router, pages.length])
 
   return (
     <Box w="100vw" h="100vh">

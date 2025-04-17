@@ -28,7 +28,7 @@ const TextPageComponent = () => {
   useEffect(() => {
     const fetchPages = async () => {
       const { data: page, error } = await selectPageWithBlocks(pageId)
-      if (error) {
+      if (error || page?.isDeleted != null) {
         router.push('/')
       }
       if (page) {

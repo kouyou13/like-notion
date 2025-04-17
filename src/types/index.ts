@@ -2,6 +2,7 @@ export type Page = {
   id: string
   title: string
   order: number
+  isDeleted: string[] | null
 }
 
 export type BlockType =
