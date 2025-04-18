@@ -3,7 +3,7 @@ import { useParams, useRouter } from 'next/navigation'
 import React, { useState, useRef, useEffect, useReducer } from 'react'
 import { useDebounce } from 'use-debounce'
 
-import TextRow from './TextRow'
+import BlockRow from './BlockRow'
 import { createSupabaseClient } from '../../../lib/supabase'
 import selectPageWithBlocks from '../hooks/selectPageWithBlocks'
 import { blocksReducer } from '../utils/pageDispatch'
@@ -155,7 +155,7 @@ const TextPageComponent = () => {
         }}
       />
       {blocks.map((block) => (
-        <TextRow
+        <BlockRow
           key={block.id}
           block={block}
           dispatch={dispatch}

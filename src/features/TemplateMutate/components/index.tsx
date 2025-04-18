@@ -21,7 +21,6 @@ const Template = ({ children }: TemplateProps) => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [pages, setPages] = useState<Page[]>([])
-  console.log(pages)
 
   useEffect(() => {
     const fetchPages = async () => {
@@ -67,7 +66,6 @@ const Template = ({ children }: TemplateProps) => {
               .map((page) => (page.id === newPage.id ? newPage : page))
               .filter((page) => page.isDeleted == null),
           )
-          router.push('/')
         }
       })
       .subscribe()

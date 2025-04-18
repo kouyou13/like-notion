@@ -1,13 +1,14 @@
-import { Box, Input, HStack, Text } from '@chakra-ui/react'
+import { Box, HStack, Text } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import React from 'react'
 import { GrDrag } from 'react-icons/gr'
 
 import AddBlockMenu from './AddBlockMenu'
+import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
-type TextRowProps = {
+type BlockRowProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   hoverRowIndex: number | null
@@ -20,7 +21,7 @@ type TextRowProps = {
   blockRefs: React.RefObject<(HTMLInputElement | null)[]>
   rowLength: number
 }
-const TextRowComponent = ({
+const BlockRowComponent = ({
   block,
   dispatch,
   hoverRowIndex,
@@ -32,7 +33,7 @@ const TextRowComponent = ({
   titleRef,
   blockRefs,
   rowLength,
-}: TextRowProps) => {
+}: BlockRowProps) => {
   return (
     <HStack
       gap={0}
@@ -116,75 +117,15 @@ const TextRowComponent = ({
       ) : (
         <Box w={50} />
       )}
-      <Input
-        ref={(el) => {
-          blockRefs.current[block.order] = el
-        }}
-        size="lg"
-        border="none"
-        outline="none"
-        p={0}
-        w={650}
-        mr={50}
-        onBlur={(e) => {
-          e.target.placeholder = ''
-        }}
-        onFocus={(e) => {
-          e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
-        }}
-        value={block.texts.content}
-        h={8}
-        onChange={(e) => {
-          dispatch({
-            type: 'updateBlock',
-            blockId: block.id,
-            newContent: e.target.value,
-          })
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Backspace' && block.texts.content === '') {
-            e.preventDefault()
-            dispatch({
-              type: 'deleteBlock',
-              blockId: block.id,
-            })
-            const prevInput =
-              block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
-            if (prevInput) {
-              prevInput.focus()
-            }
-          } else if (e.key === 'ArrowUp') {
-            e.preventDefault()
-            if (block.order > 0) {
-              const prevInput = blockRefs.current[block.order - 1]
-              if (prevInput) {
-                prevInput.focus()
-              }
-            } else if (block.order === 0) {
-              titleRef.current?.focus()
-            }
-          } else if (e.key === 'ArrowDown' && block.order < rowLength - 1) {
-            e.preventDefault()
-            const nextInput = blockRefs.current[block.order + 1]
-            if (nextInput) {
-              nextInput.focus()
-            }
-          } else if (e.key === 'Enter') {
-            dispatch({
-              type: 'addBlock',
-              order: block.order + 1,
-            })
-            setTimeout(() => {
-              const nextInput = blockRefs.current[block.order + 1]
-              if (nextInput) {
-                nextInput.focus()
-              }
-            }, 0)
-          }
-        }}
+      <TextBlock
+        block={block}
+        dispatch={dispatch}
+        titleRef={titleRef}
+        blockRefs={blockRefs}
+        rowLength={rowLength}
       />
     </HStack>
   )
 }
-const TextRow = React.memo(TextRowComponent)
-export default TextRow
+const BlockRow = React.memo(BlockRowComponent)
+export default BlockRow
