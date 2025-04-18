@@ -1,5 +1,5 @@
 import { Input } from '@chakra-ui/react'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
@@ -18,22 +18,56 @@ const TextBlockComponent = ({
   blockRefs,
   rowLength,
 }: TextBlockProps) => {
+  const [placeHolderText, setPlaceHolderText] = useState('')
+  const [fontSize, setFontSize] = useState('lg')
+  const [isBold, setIsBold] = useState(false)
+  useEffect(() => {
+    switch (block.blockType) {
+      case 'Text': {
+        setPlaceHolderText('入力して、AIはスペースキーを、コマンドは半角の「/」を押す...')
+        setFontSize('lg')
+        setIsBold(false)
+        break
+      }
+      case 'H1': {
+        setPlaceHolderText('見出し1')
+        setFontSize('2xl')
+        setIsBold(true)
+        break
+      }
+      case 'H2': {
+        setPlaceHolderText('見出し2')
+        setFontSize('xl')
+        setIsBold(true)
+        break
+      }
+      case 'H3': {
+        setPlaceHolderText('見出し3')
+        setFontSize('lg')
+        setIsBold(true)
+        break
+      }
+    }
+  }, [block.blockType])
   return (
     <Input
       ref={(el) => {
         blockRefs.current[block.order] = el
       }}
-      size="lg"
+      size={fontSize as '2xl' | 'xl' | 'lg'}
+      fontWeight={isBold ? 'bold' : undefined}
       border="none"
       outline="none"
       p={0}
       w={650}
       mr={50}
       onBlur={(e) => {
-        e.target.placeholder = ''
+        if (block.blockType === 'Text') {
+          e.target.placeholder = ''
+        }
       }}
       onFocus={(e) => {
-        e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
+        e.target.placeholder = placeHolderText
       }}
       value={block.texts.content}
       h={8}
@@ -42,6 +76,7 @@ const TextBlockComponent = ({
           type: 'updateBlock',
           blockId: block.id,
           newContent: e.target.value,
+          blockType: block.blockType,
         })
       }}
       onKeyDown={(e) => {

@@ -15,6 +15,7 @@ const TextPageComponent = () => {
   const [pageTitle, setPageTitle] = useState('')
   const [blocks, dispatch] = useReducer(blocksReducer, [])
   const previousBlocksRef = useRef(blocks)
+  console.log(blocks)
 
   const [debouncedPageTitle] = useDebounce(pageTitle, 1000) // 編集後1秒間の遅延を設定
   const [debouncedBlocks] = useDebounce(blocks, 1000) // 編集後1秒間の遅延を設定

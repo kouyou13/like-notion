@@ -1,6 +1,6 @@
 import { Box, HStack, Text, Button, Menu, Portal } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { FaRegFileAlt, FaExternalLinkAlt } from 'react-icons/fa'
 import { GrAdd } from 'react-icons/gr'
 import { ImList2, ImListNumbered, ImQuotesLeft } from 'react-icons/im'
@@ -8,19 +8,33 @@ import { LuListChecks, LuListCollapse } from 'react-icons/lu'
 import { RiH1, RiH2, RiH3, RiTBoxLine } from 'react-icons/ri'
 import { RxText, RxTable, RxMinus } from 'react-icons/rx'
 
-import type { Block } from '../../../types'
+import type { Block, BlockType } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
 type AddBlockMenuProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
+  blockRefs: React.RefObject<(HTMLInputElement | null)[]>
 }
 const AddBlockMenuComponent = ({
   block,
   dispatch,
   setIsOpenBlockSettingIndex,
+  blockRefs,
 }: AddBlockMenuProps) => {
+  const handleSelectBlockType = useCallback(
+    (selectedBlockType: BlockType) => {
+      dispatch({
+        type: 'updateBlock',
+        blockId: block.id,
+        newContent: block.texts.content,
+        blockType: selectedBlockType,
+      })
+      blockRefs.current[block.order]?.focus()
+    },
+    [block, dispatch, blockRefs],
+  )
   return (
     <Menu.Root
       positioning={{ placement: 'bottom-start' }}
@@ -68,7 +82,12 @@ const AddBlockMenuComponent = ({
             <Text fontSize="xs" color="gray.600" p={1}>
               基本
             </Text>
-            <Menu.Item value="Text">
+            <Menu.Item
+              value="Text"
+              onClick={() => {
+                handleSelectBlockType('Text')
+              }}
+            >
               <HStack>
                 <RxText color="gray" size={16} />
                 <Text fontSize="sm" color="gray.700">
@@ -76,7 +95,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="H1">
+            <Menu.Item
+              value="H1"
+              onClick={() => {
+                handleSelectBlockType('H1')
+              }}
+            >
               <HStack>
                 <RiH1 color="gray" size={17} />
                 <Text fontSize="sm" color="gray.700">
@@ -84,15 +108,25 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="H2">
+            <Menu.Item
+              value="H2"
+              onClick={() => {
+                handleSelectBlockType('H2')
+              }}
+            >
               <HStack>
                 <RiH2 color="gray" size={17} />
                 <Text fontSize="sm" color="gray.700">
-                  見出し3
+                  見出し2
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="H3">
+            <Menu.Item
+              value="H3"
+              onClick={() => {
+                handleSelectBlockType('H3')
+              }}
+            >
               <HStack>
                 <RiH3 color="gray" size={17} />
                 <Text fontSize="sm" color="gray.700">

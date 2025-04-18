@@ -80,6 +80,7 @@ const BlockRowComponent = ({
             block={block}
             dispatch={dispatch}
             setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
+            blockRefs={blockRefs}
           />
           <Tooltip
             label={
@@ -117,13 +118,20 @@ const BlockRowComponent = ({
       ) : (
         <Box w={50} />
       )}
-      <TextBlock
-        block={block}
-        dispatch={dispatch}
-        titleRef={titleRef}
-        blockRefs={blockRefs}
-        rowLength={rowLength}
-      />
+      {block.blockType === 'Text' ||
+      block.blockType === 'H1' ||
+      block.blockType === 'H2' ||
+      block.blockType === 'H3' ? (
+        <TextBlock
+          block={block}
+          dispatch={dispatch}
+          titleRef={titleRef}
+          blockRefs={blockRefs}
+          rowLength={rowLength}
+        />
+      ) : (
+        <></>
+      )}
     </HStack>
   )
 }

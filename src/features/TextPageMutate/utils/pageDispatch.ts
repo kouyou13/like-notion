@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 
-import type { Block } from '../../../types'
+import type { Block, BlockType } from '../../../types'
 
 export type Action =
   | {
@@ -11,6 +11,7 @@ export type Action =
       type: 'updateBlock'
       blockId: string
       newContent: string
+      blockType: BlockType
     }
   | {
       type: 'deleteBlock'
@@ -40,6 +41,7 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
         if (block.id === action.blockId) {
           return {
             ...block,
+            blockType: action.blockType,
             texts: {
               ...block.texts,
               content: action.newContent,
