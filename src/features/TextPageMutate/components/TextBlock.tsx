@@ -1,5 +1,5 @@
 import { Input } from '@chakra-ui/react'
-import React, { useState, useEffect } from 'react'
+import React, { useMemo } from 'react'
 
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
@@ -18,59 +18,75 @@ const TextBlockComponent = ({
   blockRefs,
   rowLength,
 }: TextBlockProps) => {
-  const [placeHolderText, setPlaceHolderText] = useState('')
-  const [fontSize, setFontSize] = useState('lg')
-  const [isBold, setIsBold] = useState(false)
-  useEffect(() => {
+  const fontWeight = useMemo(() => {
+    if (block.blockType === 'H1' || block.blockType === 'H2' || block.blockType === 'H3') {
+      return 'bold'
+    }
+    return undefined
+  }, [block.blockType])
+
+  const placeholder = useMemo(() => {
     switch (block.blockType) {
-      case 'Text': {
-        setPlaceHolderText('入力して、AIはスペースキーを、コマンドは半角の「/」を押す...')
-        setFontSize('lg')
-        setIsBold(false)
-        break
-      }
-      case 'H1': {
-        setPlaceHolderText('見出し1')
-        setFontSize('2xl')
-        setIsBold(true)
-        break
-      }
-      case 'H2': {
-        setPlaceHolderText('見出し2')
-        setFontSize('xl')
-        setIsBold(true)
-        break
-      }
-      case 'H3': {
-        setPlaceHolderText('見出し3')
-        setFontSize('lg')
-        setIsBold(true)
-        break
-      }
+      case 'H1':
+        return '見出し1'
+      case 'H2':
+        return '見出し2'
+      case 'H3':
+        return '見出し3'
     }
   }, [block.blockType])
+
+  const fontSize = useMemo(() => {
+    switch (block.blockType) {
+      case 'Text':
+        return 16
+      case 'H1':
+        return 32
+      case 'H2':
+        return 24
+      case 'H3':
+        return 20
+    }
+  }, [block.blockType])
+
+  const height = useMemo(() => {
+    switch (block.blockType) {
+      case 'Text':
+        return 8
+      case 'H1':
+        return 30
+      case 'H2':
+        return 30
+      case 'H3':
+        return 30
+    }
+  }, [block.blockType])
+
   return (
     <Input
       ref={(el) => {
         blockRefs.current[block.order] = el
       }}
-      size={fontSize as '2xl' | 'xl' | 'lg'}
-      fontWeight={isBold ? 'bold' : undefined}
-      border="none"
-      outline="none"
-      p={0}
-      w={650}
-      mr={50}
+      fontWeight={fontWeight}
       onBlur={(e) => {
         if (block.blockType === 'Text') {
           e.target.placeholder = ''
         }
       }}
       onFocus={(e) => {
-        e.target.placeholder = placeHolderText
+        if (block.blockType === 'Text') {
+          e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
+        }
       }}
+      placeholder={placeholder}
       value={block.texts.content}
-      h={8}
+      h={height}
+      fontSize={fontSize}
+      border="none"
+      outline="none"
+      p={0}
+      w={650}
+      mr={50}
       onChange={(e) => {
         dispatch({
           type: 'updateBlock',

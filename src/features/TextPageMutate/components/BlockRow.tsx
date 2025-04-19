@@ -1,6 +1,6 @@
 import { Box, HStack, Text } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { GrDrag } from 'react-icons/gr'
 
 import AddBlockMenu from './AddBlockMenu'
@@ -34,9 +34,36 @@ const BlockRowComponent = ({
   blockRefs,
   rowLength,
 }: BlockRowProps) => {
+  const pt = useMemo(() => {
+    switch (block.blockType) {
+      case 'Text':
+        return 0
+      case 'H1':
+        return 30
+      case 'H2':
+        return 6
+      case 'H3':
+        return 3
+    }
+  }, [block.blockType])
+
+  const pb = useMemo(() => {
+    switch (block.blockType) {
+      case 'Text':
+        return 0
+      case 'H1':
+        return 4
+      case 'H2':
+        return 2
+      case 'H3':
+        return 1
+    }
+  }, [block.blockType])
   return (
     <HStack
       gap={0}
+      mt={pt}
+      pb={pb}
       onMouseEnter={() => {
         if (isOpenBlockSettingIndex == null) {
           setHoverRowIndex(block.order)
