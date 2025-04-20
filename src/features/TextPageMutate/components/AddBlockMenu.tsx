@@ -30,6 +30,7 @@ const AddBlockMenuComponent = ({
         blockId: block.id,
         newContent: block.texts.content,
         blockType: selectedBlockType,
+        indentIndex: block.indentIndex,
       })
       setTimeout(() => {
         blockRefs.current[block.order]?.focus()
@@ -47,6 +48,7 @@ const AddBlockMenuComponent = ({
               type: 'addBlock',
               order: block.order + 1,
               blockType: 'Text',
+              indentIndex: block.indentIndex,
             })
             setIsOpenBlockSettingIndex(block.order + 1)
           } else {

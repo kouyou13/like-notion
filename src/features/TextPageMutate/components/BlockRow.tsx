@@ -110,6 +110,7 @@ const BlockRowComponent = ({
       gap={0}
       mt={mt}
       mb={mb}
+      pl={`${String(block.indentIndex * 1.5)}vw`}
       onMouseEnter={() => {
         if (isOpenBlockSettingIndex == null) {
           setHoverRowIndex(block.order)
@@ -146,6 +147,24 @@ const BlockRowComponent = ({
           ? '4px solid #e4edfa'
           : 'none'
       }
+      onKeyDown={(e) => {
+        if (e.key === 'Tab' && !e.shiftKey) {
+          e.preventDefault()
+          dispatch({
+            type: 'addIndent',
+            blockId: block.id,
+          })
+        } else if (
+          (e.key === 'Tab' && e.shiftKey) ||
+          (e.key === 'Backspace' && block.texts.content === '')
+        ) {
+          e.preventDefault()
+          dispatch({
+            type: 'subIndent',
+            blockId: block.id,
+          })
+        }
+      }}
     >
       {hoverRowIndex === block.order || isOpenBlockSettingIndex === block.order ? (
         <HStack w={50} gap={1}>

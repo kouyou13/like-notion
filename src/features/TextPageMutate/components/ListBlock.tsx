@@ -1,4 +1,4 @@
-import { HStack, Textarea, Box, Checkbox } from '@chakra-ui/react'
+import { HStack, Textarea, Box, Checkbox, Flex } from '@chakra-ui/react'
 import React, { useMemo, useState, useCallback } from 'react'
 import { BiSolidCircle } from 'react-icons/bi'
 
@@ -81,13 +81,14 @@ const ListBlockComponent = ({
       if (isComposing) {
         // IME入力中は何もしない
         return
-      } else if (e.key === 'Backspace' && block.texts.content === '') {
+      } else if (e.key === 'Backspace' && block.texts.content === '' && block.indentIndex === 0) {
         e.preventDefault()
         dispatch({
           type: 'updateBlock',
           blockId: block.id,
           newContent: block.texts.content,
           blockType: 'Text',
+          indentIndex: block.indentIndex,
         })
         setTimeout(() => {
           blockRefs.current[block.order]?.focus()
@@ -117,6 +118,7 @@ const ListBlockComponent = ({
             blockId: block.id,
             newContent: block.texts.content,
             blockType: 'Text',
+            indentIndex: block.indentIndex,
           })
           setTimeout(() => {
             blockRefs.current[block.order]?.focus()
@@ -126,6 +128,7 @@ const ListBlockComponent = ({
             type: 'addBlock',
             order: block.order + 1,
             blockType: block.blockType,
+            indentIndex: block.indentIndex,
           })
           setTimeout(() => {
             const nextInput = blockRefs.current[block.order + 1]
@@ -143,32 +146,25 @@ const ListBlockComponent = ({
           blockId: block.id,
           newContent: newValue,
           blockType: block.blockType,
+          indentIndex: block.indentIndex,
         })
       }
     },
     [block, blockRefs, dispatch, rowLength, titleRef, isComposing],
   )
   return (
-    <HStack>
-      <ListSignComponent
-        block={block}
-        listNumber={listNumber}
-        isChecked={isChecked}
-        setIsChecked={setIsChecked}
-      />
+    <HStack gap={0}>
+      <Flex w="1.5vw">
+        <ListSignComponent
+          block={block}
+          listNumber={listNumber}
+          isChecked={isChecked}
+          setIsChecked={setIsChecked}
+        />
+      </Flex>
       <Textarea
         ref={(el) => {
           blockRefs.current[block.order] = el
-        }}
-        onBlur={(e) => {
-          if (block.blockType === 'Text') {
-            e.target.placeholder = ''
-          }
-        }}
-        onFocus={(e) => {
-          if (block.blockType === 'Text') {
-            e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
-          }
         }}
         placeholder={placeholder}
         value={block.texts.content}
@@ -194,6 +190,7 @@ const ListBlockComponent = ({
             blockId: block.id,
             newContent: e.target.value,
             blockType: block.blockType,
+            indentIndex: block.indentIndex,
           })
         }}
         onKeyDown={handleKeyDown}

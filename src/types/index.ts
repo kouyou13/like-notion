@@ -25,6 +25,7 @@ export type Block = {
   id: string
   blockType: BlockType
   order: number
+  indentIndex: number
   texts: Text
 }
 

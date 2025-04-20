@@ -81,7 +81,7 @@ const TextBlockComponent = ({
       if (isComposing) {
         // IME入力中は何もしない
         return
-      } else if (e.key === 'Backspace' && block.texts.content === '') {
+      } else if (e.key === 'Backspace' && block.texts.content === '' && block.indentIndex === 0) {
         e.preventDefault()
         if (rowLength > 1) {
           dispatch({
@@ -119,6 +119,7 @@ const TextBlockComponent = ({
             blockId: block.id,
             newContent: block.texts.content,
             blockType: 'Text',
+            indentIndex: block.indentIndex,
           })
           setTimeout(() => {
             blockRefs.current[block.order]?.focus()
@@ -128,6 +129,7 @@ const TextBlockComponent = ({
             type: 'addBlock',
             order: block.order + 1,
             blockType: 'Text',
+            indentIndex: block.indentIndex,
           })
           setTimeout(() => {
             const nextInput = blockRefs.current[block.order + 1]
@@ -145,6 +147,7 @@ const TextBlockComponent = ({
           blockId: block.id,
           newContent: newValue,
           blockType: block.blockType,
+          indentIndex: block.indentIndex,
         })
       }
     },
@@ -190,6 +193,7 @@ const TextBlockComponent = ({
           blockId: block.id,
           newContent: e.target.value,
           blockType: block.blockType,
+          indentIndex: block.indentIndex,
         })
       }}
       onKeyDown={handleKeyDown}

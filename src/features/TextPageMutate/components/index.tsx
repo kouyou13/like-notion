@@ -74,6 +74,7 @@ const TextPageComponent = () => {
           id: block.id,
           block_type: block.blockType,
           order: block.order,
+          indent_index: block.indentIndex,
           page_id: pageId,
         }))
         const updateTexts = debouncedBlocks.map((block) => ({
@@ -169,6 +170,7 @@ const TextPageComponent = () => {
                 type: 'addBlock',
                 order: 0,
                 blockType: 'Text',
+                indentIndex: 0,
               })
               setTimeout(() => {
                 blockRefs.current[0]?.focus()

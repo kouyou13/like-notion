@@ -11,6 +11,7 @@ export type Block_snake = {
   id: string
   block_type: BlockType
   order: number
+  indent_index: number
   texts: Text
 }
 
