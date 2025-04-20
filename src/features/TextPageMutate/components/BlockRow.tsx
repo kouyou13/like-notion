@@ -4,6 +4,7 @@ import React, { useMemo } from 'react'
 import { GrDrag } from 'react-icons/gr'
 
 import AddBlockMenu from './AddBlockMenu'
+import ListBlock from './ListBlock'
 import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
@@ -14,6 +15,7 @@ type BlockTypeProps = {
   titleRef: React.RefObject<HTMLTextAreaElement | null>
   blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
   rowLength: number
+  listNumber: number
 }
 const BlockTypeComponent = ({
   block,
@@ -21,6 +23,7 @@ const BlockTypeComponent = ({
   titleRef,
   blockRefs,
   rowLength,
+  listNumber,
 }: BlockTypeProps) => {
   switch (block.blockType) {
     case 'Text':
@@ -34,6 +37,20 @@ const BlockTypeComponent = ({
           titleRef={titleRef}
           blockRefs={blockRefs}
           rowLength={rowLength}
+        />
+      )
+    case 'List':
+    case 'ListNumbers':
+    case 'ToDoList':
+    case 'ToggleList':
+      return (
+        <ListBlock
+          block={block}
+          dispatch={dispatch}
+          titleRef={titleRef}
+          blockRefs={blockRefs}
+          rowLength={rowLength}
+          listNumber={listNumber}
         />
       )
   }
@@ -51,6 +68,7 @@ type BlockRowProps = {
   titleRef: React.RefObject<HTMLTextAreaElement | null>
   blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
   rowLength: number
+  listNumber: number
 }
 const BlockRowComponent = ({
   block,
@@ -64,6 +82,7 @@ const BlockRowComponent = ({
   titleRef,
   blockRefs,
   rowLength,
+  listNumber,
 }: BlockRowProps) => {
   const mt = useMemo(() => {
     switch (block.blockType) {
@@ -172,13 +191,16 @@ const BlockRowComponent = ({
       ) : (
         <Box w={50} />
       )}
-      <BlockTypeComponent
-        block={block}
-        dispatch={dispatch}
-        titleRef={titleRef}
-        blockRefs={blockRefs}
-        rowLength={rowLength}
-      />
+      <HStack w={612}>
+        <BlockTypeComponent
+          block={block}
+          dispatch={dispatch}
+          titleRef={titleRef}
+          blockRefs={blockRefs}
+          rowLength={rowLength}
+          listNumber={listNumber}
+        />
+      </HStack>
     </HStack>
   )
 }

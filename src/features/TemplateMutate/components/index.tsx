@@ -142,7 +142,7 @@ const Template = ({ children }: TemplateProps) => {
         />
         <Box
           justifyContent="start"
-          w={isOpenSidebar ? '85vw' : '100vw'}
+          w={isOpenSidebar ? '88vw' : '100vw'}
           h="100vh"
           overflow="scroll"
         >

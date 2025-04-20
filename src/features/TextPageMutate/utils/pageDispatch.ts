@@ -6,6 +6,7 @@ export type Action =
   | {
       type: 'addBlock'
       order: number
+      blockType: BlockType
     }
   | {
       type: 'updateBlock'
@@ -32,7 +33,7 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
     case 'addBlock': {
       return [
         ...blocks.slice(0, action.order),
-        defaultBlock(action.order),
+        defaultBlock(action.order, action.blockType),
         ...blocks.slice(action.order),
       ].map((b, index) => ({ ...b, order: index }))
     }
@@ -52,9 +53,12 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
       })
     }
     case 'deleteBlock': {
+      if (blocks.length > 1) {
+        return blocks
+          .filter((block) => block.id !== action.blockId)
+          .map((b, index) => ({ ...b, order: index }))
+      }
       return blocks
-        .filter((block) => block.id !== action.blockId)
-        .map((b, index) => ({ ...b, order: index }))
     }
     case 'moveBlock': {
       if (action.fromIndex === action.toIndex) {
@@ -85,9 +89,9 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
   }
 }
 
-const defaultBlock = (order: number): Block => ({
+const defaultBlock = (order: number, blockType: BlockType): Block => ({
   id: v4(),
-  blockType: 'Text',
+  blockType,
   order,
   texts: {
     id: v4(),

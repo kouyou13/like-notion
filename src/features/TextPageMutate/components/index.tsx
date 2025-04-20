@@ -15,7 +15,6 @@ const TextPageComponent = () => {
   const [pageTitle, setPageTitle] = useState('')
   const [blocks, dispatch] = useReducer(blocksReducer, [])
   const previousBlocksRef = useRef(blocks)
-  console.log(blocks)
 
   const [debouncedPageTitle] = useDebounce(pageTitle, 1000) // 編集後1秒間の遅延を設定
   const [debouncedBlocks] = useDebounce(blocks, 1000) // 編集後1秒間の遅延を設定
@@ -26,6 +25,8 @@ const TextPageComponent = () => {
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const [isOpenBlockSettingIndex, setIsOpenBlockSettingIndex] = useState<number | null>(null)
   const [isComposing, setIsComposing] = useState(false)
+
+  let listNumber = 0
 
   useEffect(() => {
     const fetchPages = async () => {
@@ -116,12 +117,13 @@ const TextPageComponent = () => {
   return (
     <Box
       h="85vh"
+      w="100%"
       overflow="scroll"
       display="flex"
       justifyContent="start"
-      alignItems="center"
       flexDirection="column"
-      pt="11vh"
+      alignItems="center"
+      pt="9.5vh"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           const prevInput = blockRefs.current.slice(-1)[0]
@@ -131,65 +133,80 @@ const TextPageComponent = () => {
         }
       }}
     >
-      <Textarea
-        ref={(el) => {
-          titleRef.current = el
-        }}
-        placeholder="新規ページ"
-        value={pageTitle}
-        onChange={(e) => {
-          setPageTitle(e.target.value)
-        }}
-        rows={1}
-        border="none"
-        outline="none"
-        fontSize={40}
-        lineHeight="3rem"
-        px={0}
-        py="auto"
-        fontWeight="bold"
-        _placeholder={{ color: 'gray.200' }}
-        mb={2}
-        w={650}
-        textAlign="left"
-        autoresize
-        onKeyDown={(e) => {
-          if (isComposing) {
-            // IME入力中は何もしない
-            return
-          } else if (e.key === 'ArrowDown') {
-            blockRefs.current[0]?.focus()
-          } else if (e.key === 'Enter') {
-            e.preventDefault()
-            dispatch({
-              type: 'addBlock',
-              order: 0,
-            })
-          }
-        }}
-        onCompositionStart={() => {
-          setIsComposing(true)
-        }}
-        onCompositionEnd={() => {
-          setIsComposing(false)
-        }}
-      />
-      {blocks.map((block) => (
-        <BlockRow
-          key={block.id}
-          block={block}
-          dispatch={dispatch}
-          hoverRowIndex={hoverRowIndex}
-          setHoverRowIndex={setHoverRowIndex}
-          grabbedRowIndex={grabbedRowIndex}
-          setGrabbedRowIndex={setGrabbedRowIndex}
-          isOpenBlockSettingIndex={isOpenBlockSettingIndex}
-          setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-          rowLength={blocks.length}
+      <Box w="47%">
+        <Textarea
+          ref={(el) => {
+            titleRef.current = el
+          }}
+          placeholder="新規ページ"
+          value={pageTitle}
+          onChange={(e) => {
+            setPageTitle(e.target.value)
+          }}
+          rows={1}
+          border="none"
+          outline="none"
+          fontSize={40}
+          lineHeight="3rem"
+          px={0}
+          py="auto"
+          fontWeight="bold"
+          _placeholder={{ color: 'gray.200' }}
+          mb={2}
+          ml={50}
+          w="100%"
+          textAlign="left"
+          autoresize
+          onKeyDown={(e) => {
+            if (isComposing) {
+              // IME入力中は何もしない
+              return
+            } else if (e.key === 'ArrowDown') {
+              blockRefs.current[0]?.focus()
+            } else if (e.key === 'Enter') {
+              e.preventDefault()
+              dispatch({
+                type: 'addBlock',
+                order: 0,
+                blockType: 'Text',
+              })
+              setTimeout(() => {
+                blockRefs.current[0]?.focus()
+              })
+            }
+          }}
+          onCompositionStart={() => {
+            setIsComposing(true)
+          }}
+          onCompositionEnd={() => {
+            setIsComposing(false)
+          }}
         />
-      ))}
+        {blocks.map((block, index) => {
+          if (blocks[index].blockType === 'ListNumbers') {
+            listNumber += 1
+          } else {
+            listNumber = 0
+          }
+          return (
+            <BlockRow
+              key={block.id}
+              block={block}
+              dispatch={dispatch}
+              hoverRowIndex={hoverRowIndex}
+              setHoverRowIndex={setHoverRowIndex}
+              grabbedRowIndex={grabbedRowIndex}
+              setGrabbedRowIndex={setGrabbedRowIndex}
+              isOpenBlockSettingIndex={isOpenBlockSettingIndex}
+              setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
+              titleRef={titleRef}
+              blockRefs={blockRefs}
+              rowLength={blocks.length}
+              listNumber={listNumber}
+            />
+          )
+        })}
+      </Box>
     </Box>
   )
 }

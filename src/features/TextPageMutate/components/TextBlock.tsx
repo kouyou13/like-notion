@@ -83,14 +83,16 @@ const TextBlockComponent = ({
         return
       } else if (e.key === 'Backspace' && block.texts.content === '') {
         e.preventDefault()
-        dispatch({
-          type: 'deleteBlock',
-          blockId: block.id,
-        })
-        const prevInput =
-          block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
-        if (prevInput) {
-          prevInput.focus()
+        if (rowLength > 1) {
+          dispatch({
+            type: 'deleteBlock',
+            blockId: block.id,
+          })
+          const prevInput =
+            block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
+          if (prevInput) {
+            prevInput.focus()
+          }
         }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
@@ -111,16 +113,29 @@ const TextBlockComponent = ({
       } else if (e.key === 'Enter' && !e.shiftKey) {
         // Shift + Enter でない時
         e.preventDefault()
-        dispatch({
-          type: 'addBlock',
-          order: block.order + 1,
-        })
-        setTimeout(() => {
-          const nextInput = blockRefs.current[block.order + 1]
-          if (nextInput) {
-            nextInput.focus()
-          }
-        }, 0)
+        if (block.texts.content === '' && block.blockType !== 'Text') {
+          dispatch({
+            type: 'updateBlock',
+            blockId: block.id,
+            newContent: block.texts.content,
+            blockType: 'Text',
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.focus()
+          })
+        } else {
+          dispatch({
+            type: 'addBlock',
+            order: block.order + 1,
+            blockType: 'Text',
+          })
+          setTimeout(() => {
+            const nextInput = blockRefs.current[block.order + 1]
+            if (nextInput) {
+              nextInput.focus()
+            }
+          }, 0)
+        }
       } else if (e.key === 'Enter' && e.shiftKey) {
         // Shift + Enter の時Textarea 内で改行
         e.preventDefault()

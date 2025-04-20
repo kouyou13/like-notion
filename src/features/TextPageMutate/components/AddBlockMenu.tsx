@@ -31,7 +31,9 @@ const AddBlockMenuComponent = ({
         newContent: block.texts.content,
         blockType: selectedBlockType,
       })
-      blockRefs.current[block.order]?.focus()
+      setTimeout(() => {
+        blockRefs.current[block.order]?.focus()
+      })
     },
     [block, dispatch, blockRefs],
   )
@@ -44,6 +46,7 @@ const AddBlockMenuComponent = ({
             dispatch({
               type: 'addBlock',
               order: block.order + 1,
+              blockType: 'Text',
             })
             setIsOpenBlockSettingIndex(block.order + 1)
           } else {
