@@ -15,7 +15,7 @@ type AddBlockMenuProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
-  blockRefs: React.RefObject<(HTMLInputElement | null)[]>
+  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
 }
 const AddBlockMenuComponent = ({
   block,

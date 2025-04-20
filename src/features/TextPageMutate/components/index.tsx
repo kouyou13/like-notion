@@ -1,4 +1,4 @@
-import { Box, Input } from '@chakra-ui/react'
+import { Box, Textarea } from '@chakra-ui/react'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState, useRef, useEffect, useReducer } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -20,11 +20,12 @@ const TextPageComponent = () => {
   const [debouncedPageTitle] = useDebounce(pageTitle, 1000) // 編集後1秒間の遅延を設定
   const [debouncedBlocks] = useDebounce(blocks, 1000) // 編集後1秒間の遅延を設定
 
-  const titleRef = useRef<HTMLInputElement | null>(null)
-  const blockRefs = useRef<(HTMLInputElement | null)[]>([])
+  const titleRef = useRef<HTMLTextAreaElement | null>(null)
+  const blockRefs = useRef<(HTMLTextAreaElement | null)[]>([])
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const [isOpenBlockSettingIndex, setIsOpenBlockSettingIndex] = useState<number | null>(null)
+  const [isComposing, setIsComposing] = useState(false)
 
   useEffect(() => {
     const fetchPages = async () => {
@@ -120,7 +121,7 @@ const TextPageComponent = () => {
       justifyContent="start"
       alignItems="center"
       flexDirection="column"
-      pt="10vh"
+      pt="11vh"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           const prevInput = blockRefs.current.slice(-1)[0]
@@ -130,7 +131,7 @@ const TextPageComponent = () => {
         }
       }}
     >
-      <Input
+      <Textarea
         ref={(el) => {
           titleRef.current = el
         }}
@@ -139,20 +140,38 @@ const TextPageComponent = () => {
         onChange={(e) => {
           setPageTitle(e.target.value)
         }}
-        size="2xl"
+        rows={1}
         border="none"
         outline="none"
-        fontSize="4xl"
-        p={0}
+        fontSize={40}
+        lineHeight="3rem"
+        px={0}
+        py="auto"
         fontWeight="bold"
         _placeholder={{ color: 'gray.200' }}
         mb={2}
         w={650}
         textAlign="left"
+        autoresize
         onKeyDown={(e) => {
-          if (e.key === 'ArrowDown') {
+          if (isComposing) {
+            // IME入力中は何もしない
+            return
+          } else if (e.key === 'ArrowDown') {
             blockRefs.current[0]?.focus()
+          } else if (e.key === 'Enter') {
+            e.preventDefault()
+            dispatch({
+              type: 'addBlock',
+              order: 0,
+            })
           }
+        }}
+        onCompositionStart={() => {
+          setIsComposing(true)
+        }}
+        onCompositionEnd={() => {
+          setIsComposing(false)
         }}
       />
       {blocks.map((block) => (

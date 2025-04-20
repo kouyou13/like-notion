@@ -11,8 +11,8 @@ import type { Action } from '../utils/pageDispatch'
 type BlockTypeProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
-  titleRef: React.RefObject<HTMLInputElement | null>
-  blockRefs: React.RefObject<(HTMLInputElement | null)[]>
+  titleRef: React.RefObject<HTMLTextAreaElement | null>
+  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
   rowLength: number
 }
 const BlockTypeComponent = ({
@@ -48,8 +48,8 @@ type BlockRowProps = {
   setGrabbedRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   isOpenBlockSettingIndex: number | null
   setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
-  titleRef: React.RefObject<HTMLInputElement | null>
-  blockRefs: React.RefObject<(HTMLInputElement | null)[]>
+  titleRef: React.RefObject<HTMLTextAreaElement | null>
+  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
   rowLength: number
 }
 const BlockRowComponent = ({
@@ -65,36 +65,32 @@ const BlockRowComponent = ({
   blockRefs,
   rowLength,
 }: BlockRowProps) => {
-  const pt = useMemo(() => {
-    switch (block.blockType) {
-      case 'Text':
-        return 0
-      case 'H1':
-        return 30
-      case 'H2':
-        return 6
-      case 'H3':
-        return 3
-    }
-  }, [block.blockType])
-
-  const pb = useMemo(() => {
+  const mt = useMemo(() => {
     switch (block.blockType) {
       case 'Text':
         return 0
       case 'H1':
         return 4
       case 'H2':
-        return 2
+        return 3
       case 'H3':
         return 1
+    }
+  }, [block.blockType])
+
+  const mb = useMemo(() => {
+    switch (block.blockType) {
+      case 'H1':
+        return 2
+      default:
+        return 0
     }
   }, [block.blockType])
   return (
     <HStack
       gap={0}
-      mt={pt}
-      pb={pb}
+      mt={mt}
+      mb={mb}
       onMouseEnter={() => {
         if (isOpenBlockSettingIndex == null) {
           setHoverRowIndex(block.order)

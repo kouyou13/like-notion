@@ -66,64 +66,70 @@ const PageTabComponent = ({ page }: PageTabProps) => {
       }}
     >
       <FaRegFileAlt size={16} color="gray" />
-      <Text
-        color="black"
-        fontSize="sm"
-        ml={2}
-        _hover={{ textDecoration: 'none' }}
-        _focus={{ boxShadow: 'none', outline: 'none' }}
-        textDecoration="none"
-        onClick={() => {
-          router.push(`/${page.id}`)
-        }}
-      >
-        {page.title}
-      </Text>
-      <Spacer
-        onClick={() => {
-          router.push(`/${page.id}`)
-        }}
-      />
-      {isHover && (
-        <>
-          <Menu.Root positioning={{ placement: 'right-start' }}>
-            <Menu.Trigger asChild>
-              <Button
-                borderRadius="md"
-                p={1}
-                _hover={{ bgColor: 'gray.300' }}
-                variant="ghost"
-                size="2xs"
-              >
-                <GrMore color="gray" size={13} />
-              </Button>
-            </Menu.Trigger>
-            <Portal>
-              <Menu.Positioner>
-                <Menu.Content w={300}>
-                  <Menu.Item value="Trash" onClick={handleDeletePage}>
-                    <HStack>
-                      <RiDeleteBinLine color="gray" size={16} />
-                      <Text fontSize="sm" color="gray.700" _hover={{ color: 'rgb(230, 32, 32)' }}>
-                        ゴミ箱に移動
-                      </Text>
-                    </HStack>
-                  </Menu.Item>
-                </Menu.Content>
-              </Menu.Positioner>
-            </Portal>
-          </Menu.Root>
-          <Button
-            borderRadius="md"
-            p={1}
-            _hover={{ bgColor: 'gray.300' }}
-            variant="ghost"
-            size="2xs"
-          >
-            <GrAdd color="gray" size={13} />
-          </Button>
-        </>
-      )}
+      <HStack gap={0} w="90%">
+        <Text
+          color="black"
+          fontSize="sm"
+          ml={2}
+          _hover={{ textDecoration: 'none' }}
+          _focus={{ boxShadow: 'none', outline: 'none' }}
+          textDecoration="none"
+          onClick={() => {
+            router.push(`/${page.id}`)
+          }}
+          h={6}
+          overflow="hidden"
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+        >
+          {page.title}
+        </Text>
+        <Spacer
+          onClick={() => {
+            router.push(`/${page.id}`)
+          }}
+        />
+        {isHover && (
+          <>
+            <Menu.Root positioning={{ placement: 'right-start' }}>
+              <Menu.Trigger asChild>
+                <Button
+                  borderRadius="md"
+                  p={1}
+                  _hover={{ bgColor: 'gray.300' }}
+                  variant="ghost"
+                  size="2xs"
+                >
+                  <GrMore color="gray" size={13} />
+                </Button>
+              </Menu.Trigger>
+              <Portal>
+                <Menu.Positioner>
+                  <Menu.Content w={300}>
+                    <Menu.Item value="Trash" onClick={handleDeletePage}>
+                      <HStack>
+                        <RiDeleteBinLine color="gray" size={16} />
+                        <Text fontSize="sm" color="gray.700" _hover={{ color: 'rgb(230, 32, 32)' }}>
+                          ゴミ箱に移動
+                        </Text>
+                      </HStack>
+                    </Menu.Item>
+                  </Menu.Content>
+                </Menu.Positioner>
+              </Portal>
+            </Menu.Root>
+            <Button
+              borderRadius="md"
+              p={1}
+              _hover={{ bgColor: 'gray.300' }}
+              variant="ghost"
+              size="2xs"
+            >
+              <GrAdd color="gray" size={13} />
+            </Button>
+          </>
+        )}
+      </HStack>
     </HStack>
   )
 }
