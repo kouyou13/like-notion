@@ -134,7 +134,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="List">
+            <Menu.Item
+              value="List"
+              onClick={() => {
+                handleSelectBlockType('List')
+              }}
+            >
               <HStack>
                 <ImList2 color="gray" size={13} />
                 <Text fontSize="sm" color="gray.700">
@@ -142,7 +147,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="ListNumbers">
+            <Menu.Item
+              value="ListNumbers"
+              onClick={() => {
+                handleSelectBlockType('ListNumbers')
+              }}
+            >
               <HStack>
                 <ImListNumbered color="gray" size={13} />
                 <Text fontSize="sm" color="gray.700">
@@ -150,7 +160,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="ToDoList">
+            <Menu.Item
+              value="ToDoList"
+              onClick={() => {
+                handleSelectBlockType('ToDoList')
+              }}
+            >
               <HStack>
                 <LuListChecks color="gray" size={15} />
                 <Text fontSize="sm" color="gray.700">
@@ -158,7 +173,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="ToggleList">
+            <Menu.Item
+              value="ToggleList"
+              onClick={() => {
+                handleSelectBlockType('ToggleList')
+              }}
+            >
               <HStack>
                 <LuListCollapse color="gray" size={15} />
                 <Text fontSize="sm" color="gray.700">
@@ -166,7 +186,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="Page">
+            <Menu.Item
+              value="Page"
+              onClick={() => {
+                handleSelectBlockType('Page')
+              }}
+            >
               <HStack>
                 <FaRegFileAlt color="gray" size={15} />
                 <Text fontSize="sm" color="gray.700">
@@ -174,7 +199,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="Callout">
+            <Menu.Item
+              value="Callout"
+              onClick={() => {
+                handleSelectBlockType('Callout')
+              }}
+            >
               <HStack>
                 <RiTBoxLine color="gray" size={16} />
                 <Text fontSize="sm" color="gray.700">
@@ -182,7 +212,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="Citing">
+            <Menu.Item
+              value="Citing"
+              onClick={() => {
+                handleSelectBlockType('Citing')
+              }}
+            >
               <HStack>
                 <ImQuotesLeft color="gray" size={13} />
                 <Text fontSize="sm" color="gray.700">
@@ -190,7 +225,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="Table">
+            <Menu.Item
+              value="Table"
+              onClick={() => {
+                handleSelectBlockType('Table')
+              }}
+            >
               <HStack>
                 <RxTable color="gray" size={15} />
                 <Text fontSize="sm" color="gray.700">
@@ -198,7 +238,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="SeparatorLine">
+            <Menu.Item
+              value="SeparatorLine"
+              onClick={() => {
+                handleSelectBlockType('SeparatorLine')
+              }}
+            >
               <HStack>
                 <RxMinus color="gray" size={17} />
                 <Text fontSize="sm" color="gray.700">
@@ -206,7 +251,12 @@ const AddBlockMenuComponent = ({
                 </Text>
               </HStack>
             </Menu.Item>
-            <Menu.Item value="PageLink">
+            <Menu.Item
+              value="PageLink"
+              onClick={() => {
+                handleSelectBlockType('PageLink')
+              }}
+            >
               <HStack>
                 <FaExternalLinkAlt color="gray" size={15} />
                 <Text fontSize="sm" color="gray.700">

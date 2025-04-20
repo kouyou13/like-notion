@@ -12,13 +12,13 @@ export type BlockType =
   | 'H3'
   | 'List'
   | 'ListNumbers'
-  | 'TodoList'
+  | 'ToDoList'
   | 'ToggleList'
   | 'Page'
   | 'Callout'
   | 'Citing'
   | 'Table'
-  | 'Separator'
+  | 'SeparatorLine'
   | 'PageLink'
 
 export type Block = {

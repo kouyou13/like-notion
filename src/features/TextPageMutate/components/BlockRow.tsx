@@ -8,6 +8,37 @@ import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
+type BlockTypeProps = {
+  block: Block
+  dispatch: React.ActionDispatch<[action: Action]>
+  titleRef: React.RefObject<HTMLInputElement | null>
+  blockRefs: React.RefObject<(HTMLInputElement | null)[]>
+  rowLength: number
+}
+const BlockTypeComponent = ({
+  block,
+  dispatch,
+  titleRef,
+  blockRefs,
+  rowLength,
+}: BlockTypeProps) => {
+  switch (block.blockType) {
+    case 'Text':
+    case 'H1':
+    case 'H2':
+    case 'H3':
+      return (
+        <TextBlock
+          block={block}
+          dispatch={dispatch}
+          titleRef={titleRef}
+          blockRefs={blockRefs}
+          rowLength={rowLength}
+        />
+      )
+  }
+}
+
 type BlockRowProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
@@ -145,20 +176,13 @@ const BlockRowComponent = ({
       ) : (
         <Box w={50} />
       )}
-      {block.blockType === 'Text' ||
-      block.blockType === 'H1' ||
-      block.blockType === 'H2' ||
-      block.blockType === 'H3' ? (
-        <TextBlock
-          block={block}
-          dispatch={dispatch}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-          rowLength={rowLength}
-        />
-      ) : (
-        <></>
-      )}
+      <BlockTypeComponent
+        block={block}
+        dispatch={dispatch}
+        titleRef={titleRef}
+        blockRefs={blockRefs}
+        rowLength={rowLength}
+      />
     </HStack>
   )
 }
