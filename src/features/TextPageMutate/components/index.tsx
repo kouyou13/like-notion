@@ -134,7 +134,7 @@ const TextPageComponent = () => {
         }
       }}
     >
-      <Box w="47%">
+      <Box w="47%" maxW="100%">
         <Textarea
           ref={(el) => {
             titleRef.current = el
@@ -149,13 +149,12 @@ const TextPageComponent = () => {
           outline="none"
           fontSize={40}
           lineHeight="3rem"
-          px={0}
           py="auto"
+          pl={50}
+          pr={0}
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}
           mb={2}
-          ml={50}
-          w="100%"
           textAlign="left"
           autoresize
           onKeyDown={(e) => {

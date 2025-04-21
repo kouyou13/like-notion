@@ -172,14 +172,13 @@ const TextBlockComponent = ({
       placeholder={placeholder}
       value={block.texts.content}
       h={height}
+      w="100%"
       fontSize={fontSize}
       lineHeight={lineHeight}
       border="none"
       outline="none"
       px={0}
       py={1}
-      w={650}
-      mr={50}
       rows={1}
       onCompositionStart={() => {
         setIsComposing(true)
@@ -188,13 +187,33 @@ const TextBlockComponent = ({
         setIsComposing(false)
       }}
       onChange={(e) => {
-        dispatch({
-          type: 'updateBlock',
-          blockId: block.id,
-          newContent: e.target.value,
-          blockType: block.blockType,
-          indentIndex: block.indentIndex,
-        })
+        const newContent = e.target.value
+        if (block.blockType === 'Text' && newContent === '---') {
+          dispatch({
+            type: 'updateBlock',
+            blockId: block.id,
+            newContent: '',
+            blockType: 'SeparatorLine',
+            indentIndex: block.indentIndex,
+          })
+          dispatch({
+            type: 'addBlock',
+            order: block.order + 1,
+            blockType: 'Text',
+            indentIndex: block.indentIndex,
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order + 1]?.focus()
+          })
+        } else {
+          dispatch({
+            type: 'updateBlock',
+            blockId: block.id,
+            newContent,
+            blockType: block.blockType,
+            indentIndex: block.indentIndex,
+          })
+        }
       }}
       onKeyDown={handleKeyDown}
       autoresize

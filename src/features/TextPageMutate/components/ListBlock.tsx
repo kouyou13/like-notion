@@ -182,7 +182,6 @@ const ListBlockComponent = ({
         px={0}
         py={1}
         w={650}
-        mr={50}
         rows={1}
         onCompositionStart={() => {
           setIsComposing(true)

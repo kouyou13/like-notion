@@ -43,7 +43,7 @@ const AddBlockMenuComponent = ({
       positioning={{ placement: 'bottom-start' }}
       onOpenChange={(isOpen) => {
         if (isOpen.open) {
-          if (block.texts.content !== '') {
+          if (block.texts.content !== '' || block.blockType === 'SeparatorLine') {
             dispatch({
               type: 'addBlock',
               order: block.order + 1,

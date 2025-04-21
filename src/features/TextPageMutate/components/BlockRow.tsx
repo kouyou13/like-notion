@@ -1,4 +1,4 @@
-import { Box, HStack, Text } from '@chakra-ui/react'
+import { Box, HStack, Text, Separator } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import React, { useMemo } from 'react'
 import { GrDrag } from 'react-icons/gr'
@@ -52,6 +52,12 @@ const BlockTypeComponent = ({
           rowLength={rowLength}
           listNumber={listNumber}
         />
+      )
+    case 'SeparatorLine':
+      return (
+        <Box w="100%" py={3}>
+          <Separator color="black" />
+        </Box>
       )
   }
 }
@@ -111,6 +117,7 @@ const BlockRowComponent = ({
       mt={mt}
       mb={mb}
       pl={`${String(block.indentIndex * 1.5)}vw`}
+      w="100%"
       onMouseEnter={() => {
         if (isOpenBlockSettingIndex == null) {
           setHoverRowIndex(block.order)
@@ -204,7 +211,7 @@ const BlockRowComponent = ({
         <Box w={50} />
       )}
       <HStack
-        w={612}
+        w="100%"
         borderBottom={
           grabbedRowIndex != null &&
           grabbedRowIndex !== hoverRowIndex &&
