@@ -1,6 +1,6 @@
 import { HStack, Textarea, Box, Checkbox, Flex } from '@chakra-ui/react'
 import React, { useMemo, useState, useCallback } from 'react'
-import { BiSolidCircle } from 'react-icons/bi'
+import { BiSolidCircle, BiSolidRightArrow } from 'react-icons/bi'
 
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
@@ -41,6 +41,12 @@ const ListSignComponent = ({ block, listNumber, isChecked, setIsChecked }: ListS
           <Checkbox.HiddenInput />
           <Checkbox.Control />
         </Checkbox.Root>
+      )
+    case 'ToggleList':
+      return (
+        <Box my={0} ml={2} mr={1} p={0} gap={0}>
+          <BiSolidRightArrow size={12} />
+        </Box>
       )
   }
 }

@@ -140,13 +140,6 @@ const BlockRowComponent = ({
         }
         setHoverRowIndex(null)
       }}
-      borderBottom={
-        grabbedRowIndex != null &&
-        grabbedRowIndex !== hoverRowIndex &&
-        hoverRowIndex === block.order
-          ? '4px solid #e4edfa'
-          : 'none'
-      }
       onKeyDown={(e) => {
         if (e.key === 'Tab' && !e.shiftKey) {
           e.preventDefault()
@@ -210,7 +203,16 @@ const BlockRowComponent = ({
       ) : (
         <Box w={50} />
       )}
-      <HStack w={612}>
+      <HStack
+        w={612}
+        borderBottom={
+          grabbedRowIndex != null &&
+          grabbedRowIndex !== hoverRowIndex &&
+          hoverRowIndex === block.order
+            ? '4px solid #e4edfa'
+            : 'none'
+        }
+      >
         <BlockTypeComponent
           block={block}
           dispatch={dispatch}
