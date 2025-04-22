@@ -28,7 +28,7 @@ const PageTabComponent = ({ page }: PageTabProps) => {
       const { data: remainingPages, error: fetchError } = await supabase
         .from('page')
         .select('id, order')
-        .is('is_deleted', null)
+        .is('deleted_at', null)
         .order('order', { ascending: true })
       if (fetchError) {
         console.error(fetchError)

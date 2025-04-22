@@ -32,6 +32,7 @@ const TextPageComponent = () => {
     const fetchPages = async () => {
       const { data: page, error } = await selectPageWithBlocks(pageId)
       if (error || page?.deletedAt != null) {
+        console.error(error)
         router.push('/')
       }
       if (page) {

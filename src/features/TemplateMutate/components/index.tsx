@@ -49,22 +49,22 @@ const Template = ({ children }: TemplateProps) => {
 
     // リアルタイムに更新
     const channel = supabase
-      .channel('pages')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pages' }, (payload) => {
+      .channel('page')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'page' }, (payload) => {
         if (payload.eventType === 'INSERT') {
           const newPage: Page = {
-            id: payload.new.id as string,
-            title: payload.new.title as string,
-            order: payload.new.order as number,
-            deletedAt: payload.new.is_deleted ?? null,
+            id: payload.new.id,
+            title: payload.new.title,
+            order: payload.new.order,
+            deletedAt: payload.new.deleted_at ?? null,
           }
           setPages((prev) => [...prev, newPage])
         } else if (payload.eventType == 'UPDATE') {
           const newPage: Page = {
-            id: payload.new.id as string,
-            title: payload.new.title as string,
-            order: payload.new.order as number,
-            deletedAt: payload.new.is_deleted ?? null,
+            id: payload.new.id,
+            title: payload.new.title,
+            order: payload.new.order,
+            deletedAt: payload.new.deleted_at ?? null,
           }
           setPages((prev) =>
             prev
@@ -117,7 +117,11 @@ const Template = ({ children }: TemplateProps) => {
       .insert([{ id: newPage.id, title: newPage.title, order: newPage.order }])
     await supabase.from('block').insert(
       newPage.block.map((block) => ({
-        ...block,
+        id: block.id,
+        block_type: block.blockType,
+        message: block.message,
+        indent_index: block.indentIndex,
+        order: block.order,
         page_id: newPage.id,
       })),
     )
