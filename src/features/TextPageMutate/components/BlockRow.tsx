@@ -156,7 +156,7 @@ const BlockRowComponent = ({
           })
         } else if (
           (e.key === 'Tab' && e.shiftKey) ||
-          (e.key === 'Backspace' && block.texts.content === '')
+          (e.key === 'Backspace' && block.message === '')
         ) {
           e.preventDefault()
           dispatch({

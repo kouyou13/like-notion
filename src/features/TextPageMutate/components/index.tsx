@@ -31,14 +31,14 @@ const TextPageComponent = () => {
   useEffect(() => {
     const fetchPages = async () => {
       const { data: page, error } = await selectPageWithBlocks(pageId)
-      if (error || page?.isDeleted != null) {
+      if (error || page?.deletedAt != null) {
         router.push('/')
       }
       if (page) {
         setPageTitle(page.title)
         dispatch({
           type: 'initBlocks',
-          blocks: page.pageBlocks.sort((a, b) => a.order - b.order),
+          blocks: page.block.sort((a, b) => a.order - b.order),
         })
       }
     }
@@ -50,7 +50,7 @@ const TextPageComponent = () => {
     const saveTitle = async () => {
       if (debouncedPageTitle === '') return
       const { error } = await supabase
-        .from('pages')
+        .from('page')
         .update({ title: debouncedPageTitle })
         .eq('id', pageId)
       if (error) {
@@ -75,32 +75,23 @@ const TextPageComponent = () => {
           block_type: block.blockType,
           order: block.order,
           indent_index: block.indentIndex,
+          message: block.message,
           page_id: pageId,
         }))
-        const updateTexts = debouncedBlocks.map((block) => ({
-          id: block.texts.id,
-          content: block.texts.content,
-          page_block_id: block.id,
-        }))
 
-        const { error } = await supabase.from('page_blocks').upsert(updates, {
+        const { error } = await supabase.from('block').upsert(updates, {
           onConflict: 'id',
         })
-        const { error: textsError } = await supabase.from('texts').upsert(updateTexts, {
-          onConflict: 'id',
-        })
-
-        if (error || textsError) {
+        if (error) {
           console.error('保存失敗:', error)
-          console.error('保存失敗:', textsError)
         }
 
         previousBlocksRef.current = debouncedBlocks
 
         if (deletedIds.length > 0) {
           const { error: deleteError } = await supabase
-            .from('page_blocks')
-            .update({ is_deleted: `{${new Date().toISOString()}}` })
+            .from('block')
+            .update({ deleted_at: `{${new Date().toISOString()}}` })
             .in('id', deletedIds)
 
           if (deleteError) {

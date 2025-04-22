@@ -19,14 +19,14 @@ const PageTabComponent = ({ page }: PageTabProps) => {
   const handleDeletePage = useCallback(async () => {
     try {
       const { error: deleteError } = await supabase
-        .from('pages')
-        .update({ is_deleted: `{${new Date().toISOString()}}` })
+        .from('page')
+        .update({ deleted_at: `{${new Date().toISOString()}}` })
         .eq('id', page.id)
       if (deleteError) {
         console.error(deleteError)
       }
       const { data: remainingPages, error: fetchError } = await supabase
-        .from('pages')
+        .from('page')
         .select('id, order')
         .is('is_deleted', null)
         .order('order', { ascending: true })
@@ -40,7 +40,7 @@ const PageTabComponent = ({ page }: PageTabProps) => {
         order: index,
       }))
 
-      const { error: updateError } = await supabase.from('pages').upsert(updatedPages, {
+      const { error: updateError } = await supabase.from('page').upsert(updatedPages, {
         onConflict: 'id',
       })
 

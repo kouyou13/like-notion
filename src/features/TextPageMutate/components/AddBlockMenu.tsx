@@ -28,7 +28,7 @@ const AddBlockMenuComponent = ({
       dispatch({
         type: 'updateBlock',
         blockId: block.id,
-        newContent: block.texts.content,
+        newContent: block.message,
         blockType: selectedBlockType,
         indentIndex: block.indentIndex,
       })
@@ -43,7 +43,7 @@ const AddBlockMenuComponent = ({
       positioning={{ placement: 'bottom-start' }}
       onOpenChange={(isOpen) => {
         if (isOpen.open) {
-          if (block.texts.content !== '' || block.blockType === 'SeparatorLine') {
+          if (block.message !== '' || block.blockType === 'SeparatorLine') {
             dispatch({
               type: 'addBlock',
               order: block.order + 1,

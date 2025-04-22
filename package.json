@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
-    "fmt": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css}'",
+    "fmt": "prettier --write --ignore-path .prettierignore './**/*.{js,jsx,ts,tsx,json,css}'",
     "fmt:check": "eslint-config-prettier 'src/**/*.{js,jsx,ts,tsx}'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "gen": "supabase gen types typescript --project-id jeobvqwdkxxxmqaezsmz --schema public > src/types/supabase.ts",
+    "migrate": "prisma migrate dev --name init",
+    "migrate:reset": "prisma migrate reset"
   },
   "dependencies": {
     "next": "15.2.5",
@@ -24,6 +27,7 @@
     "@emotion/styled": "^11.14.0",
     "@eslint/eslintrc": "^3",
     "@eslint/js": "^9.24.0",
+    "@prisma/client": "^6.6.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.4",
     "@types/node": "^20",
@@ -39,6 +43,7 @@
     "framer-motion": "^12.6.5",
     "husky": "^8.0.0",
     "prettier": "^3.5.3",
+    "prisma": "^6.6.0",
     "react-icons": "^5.5.0",
     "react-textarea-autosize": "^8.5.9",
     "typescript": "^5",

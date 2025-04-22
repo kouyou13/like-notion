@@ -3,7 +3,7 @@
 
 npm run fmt
 
-npx eslint . --fix
+npx eslint . --max-warnings=0 --fix
 if [ $? -ne 0 ]; then
   echo "ESLint によるエラーまたは警告が検出されました。コミットを中断します。"
   exit 1

@@ -54,10 +54,6 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
             ...block,
             blockType: action.blockType,
             indentIndex: action.indentIndex,
-            texts: {
-              ...block.texts,
-              content: action.newContent,
-            },
           }
         }
         return block
@@ -131,8 +127,5 @@ const defaultBlock = (order: number, blockType: BlockType): Block => ({
   blockType,
   order,
   indentIndex: 0,
-  texts: {
-    id: v4(),
-    content: '',
-  },
+  message: '',
 })

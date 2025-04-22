@@ -81,7 +81,7 @@ const TextBlockComponent = ({
       if (isComposing) {
         // IME入力中は何もしない
         return
-      } else if (e.key === 'Backspace' && block.texts.content === '' && block.indentIndex === 0) {
+      } else if (e.key === 'Backspace' && block.message === '' && block.indentIndex === 0) {
         e.preventDefault()
         if (rowLength > 1) {
           dispatch({
@@ -113,11 +113,11 @@ const TextBlockComponent = ({
       } else if (e.key === 'Enter' && !e.shiftKey) {
         // Shift + Enter でない時
         e.preventDefault()
-        if (block.texts.content === '' && block.blockType !== 'Text') {
+        if (block.message === '' && block.blockType !== 'Text') {
           dispatch({
             type: 'updateBlock',
             blockId: block.id,
-            newContent: block.texts.content,
+            newContent: block.message,
             blockType: 'Text',
             indentIndex: block.indentIndex,
           })
@@ -141,7 +141,7 @@ const TextBlockComponent = ({
       } else if (e.key === 'Enter' && e.shiftKey) {
         // Shift + Enter の時Textarea 内で改行
         e.preventDefault()
-        const newValue = block.texts.content + '\n'
+        const newValue = block.message + '\n'
         dispatch({
           type: 'updateBlock',
           blockId: block.id,
@@ -170,7 +170,7 @@ const TextBlockComponent = ({
         }
       }}
       placeholder={placeholder}
-      value={block.texts.content}
+      value={block.message}
       h={height}
       w="100%"
       fontSize={fontSize}

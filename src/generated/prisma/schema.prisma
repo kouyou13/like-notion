@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Page {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  title     String    @default("")
+  order     Int
+  deletedAt DateTime? @map("deleted_at")
+  blocks    Block[]
+
+  @@unique([id, order])
+  @@map("page")
+}
+
+model Block {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  blockType   BlockType @default(Text) @map("block_type")
+  indentIndex Int       @default(0) @map("indent_index")
+  order       Int
+  message     String    @default("")
+  deletedAt   DateTime? @map("deleted_at")
+  pageId      String    @map("page_id")
+  page        Page      @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  @@unique([id, order])
+  @@index([pageId])
+  @@map("block")
+}
+
+enum BlockType {
+  Text
+  H1
+  H2
+  H3
+  List
+  ListNumbers
+  ToDoList
+  ToggleList
+  Page
+  Callout
+  Citing
+  Table
+  SeparatorLine
+  PageLink
+
+  @@map("block_type")
+}

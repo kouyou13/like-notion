@@ -25,15 +25,20 @@ const Template = ({ children }: TemplateProps) => {
   useEffect(() => {
     const fetchPages = async () => {
       const { data, error } = await supabase
-        .from('pages')
-        .select('id, title, order, is_deleted')
-        .filter('is_deleted', 'is', null)
+        .from('page')
+        .select('*')
+        .filter('deleted_at', 'is', null)
       if (error) {
         console.error(error)
       } else {
         setPages(
           data
-            .map((data) => ({ ...data, isDeleted: data.is_deleted }))
+            .map((data) => ({
+              id: data.id,
+              title: data.title,
+              order: data.order,
+              deletedAt: data.deleted_at,
+            }))
             .sort((a, b) => a.order - b.order),
         )
       }
@@ -48,23 +53,23 @@ const Template = ({ children }: TemplateProps) => {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'pages' }, (payload) => {
         if (payload.eventType === 'INSERT') {
           const newPage: Page = {
-            id: payload.new.id,
-            title: payload.new.title,
-            order: payload.new.order,
-            isDeleted: payload.new.is_deleted,
+            id: payload.new.id as string,
+            title: payload.new.title as string,
+            order: payload.new.order as number,
+            deletedAt: payload.new.is_deleted ?? null,
           }
           setPages((prev) => [...prev, newPage])
         } else if (payload.eventType == 'UPDATE') {
           const newPage: Page = {
-            id: payload.new.id,
-            title: payload.new.title,
-            order: payload.new.order,
-            isDeleted: payload.new.is_deleted,
+            id: payload.new.id as string,
+            title: payload.new.title as string,
+            order: payload.new.order as number,
+            deletedAt: payload.new.is_deleted ?? null,
           }
           setPages((prev) =>
             prev
               .map((page) => (page.id === newPage.id ? newPage : page))
-              .filter((page) => page.isDeleted == null),
+              .filter((page) => page.deletedAt == null),
           )
         }
       })
@@ -77,54 +82,43 @@ const Template = ({ children }: TemplateProps) => {
   }, [supabase, router])
 
   const handleAddPage = useCallback(async () => {
+    const defaultBlockType = 'Text'
     const newPage: PageWithBlocks = {
       id: v4(),
       title: '',
       order: pages.length + 1,
-      isDeleted: null,
-      pageBlocks: [
+      deletedAt: null,
+      block: [
         {
           id: v4(),
-          blockType: 'Text',
+          blockType: defaultBlockType,
           order: 0,
-          texts: {
-            id: v4(),
-            content: '',
-          },
+          indentIndex: 0,
+          message: '',
         },
         {
           id: v4(),
-          blockType: 'Text',
+          blockType: defaultBlockType,
           order: 1,
-          texts: {
-            id: v4(),
-            content: '',
-          },
+          indentIndex: 0,
+          message: '',
         },
         {
           id: v4(),
-          blockType: 'Text',
+          blockType: defaultBlockType,
           order: 2,
-          texts: {
-            id: v4(),
-            content: '',
-          },
+          indentIndex: 0,
+          message: '',
         },
       ],
     }
-    await supabase.from('pages').insert([{ id: newPage.id, title: newPage.title }])
-    await supabase.from('page_blocks').insert(
-      newPage.pageBlocks.map((block) => ({
-        id: block.id,
-        block_type: block.blockType,
-        order: block.order,
+    await supabase
+      .from('page')
+      .insert([{ id: newPage.id, title: newPage.title, order: newPage.order }])
+    await supabase.from('block').insert(
+      newPage.block.map((block) => ({
+        ...block,
         page_id: newPage.id,
-      })),
-    )
-    await supabase.from('texts').insert(
-      newPage.pageBlocks.map((block) => ({
-        content: block.texts.content,
-        page_block_id: block.id,
       })),
     )
     router.push(`/${newPage.id}`)

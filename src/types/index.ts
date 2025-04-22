@@ -1,39 +1,22 @@
+import type { Constants } from './supabase'
+
 export type Page = {
   id: string
   title: string
   order: number
-  isDeleted: string[] | null
+  deletedAt: string | null
 }
 
-export type BlockType =
-  | 'Text'
-  | 'H1'
-  | 'H2'
-  | 'H3'
-  | 'List'
-  | 'ListNumbers'
-  | 'ToDoList'
-  | 'ToggleList'
-  | 'Page'
-  | 'Callout'
-  | 'Citing'
-  | 'Table'
-  | 'SeparatorLine'
-  | 'PageLink'
+export type BlockType = (typeof Constants)['public']['Enums']['block_type'][number]
 
 export type Block = {
   id: string
   blockType: BlockType
+  message: string
   order: number
   indentIndex: number
-  texts: Text
-}
-
-export type Text = {
-  id: string
-  content: string
 }
 
 export type PageWithBlocks = Page & {
-  pageBlocks: Block[]
+  block: Block[]
 }
