@@ -96,7 +96,14 @@ const SidebarComponent = ({
             <PageTab key={page.id} page={page} />
           ))}
         </Skeleton>
-        <HStack gap={1} borderRadius="md" px={2} py={1} _hover={{ bgColor: 'gray.200' }}>
+        <HStack
+          gap={1}
+          borderRadius="md"
+          px={2}
+          py={1}
+          _hover={{ bgColor: 'gray.200' }}
+          cursor="pointer"
+        >
           <GrAdd size={16} color="gray" />
           <Text color="gray.800" fontSize="sm" ml={2} onClick={handleAddPage}>
             新規ページを追加

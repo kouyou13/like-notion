@@ -66,7 +66,7 @@ const PageTabComponent = ({ page }: PageTabProps) => {
       }}
     >
       <FaRegFileAlt size={16} color="gray" />
-      <HStack gap={0} w="90%">
+      <HStack gap={0} w="90%" cursor="pointer">
         <Text
           color="black"
           fontSize="sm"

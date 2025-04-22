@@ -12,7 +12,7 @@ export type Action =
   | {
       type: 'updateBlock'
       blockId: string
-      newContent: string
+      message: string
       blockType: BlockType
       indentIndex: number
     }
@@ -43,7 +43,7 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
     case 'addBlock': {
       return [
         ...blocks.slice(0, action.order),
-        defaultBlock(action.order, action.blockType),
+        defaultBlock(action.order, action.blockType, action.indentIndex),
         ...blocks.slice(action.order),
       ].map((b, index) => ({ ...b, order: index }))
     }
@@ -54,6 +54,7 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
             ...block,
             blockType: action.blockType,
             indentIndex: action.indentIndex,
+            message: action.message,
           }
         }
         return block
@@ -122,10 +123,10 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
   }
 }
 
-const defaultBlock = (order: number, blockType: BlockType): Block => ({
+const defaultBlock = (order: number, blockType: BlockType, indentIndex?: number): Block => ({
   id: v4(),
   blockType,
   order,
-  indentIndex: 0,
+  indentIndex: indentIndex ?? 0,
   message: '',
 })

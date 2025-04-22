@@ -92,7 +92,7 @@ const ListBlockComponent = ({
         dispatch({
           type: 'updateBlock',
           blockId: block.id,
-          newContent: block.message,
+          message: block.message,
           blockType: 'Text',
           indentIndex: block.indentIndex,
         })
@@ -122,7 +122,7 @@ const ListBlockComponent = ({
           dispatch({
             type: 'updateBlock',
             blockId: block.id,
-            newContent: block.message,
+            message: block.message,
             blockType: 'Text',
             indentIndex: block.indentIndex,
           })
@@ -146,11 +146,11 @@ const ListBlockComponent = ({
       } else if (e.key === 'Enter' && e.shiftKey) {
         // Shift + Enter の時Textarea 内で改行
         e.preventDefault()
-        const newValue = block.message + '\n'
+        const newMessage = block.message + '\n'
         dispatch({
           type: 'updateBlock',
           blockId: block.id,
-          newContent: newValue,
+          message: newMessage,
           blockType: block.blockType,
           indentIndex: block.indentIndex,
         })
@@ -193,7 +193,7 @@ const ListBlockComponent = ({
           dispatch({
             type: 'updateBlock',
             blockId: block.id,
-            newContent: e.target.value,
+            message: e.target.value,
             blockType: block.blockType,
             indentIndex: block.indentIndex,
           })

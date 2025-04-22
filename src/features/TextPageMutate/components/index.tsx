@@ -177,7 +177,11 @@ const TextPageComponent = () => {
         />
         {blocks.map((block, index) => {
           if (blocks[index].blockType === 'ListNumbers') {
-            listNumber += 1
+            if (index === 0 || blocks[index - 1].indentIndex === blocks[index].indentIndex) {
+              listNumber += 1
+            } else {
+              listNumber = 1
+            }
           } else {
             listNumber = 0
           }

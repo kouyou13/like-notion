@@ -117,7 +117,7 @@ const TextBlockComponent = ({
           dispatch({
             type: 'updateBlock',
             blockId: block.id,
-            newContent: block.message,
+            message: block.message,
             blockType: 'Text',
             indentIndex: block.indentIndex,
           })
@@ -141,11 +141,11 @@ const TextBlockComponent = ({
       } else if (e.key === 'Enter' && e.shiftKey) {
         // Shift + Enter の時Textarea 内で改行
         e.preventDefault()
-        const newValue = block.message + '\n'
+        const newMessage = block.message + '\n'
         dispatch({
           type: 'updateBlock',
           blockId: block.id,
-          newContent: newValue,
+          message: newMessage,
           blockType: block.blockType,
           indentIndex: block.indentIndex,
         })
@@ -187,12 +187,12 @@ const TextBlockComponent = ({
         setIsComposing(false)
       }}
       onChange={(e) => {
-        const newContent = e.target.value
-        if (block.blockType === 'Text' && newContent === '---') {
+        const newMessage = e.target.value
+        if (block.blockType === 'Text' && newMessage === '---') {
           dispatch({
             type: 'updateBlock',
             blockId: block.id,
-            newContent: '',
+            message: '',
             blockType: 'SeparatorLine',
             indentIndex: block.indentIndex,
           })
@@ -209,7 +209,7 @@ const TextBlockComponent = ({
           dispatch({
             type: 'updateBlock',
             blockId: block.id,
-            newContent,
+            message: newMessage,
             blockType: block.blockType,
             indentIndex: block.indentIndex,
           })

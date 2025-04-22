@@ -28,7 +28,7 @@ const AddBlockMenuComponent = ({
       dispatch({
         type: 'updateBlock',
         blockId: block.id,
-        newContent: block.message,
+        message: block.message,
         blockType: selectedBlockType,
         indentIndex: block.indentIndex,
       })
