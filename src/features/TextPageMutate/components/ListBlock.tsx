@@ -1,6 +1,6 @@
 import { HStack, Textarea, Box, Checkbox, Flex } from '@chakra-ui/react'
 import React, { useMemo, useState, useCallback } from 'react'
-import { BiSolidCircle, BiSolidRightArrow } from 'react-icons/bi'
+import { BiSolidCircle, BiSolidRightArrow, BiSolidDownArrow } from 'react-icons/bi'
 
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
@@ -43,8 +43,22 @@ const ListSignComponent = ({ block, listNumber, handleChecked }: ListSignProps) 
       )
     case 'ToggleList':
       return (
-        <Box my={0} ml={2} mr={1} p={0} gap={0}>
-          <BiSolidRightArrow size={12} />
+        <Box my={0} mr={1} p={0} gap={0}>
+          {block.isChecked ? (
+            <BiSolidDownArrow
+              size={12}
+              onClick={() => {
+                handleChecked(false)
+              }}
+            />
+          ) : (
+            <BiSolidRightArrow
+              size={12}
+              onClick={() => {
+                handleChecked(true)
+              }}
+            />
+          )}
         </Box>
       )
   }

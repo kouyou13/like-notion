@@ -77,6 +77,7 @@ const TextPageComponent = () => {
           order: block.order,
           indent_index: block.indentIndex,
           message: block.message,
+          is_checked: block.isChecked,
           page_id: pageId,
         }))
 
@@ -86,6 +87,11 @@ const TextPageComponent = () => {
         if (error) {
           console.error('保存失敗:', error)
         }
+
+        await supabase
+          .from('page')
+          .update({ updated_at: new Date().toISOString() })
+          .eq('id', pageId)
 
         previousBlocksRef.current = debouncedBlocks
 
@@ -111,7 +117,7 @@ const TextPageComponent = () => {
     <Box
       h="85vh"
       w="100%"
-      overflow="scroll"
+      overflowY="scroll"
       display="flex"
       pt="9.5vh"
       ml="23.5vw"
