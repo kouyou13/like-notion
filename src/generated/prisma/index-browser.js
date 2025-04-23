@@ -135,7 +135,8 @@ exports.Prisma.BlockScalarFieldEnum = {
   message: 'message',
   deletedAt: 'deletedAt',
   isChecked: 'isChecked',
-  pageId: 'pageId'
+  pageId: 'pageId',
+  indentParentBlockId: 'indentParentBlockId'
 };
 
 exports.Prisma.SortOrder = {

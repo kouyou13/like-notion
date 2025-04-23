@@ -3,7 +3,7 @@ CREATE TYPE "block_type" AS ENUM ('Text', 'H1', 'H2', 'H3', 'List', 'ListNumbers
 
 -- CreateTable
 CREATE TABLE "page" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "title" TEXT NOT NULL DEFAULT '',
@@ -15,14 +15,16 @@ CREATE TABLE "page" (
 
 -- CreateTable
 CREATE TABLE "block" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "block_type" "block_type" NOT NULL DEFAULT 'Text',
     "indent_index" INTEGER NOT NULL DEFAULT 0,
     "order" INTEGER NOT NULL,
     "message" TEXT NOT NULL DEFAULT '',
     "deleted_at" TIMESTAMP(3),
-    "page_id" TEXT NOT NULL,
+    "is_checked" BOOLEAN NOT NULL DEFAULT false,
+    "page_id" UUID,
+    "indent_parent_block_id" UUID,
 
     CONSTRAINT "block_pkey" PRIMARY KEY ("id")
 );
@@ -32,6 +34,9 @@ CREATE UNIQUE INDEX "page_id_order_key" ON "page"("id", "order");
 
 -- CreateIndex
 CREATE INDEX "block_page_id_idx" ON "block"("page_id");
+
+-- CreateIndex
+CREATE INDEX "block_indent_parent_block_id_idx" ON "block"("indent_parent_block_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "block_id_order_key" ON "block"("id", "order");

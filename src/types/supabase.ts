@@ -49,10 +49,11 @@ export type Database = {
           deleted_at: string | null
           id: string
           indent_index: number
+          indent_parent_block_id: string | null
           is_checked: boolean
           message: string
           order: number
-          page_id: string
+          page_id: string | null
         }
         Insert: {
           block_type?: Database["public"]["Enums"]["block_type"]
@@ -60,10 +61,11 @@ export type Database = {
           deleted_at?: string | null
           id: string
           indent_index?: number
+          indent_parent_block_id?: string | null
           is_checked?: boolean
           message?: string
           order: number
-          page_id: string
+          page_id?: string | null
         }
         Update: {
           block_type?: Database["public"]["Enums"]["block_type"]
@@ -71,10 +73,11 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           indent_index?: number
+          indent_parent_block_id?: string | null
           is_checked?: boolean
           message?: string
           order?: number
-          page_id?: string
+          page_id?: string | null
         }
         Relationships: [
           {
