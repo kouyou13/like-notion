@@ -33,7 +33,6 @@ model Block {
   pageId      String?   @map("page_id") @db.Uuid
   page        Page?     @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 
-  @@unique([pageId, order])
   @@index([pageId])
   @@map("block")
 }

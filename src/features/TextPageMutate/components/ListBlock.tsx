@@ -43,7 +43,7 @@ const ListSignComponent = ({ block, listNumber, handleChecked }: ListSignProps) 
       )
     case 'ToggleList':
       return (
-        <Box my={0} mr={1} p={0} gap={0}>
+        <Box my={0} mr={1} p={1} gap={0} _hover={{ bgColor: 'gray.100' }} borderRadius="md">
           {block.isChecked ? (
             <BiSolidDownArrow
               size={12}
@@ -141,6 +141,19 @@ const ListBlockComponent = ({
           setTimeout(() => {
             blockRefs.current[block.order]?.focus()
           })
+        } else if (block.blockType === 'ToggleList' && block.isChecked) {
+          dispatch({
+            type: 'addBlock',
+            order: block.order + 1,
+            blockType: 'Text',
+            indentIndex: block.indentIndex + 1,
+          })
+          setTimeout(() => {
+            const nextInput = blockRefs.current[block.order + 1]
+            if (nextInput) {
+              nextInput.focus()
+            }
+          }, 0)
         } else {
           dispatch({
             type: 'addBlock',

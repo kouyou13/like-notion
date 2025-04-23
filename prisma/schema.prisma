@@ -34,7 +34,6 @@ model Block {
   page Page? @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 
   @@index([pageId])
-  @@unique([pageId, order])
   @@map("block")
 }
 

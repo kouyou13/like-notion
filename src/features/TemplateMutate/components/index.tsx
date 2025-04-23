@@ -140,12 +140,7 @@ const Template = ({ children }: TemplateProps) => {
           pages={pages}
           handleAddPage={handleAddPage}
         />
-        <Box
-          justifyContent="start"
-          w={isOpenSidebar ? '88vw' : '100vw'}
-          h="100vh"
-          overflow="scroll"
-        >
+        <Box justifyContent="start" w={isOpenSidebar ? '88vw' : '100vw'} h="100vh">
           <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
           {children}
         </Box>

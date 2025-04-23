@@ -3547,7 +3547,6 @@ export namespace Prisma {
 
   export type BlockWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    pageId_order?: BlockPageIdOrderCompoundUniqueInput
     AND?: BlockWhereInput | BlockWhereInput[]
     OR?: BlockWhereInput[]
     NOT?: BlockWhereInput | BlockWhereInput[]
@@ -3560,7 +3559,7 @@ export namespace Prisma {
     isChecked?: BoolFilter<"Block"> | boolean
     pageId?: UuidNullableFilter<"Block"> | string | null
     page?: XOR<PageNullableScalarRelationFilter, PageWhereInput> | null
-  }, "id" | "pageId_order">
+  }, "id">
 
   export type BlockOrderByWithAggregationInput = {
     id?: SortOrder
@@ -3963,11 +3962,6 @@ export namespace Prisma {
   export type PageNullableScalarRelationFilter = {
     is?: PageWhereInput | null
     isNot?: PageWhereInput | null
-  }
-
-  export type BlockPageIdOrderCompoundUniqueInput = {
-    pageId: string
-    order: number
   }
 
   export type BlockCountOrderByAggregateInput = {

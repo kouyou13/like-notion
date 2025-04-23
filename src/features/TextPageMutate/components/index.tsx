@@ -1,12 +1,13 @@
 import { Box, Textarea } from '@chakra-ui/react'
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState, useRef, useEffect, useReducer } from 'react'
+import React, { useState, useRef, useEffect, useReducer, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import BlockRow from './BlockRow'
 import { createSupabaseClient } from '../../../lib/supabase'
 import selectPageWithBlocks from '../hooks/selectPageWithBlocks'
 import { blocksReducer } from '../utils/pageDispatch'
+import showBlockFilter from '../utils/showBlockFilter'
 
 const TextPageComponent = () => {
   const supabase = createSupabaseClient()
@@ -113,10 +114,12 @@ const TextPageComponent = () => {
     void saveBlocks()
   }, [debouncedBlocks, pageId, supabase])
 
+  const filteredBlocks = useMemo(() => showBlockFilter(blocks), [blocks])
+
   return (
     <Box
       h="85vh"
-      w="100%"
+      w="40vw"
       overflowY="scroll"
       display="flex"
       pt="9.5vh"
@@ -179,7 +182,7 @@ const TextPageComponent = () => {
             setIsComposing(false)
           }}
         />
-        {blocks.map((block, index) => {
+        {filteredBlocks.map((block, index) => {
           if (blocks[index].blockType === 'ListNumbers') {
             if (index === 0 || blocks[index - 1].indentIndex === blocks[index].indentIndex) {
               listNumber += 1
