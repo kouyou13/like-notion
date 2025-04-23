@@ -113,10 +113,8 @@ const TextPageComponent = () => {
       w="100%"
       overflow="scroll"
       display="flex"
-      justifyContent="start"
-      flexDirection="column"
-      alignItems="center"
       pt="9.5vh"
+      ml="23.5vw"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           const prevInput = blockRefs.current.slice(-1)[0]
@@ -126,7 +124,7 @@ const TextPageComponent = () => {
         }
       }}
     >
-      <Box w="47%" maxW="100%">
+      <Box w="40vw">
         <Textarea
           ref={(el) => {
             titleRef.current = el
@@ -142,11 +140,11 @@ const TextPageComponent = () => {
           fontSize={40}
           lineHeight="3rem"
           py="auto"
-          pl={50}
+          pl="2.5vw"
           pr={0}
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}
-          mb={2}
+          mb="0.1vh"
           textAlign="left"
           autoresize
           onKeyDown={(e) => {

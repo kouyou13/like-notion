@@ -35,6 +35,7 @@ model Block {
   order Int
   message String @default("")
   deletedAt DateTime?  @map("deleted_at")
+  isChecked Boolean @map("is_checked") @default(false)
   pageId String @map("page_id")
   page Page @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 

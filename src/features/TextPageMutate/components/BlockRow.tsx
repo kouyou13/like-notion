@@ -167,7 +167,7 @@ const BlockRowComponent = ({
       }}
     >
       {hoverRowIndex === block.order || isOpenBlockSettingIndex === block.order ? (
-        <HStack w={50} gap={1}>
+        <HStack w="2.5vw" gap={1}>
           <AddBlockMenu
             block={block}
             dispatch={dispatch}
@@ -208,7 +208,7 @@ const BlockRowComponent = ({
           </Tooltip>
         </HStack>
       ) : (
-        <Box w={50} />
+        <Box w="2.5vw" />
       )}
       <HStack
         w="100%"

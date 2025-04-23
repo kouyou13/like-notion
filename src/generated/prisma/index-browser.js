@@ -134,6 +134,7 @@ exports.Prisma.BlockScalarFieldEnum = {
   order: 'order',
   message: 'message',
   deletedAt: 'deletedAt',
+  isChecked: 'isChecked',
   pageId: 'pageId'
 };
 
