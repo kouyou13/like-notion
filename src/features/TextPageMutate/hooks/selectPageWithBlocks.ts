@@ -16,6 +16,8 @@ const selectPageWithBlocks = async (
     .single()
   const camel = page ? camelcaseKeys(page, { deep: true }) : undefined
   const camelData: PageWithBlocks | undefined = camel
+    ? { ...camel, block: camel.block.map((b) => ({ ...b, children: [] })) }
+    : undefined
   return { data: camelData, error: pageError }
 }
 export default selectPageWithBlocks

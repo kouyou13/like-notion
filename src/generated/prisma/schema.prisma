@@ -22,21 +22,19 @@ model Page {
 }
 
 model Block {
-  id                  String    @id @default(uuid()) @db.Uuid
-  createdAt           DateTime  @default(now()) @map("created_at")
-  blockType           BlockType @default(Text) @map("block_type")
-  indentIndex         Int       @default(0) @map("indent_index")
-  order               Int
-  message             String    @default("")
-  deletedAt           DateTime? @map("deleted_at")
-  isChecked           Boolean   @default(false) @map("is_checked")
-  pageId              String?   @map("page_id") @db.Uuid
-  indentParentBlockId String?   @map("indent_parent_block_id") @db.Uuid
-  page                Page?     @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  id          String    @id @default(uuid()) @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at")
+  blockType   BlockType @default(Text) @map("block_type")
+  indentIndex Int       @default(0) @map("indent_index")
+  order       Int
+  message     String    @default("")
+  deletedAt   DateTime? @map("deleted_at")
+  isChecked   Boolean   @default(false) @map("is_checked")
+  pageId      String?   @map("page_id") @db.Uuid
+  page        Page?     @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 
-  @@unique([id, order])
+  @@unique([pageId, order])
   @@index([pageId])
-  @@index([indentParentBlockId])
   @@map("block")
 }
 

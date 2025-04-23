@@ -31,12 +31,10 @@ model Block {
   deletedAt DateTime?  @map("deleted_at")
   isChecked Boolean @map("is_checked") @default(false)
   pageId String? @map("page_id") @db.Uuid
-  indentParentBlockId String? @map("indent_parent_block_id") @db.Uuid
   page Page? @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 
   @@index([pageId])
-  @@index([indentParentBlockId])
-  @@unique([id, order])
+  @@unique([pageId, order])
   @@map("block")
 }
 

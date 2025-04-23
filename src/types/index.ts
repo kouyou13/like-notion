@@ -16,7 +16,6 @@ export type Block = {
   order: number
   indentIndex: number
   isChecked: boolean
-  block: Block[]
 }
 
 export type PageWithBlocks = Page & {

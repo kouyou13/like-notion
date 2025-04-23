@@ -49,7 +49,6 @@ export type Database = {
           deleted_at: string | null
           id: string
           indent_index: number
-          indent_parent_block_id: string | null
           is_checked: boolean
           message: string
           order: number
@@ -61,7 +60,6 @@ export type Database = {
           deleted_at?: string | null
           id: string
           indent_index?: number
-          indent_parent_block_id?: string | null
           is_checked?: boolean
           message?: string
           order: number
@@ -73,7 +71,6 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           indent_index?: number
-          indent_parent_block_id?: string | null
           is_checked?: boolean
           message?: string
           order?: number

@@ -2168,7 +2168,6 @@ export namespace Prisma {
     deletedAt: Date | null
     isChecked: boolean | null
     pageId: string | null
-    indentParentBlockId: string | null
   }
 
   export type BlockMaxAggregateOutputType = {
@@ -2181,7 +2180,6 @@ export namespace Prisma {
     deletedAt: Date | null
     isChecked: boolean | null
     pageId: string | null
-    indentParentBlockId: string | null
   }
 
   export type BlockCountAggregateOutputType = {
@@ -2194,7 +2192,6 @@ export namespace Prisma {
     deletedAt: number
     isChecked: number
     pageId: number
-    indentParentBlockId: number
     _all: number
   }
 
@@ -2219,7 +2216,6 @@ export namespace Prisma {
     deletedAt?: true
     isChecked?: true
     pageId?: true
-    indentParentBlockId?: true
   }
 
   export type BlockMaxAggregateInputType = {
@@ -2232,7 +2228,6 @@ export namespace Prisma {
     deletedAt?: true
     isChecked?: true
     pageId?: true
-    indentParentBlockId?: true
   }
 
   export type BlockCountAggregateInputType = {
@@ -2245,7 +2240,6 @@ export namespace Prisma {
     deletedAt?: true
     isChecked?: true
     pageId?: true
-    indentParentBlockId?: true
     _all?: true
   }
 
@@ -2345,7 +2339,6 @@ export namespace Prisma {
     deletedAt: Date | null
     isChecked: boolean
     pageId: string | null
-    indentParentBlockId: string | null
     _count: BlockCountAggregateOutputType | null
     _avg: BlockAvgAggregateOutputType | null
     _sum: BlockSumAggregateOutputType | null
@@ -2377,7 +2370,6 @@ export namespace Prisma {
     deletedAt?: boolean
     isChecked?: boolean
     pageId?: boolean
-    indentParentBlockId?: boolean
     page?: boolean | Block$pageArgs<ExtArgs>
   }, ExtArgs["result"]["block"]>
 
@@ -2391,7 +2383,6 @@ export namespace Prisma {
     deletedAt?: boolean
     isChecked?: boolean
     pageId?: boolean
-    indentParentBlockId?: boolean
     page?: boolean | Block$pageArgs<ExtArgs>
   }, ExtArgs["result"]["block"]>
 
@@ -2405,7 +2396,6 @@ export namespace Prisma {
     deletedAt?: boolean
     isChecked?: boolean
     pageId?: boolean
-    indentParentBlockId?: boolean
     page?: boolean | Block$pageArgs<ExtArgs>
   }, ExtArgs["result"]["block"]>
 
@@ -2419,10 +2409,9 @@ export namespace Prisma {
     deletedAt?: boolean
     isChecked?: boolean
     pageId?: boolean
-    indentParentBlockId?: boolean
   }
 
-  export type BlockOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "blockType" | "indentIndex" | "order" | "message" | "deletedAt" | "isChecked" | "pageId" | "indentParentBlockId", ExtArgs["result"]["block"]>
+  export type BlockOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "blockType" | "indentIndex" | "order" | "message" | "deletedAt" | "isChecked" | "pageId", ExtArgs["result"]["block"]>
   export type BlockInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     page?: boolean | Block$pageArgs<ExtArgs>
   }
@@ -2448,7 +2437,6 @@ export namespace Prisma {
       deletedAt: Date | null
       isChecked: boolean
       pageId: string | null
-      indentParentBlockId: string | null
     }, ExtArgs["result"]["block"]>
     composites: {}
   }
@@ -2882,7 +2870,6 @@ export namespace Prisma {
     readonly deletedAt: FieldRef<"Block", 'DateTime'>
     readonly isChecked: FieldRef<"Block", 'Boolean'>
     readonly pageId: FieldRef<"Block", 'String'>
-    readonly indentParentBlockId: FieldRef<"Block", 'String'>
   }
     
 
@@ -3351,8 +3338,7 @@ export namespace Prisma {
     message: 'message',
     deletedAt: 'deletedAt',
     isChecked: 'isChecked',
-    pageId: 'pageId',
-    indentParentBlockId: 'indentParentBlockId'
+    pageId: 'pageId'
   };
 
   export type BlockScalarFieldEnum = (typeof BlockScalarFieldEnum)[keyof typeof BlockScalarFieldEnum]
@@ -3543,7 +3529,6 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"Block"> | Date | string | null
     isChecked?: BoolFilter<"Block"> | boolean
     pageId?: UuidNullableFilter<"Block"> | string | null
-    indentParentBlockId?: UuidNullableFilter<"Block"> | string | null
     page?: XOR<PageNullableScalarRelationFilter, PageWhereInput> | null
   }
 
@@ -3557,13 +3542,12 @@ export namespace Prisma {
     deletedAt?: SortOrderInput | SortOrder
     isChecked?: SortOrder
     pageId?: SortOrderInput | SortOrder
-    indentParentBlockId?: SortOrderInput | SortOrder
     page?: PageOrderByWithRelationInput
   }
 
   export type BlockWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    id_order?: BlockIdOrderCompoundUniqueInput
+    pageId_order?: BlockPageIdOrderCompoundUniqueInput
     AND?: BlockWhereInput | BlockWhereInput[]
     OR?: BlockWhereInput[]
     NOT?: BlockWhereInput | BlockWhereInput[]
@@ -3575,9 +3559,8 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"Block"> | Date | string | null
     isChecked?: BoolFilter<"Block"> | boolean
     pageId?: UuidNullableFilter<"Block"> | string | null
-    indentParentBlockId?: UuidNullableFilter<"Block"> | string | null
     page?: XOR<PageNullableScalarRelationFilter, PageWhereInput> | null
-  }, "id" | "id_order">
+  }, "id" | "pageId_order">
 
   export type BlockOrderByWithAggregationInput = {
     id?: SortOrder
@@ -3589,7 +3572,6 @@ export namespace Prisma {
     deletedAt?: SortOrderInput | SortOrder
     isChecked?: SortOrder
     pageId?: SortOrderInput | SortOrder
-    indentParentBlockId?: SortOrderInput | SortOrder
     _count?: BlockCountOrderByAggregateInput
     _avg?: BlockAvgOrderByAggregateInput
     _max?: BlockMaxOrderByAggregateInput
@@ -3610,7 +3592,6 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Block"> | Date | string | null
     isChecked?: BoolWithAggregatesFilter<"Block"> | boolean
     pageId?: UuidNullableWithAggregatesFilter<"Block"> | string | null
-    indentParentBlockId?: UuidNullableWithAggregatesFilter<"Block"> | string | null
   }
 
   export type PageCreateInput = {
@@ -3689,7 +3670,6 @@ export namespace Prisma {
     message?: string
     deletedAt?: Date | string | null
     isChecked?: boolean
-    indentParentBlockId?: string | null
     page?: PageCreateNestedOneWithoutBlocksInput
   }
 
@@ -3703,7 +3683,6 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     isChecked?: boolean
     pageId?: string | null
-    indentParentBlockId?: string | null
   }
 
   export type BlockUpdateInput = {
@@ -3715,7 +3694,6 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isChecked?: BoolFieldUpdateOperationsInput | boolean
-    indentParentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     page?: PageUpdateOneWithoutBlocksNestedInput
   }
 
@@ -3729,7 +3707,6 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isChecked?: BoolFieldUpdateOperationsInput | boolean
     pageId?: NullableStringFieldUpdateOperationsInput | string | null
-    indentParentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BlockCreateManyInput = {
@@ -3742,7 +3719,6 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     isChecked?: boolean
     pageId?: string | null
-    indentParentBlockId?: string | null
   }
 
   export type BlockUpdateManyMutationInput = {
@@ -3754,7 +3730,6 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isChecked?: BoolFieldUpdateOperationsInput | boolean
-    indentParentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BlockUncheckedUpdateManyInput = {
@@ -3767,7 +3742,6 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isChecked?: BoolFieldUpdateOperationsInput | boolean
     pageId?: NullableStringFieldUpdateOperationsInput | string | null
-    indentParentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UuidFilter<$PrismaModel = never> = {
@@ -3991,8 +3965,8 @@ export namespace Prisma {
     isNot?: PageWhereInput | null
   }
 
-  export type BlockIdOrderCompoundUniqueInput = {
-    id: string
+  export type BlockPageIdOrderCompoundUniqueInput = {
+    pageId: string
     order: number
   }
 
@@ -4006,7 +3980,6 @@ export namespace Prisma {
     deletedAt?: SortOrder
     isChecked?: SortOrder
     pageId?: SortOrder
-    indentParentBlockId?: SortOrder
   }
 
   export type BlockAvgOrderByAggregateInput = {
@@ -4024,7 +3997,6 @@ export namespace Prisma {
     deletedAt?: SortOrder
     isChecked?: SortOrder
     pageId?: SortOrder
-    indentParentBlockId?: SortOrder
   }
 
   export type BlockMinOrderByAggregateInput = {
@@ -4037,7 +4009,6 @@ export namespace Prisma {
     deletedAt?: SortOrder
     isChecked?: SortOrder
     pageId?: SortOrder
-    indentParentBlockId?: SortOrder
   }
 
   export type BlockSumOrderByAggregateInput = {
@@ -4154,10 +4125,6 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type PageUpdateOneWithoutBlocksNestedInput = {
     create?: XOR<PageCreateWithoutBlocksInput, PageUncheckedCreateWithoutBlocksInput>
     connectOrCreate?: PageCreateOrConnectWithoutBlocksInput
@@ -4166,6 +4133,10 @@ export namespace Prisma {
     delete?: PageWhereInput | boolean
     connect?: PageWhereUniqueInput
     update?: XOR<XOR<PageUpdateToOneWithWhereWithoutBlocksInput, PageUpdateWithoutBlocksInput>, PageUncheckedUpdateWithoutBlocksInput>
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -4401,7 +4372,6 @@ export namespace Prisma {
     message?: string
     deletedAt?: Date | string | null
     isChecked?: boolean
-    indentParentBlockId?: string | null
   }
 
   export type BlockUncheckedCreateWithoutPageInput = {
@@ -4413,7 +4383,6 @@ export namespace Prisma {
     message?: string
     deletedAt?: Date | string | null
     isChecked?: boolean
-    indentParentBlockId?: string | null
   }
 
   export type BlockCreateOrConnectWithoutPageInput = {
@@ -4455,7 +4424,6 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"Block"> | Date | string | null
     isChecked?: BoolFilter<"Block"> | boolean
     pageId?: UuidNullableFilter<"Block"> | string | null
-    indentParentBlockId?: UuidNullableFilter<"Block"> | string | null
   }
 
   export type PageCreateWithoutBlocksInput = {
@@ -4519,7 +4487,6 @@ export namespace Prisma {
     message?: string
     deletedAt?: Date | string | null
     isChecked?: boolean
-    indentParentBlockId?: string | null
   }
 
   export type BlockUpdateWithoutPageInput = {
@@ -4531,7 +4498,6 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isChecked?: BoolFieldUpdateOperationsInput | boolean
-    indentParentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BlockUncheckedUpdateWithoutPageInput = {
@@ -4543,7 +4509,6 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isChecked?: BoolFieldUpdateOperationsInput | boolean
-    indentParentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BlockUncheckedUpdateManyWithoutPageInput = {
@@ -4555,7 +4520,6 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isChecked?: BoolFieldUpdateOperationsInput | boolean
-    indentParentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 
