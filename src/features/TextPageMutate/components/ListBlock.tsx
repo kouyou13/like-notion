@@ -8,10 +8,9 @@ import type { Action } from '../utils/pageDispatch'
 type ListSignProps = {
   block: Block
   listNumber: number
-  isChecked: boolean
-  setIsChecked: React.Dispatch<React.SetStateAction<boolean>>
+  handleChecked: (isChecked: boolean) => void
 }
-const ListSignComponent = ({ block, listNumber, isChecked, setIsChecked }: ListSignProps) => {
+const ListSignComponent = ({ block, listNumber, handleChecked }: ListSignProps) => {
   switch (block.blockType) {
     case 'List':
       return (
@@ -31,10 +30,10 @@ const ListSignComponent = ({ block, listNumber, isChecked, setIsChecked }: ListS
           variant="solid"
           size="sm"
           colorPalette="blue"
-          checked={isChecked}
+          checked={block.isChecked}
           onCheckedChange={(isChecked) => {
             if (typeof isChecked.checked === 'boolean') {
-              setIsChecked(isChecked.checked)
+              handleChecked(isChecked.checked)
             }
           }}
         >
@@ -68,7 +67,6 @@ const ListBlockComponent = ({
   listNumber,
 }: ListBlockProps) => {
   const [isComposing, setIsComposing] = useState(false)
-  const [isChecked, setIsChecked] = useState(false)
 
   const placeholder = useMemo(() => {
     switch (block.blockType) {
@@ -158,15 +156,21 @@ const ListBlockComponent = ({
     },
     [block, blockRefs, dispatch, rowLength, titleRef, isComposing],
   )
+
+  const handleChecked = useCallback(
+    (isChecked: boolean) => {
+      dispatch({
+        type: 'checkedBlock',
+        blockId: block.id,
+        isChecked,
+      })
+    },
+    [block, dispatch],
+  )
   return (
     <HStack gap={0}>
       <Flex w="1.5vw">
-        <ListSignComponent
-          block={block}
-          listNumber={listNumber}
-          isChecked={isChecked}
-          setIsChecked={setIsChecked}
-        />
+        <ListSignComponent block={block} listNumber={listNumber} handleChecked={handleChecked} />
       </Flex>
       <Textarea
         ref={(el) => {
@@ -200,7 +204,7 @@ const ListBlockComponent = ({
         }}
         onKeyDown={handleKeyDown}
         autoresize
-        textDecoration={block.blockType === 'ToDoList' && isChecked ? 'line-through' : 'none'}
+        textDecoration={block.blockType === 'ToDoList' && block.isChecked ? 'line-through' : 'none'}
       />
     </HStack>
   )

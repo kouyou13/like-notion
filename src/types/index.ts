@@ -15,6 +15,7 @@ export type Block = {
   message: string
   order: number
   indentIndex: number
+  isChecked: boolean
 }
 
 export type PageWithBlocks = Page & {

@@ -26,16 +26,24 @@ export type Action =
       toIndex: number
     }
   | {
-      type: 'initBlocks'
-      blocks: Block[]
-    }
-  | {
+      // インデント追加
       type: 'addIndent'
       blockId: string
     }
   | {
+      // インデント削除
       type: 'subIndent'
       blockId: string
+    }
+  | {
+      type: 'checkedBlock'
+      blockId: string
+      isChecked: boolean
+    }
+  | {
+      // block[]の読み込み
+      type: 'initBlocks'
+      blocks: Block[]
     }
 
 export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
@@ -115,6 +123,17 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
         }
       })
     }
+    case 'checkedBlock': {
+      return blocks.map((block) => {
+        if (block.id === action.blockId) {
+          return {
+            ...block,
+            isChecked: action.isChecked,
+          }
+        }
+        return block
+      })
+    }
     case 'initBlocks': {
       return action.blocks
     }
@@ -129,4 +148,5 @@ const defaultBlock = (order: number, blockType: BlockType, indentIndex?: number)
   order,
   indentIndex: indentIndex ?? 0,
   message: '',
+  isChecked: false,
 })

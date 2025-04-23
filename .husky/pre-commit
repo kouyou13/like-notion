@@ -3,6 +3,8 @@
 
 npm run fmt
 
+npm run gen
+
 npx eslint . --max-warnings=0 --fix
 if [ $? -ne 0 ]; then
   echo "ESLint によるエラーまたは警告が検出されました。コミットを中断します。"
