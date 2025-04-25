@@ -20,10 +20,14 @@ const TextBlockComponent = ({
 }: TextBlockProps) => {
   const [isComposing, setIsComposing] = useState(false) // IME入力中か
   const fontWeight = useMemo(() => {
-    if (block.blockType === 'H1' || block.blockType === 'H2' || block.blockType === 'H3') {
-      return 'bold'
+    switch (block.blockType) {
+      case 'H1':
+      case 'H2':
+      case 'H3':
+        return 'bold'
+      default:
+        return undefined
     }
-    return undefined
   }, [block.blockType])
 
   const placeholder = useMemo(() => {
@@ -36,6 +40,8 @@ const TextBlockComponent = ({
         return '見出し3'
       case 'Callout':
         return '入力してください...'
+      default:
+        return ''
     }
   }, [block.blockType])
 
@@ -136,15 +142,6 @@ const TextBlockComponent = ({
             }
           }, 0)
         }
-      } else if (e.key === 'Enter' && e.shiftKey) {
-        // Shift + Enter の時Textarea 内で改行
-        e.preventDefault()
-        const newMessage = block.message + '\n'
-        dispatch({
-          type: 'updateBlockMessage',
-          blockId: block.id,
-          message: newMessage,
-        })
       }
     },
     [block, blockRefs, dispatch, rowLength, titleRef, isComposing],

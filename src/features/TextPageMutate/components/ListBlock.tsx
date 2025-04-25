@@ -166,15 +166,6 @@ const ListBlockComponent = ({
             }
           }, 0)
         }
-      } else if (e.key === 'Enter' && e.shiftKey) {
-        // Shift + Enter の時Textarea 内で改行
-        e.preventDefault()
-        const newMessage = block.message + '\n'
-        dispatch({
-          type: 'updateBlockMessage',
-          blockId: block.id,
-          message: newMessage,
-        })
       }
     },
     [block, blockRefs, dispatch, rowLength, titleRef, isComposing],

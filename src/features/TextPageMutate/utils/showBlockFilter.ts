@@ -1,13 +1,11 @@
 import type { Block } from '../../../types'
 
 const showBlockFilter = (blocks: Block[]): Block[] => {
-  let toggleBlockId: string | null = null
   let toggleBlockIndent: number | null = null
   return blocks.filter((block) => {
-    if (toggleBlockIndent == null || toggleBlockId == null) {
+    if (toggleBlockIndent == null) {
       // トグルの状態を取得
       if (block.blockType === 'ToggleList' && !block.isChecked) {
-        toggleBlockId = block.id
         toggleBlockIndent = block.indentIndex
       }
     } else {
@@ -16,7 +14,6 @@ const showBlockFilter = (blocks: Block[]): Block[] => {
         return false
       } else {
         // インデント外
-        toggleBlockId = null
         toggleBlockIndent = null
       }
     }

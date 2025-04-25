@@ -130,29 +130,58 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
       }
     }
     case 'addIndent': {
+      let toggleBlockIndent: number | null = null
       return blocks.map((block, index) => {
-        if (block.id !== action.blockId || index === 0) {
+        if (index === 0) {
           return block
-        }
-        const prevBlockIndent = blocks[index - 1].indentIndex
-        if (prevBlockIndent + 1 > block.indentIndex) {
-          return {
-            ...block,
-            indentIndex: block.indentIndex + 1,
+        } else if (block.id === action.blockId) {
+          const prevBlockIndent = blocks[index - 1].indentIndex
+          if (prevBlockIndent + 1 > block.indentIndex) {
+            if (block.blockType === 'ToggleList' && toggleBlockIndent == null && !block.isChecked) {
+              toggleBlockIndent = block.indentIndex
+            }
+            return {
+              ...block,
+              indentIndex: block.indentIndex + 1,
+            }
+          }
+        } else if (toggleBlockIndent != null) {
+          if (block.indentIndex > toggleBlockIndent) {
+            return {
+              ...block,
+              indentIndex: block.indentIndex + 1,
+            }
+          } else {
+            toggleBlockIndent = null
           }
         }
         return block
       })
     }
     case 'subIndent': {
+      let toggleBlockIndent: number | null = null
       return blocks.map((block) => {
-        if (block.id !== action.blockId || block.indentIndex === 0) {
+        if (block.indentIndex === 0) {
           return block
+        } else if (block.id === action.blockId) {
+          if (block.blockType === 'ToggleList' && toggleBlockIndent == null) {
+            toggleBlockIndent = block.indentIndex
+          }
+          return {
+            ...block,
+            indentIndex: block.indentIndex - 1,
+          }
+        } else if (toggleBlockIndent != null) {
+          if (block.indentIndex > toggleBlockIndent) {
+            return {
+              ...block,
+              indentIndex: block.indentIndex - 1,
+            }
+          } else {
+            toggleBlockIndent = null
+          }
         }
-        return {
-          ...block,
-          indentIndex: block.indentIndex - 1,
-        }
+        return block
       })
     }
     case 'checkedBlock': {
