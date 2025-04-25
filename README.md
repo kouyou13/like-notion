@@ -12,9 +12,9 @@ Notionみたいなアプリです
 
 - prettier
 
-- zustand
-
 - supabase
+
+- prisma
 
 ```
   npm i . //モジュールのインストール（クローン時に実行する）
