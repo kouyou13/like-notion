@@ -102,11 +102,9 @@ const ListBlockComponent = ({
       } else if (e.key === 'Backspace' && block.message === '' && block.indentIndex === 0) {
         e.preventDefault()
         dispatch({
-          type: 'updateBlock',
+          type: 'updateBlockType',
           blockId: block.id,
-          message: block.message,
           blockType: 'Text',
-          indentIndex: block.indentIndex,
         })
         setTimeout(() => {
           blockRefs.current[block.order]?.focus()
@@ -132,16 +130,15 @@ const ListBlockComponent = ({
         e.preventDefault()
         if (block.message === '') {
           dispatch({
-            type: 'updateBlock',
+            type: 'updateBlockType',
             blockId: block.id,
-            message: block.message,
             blockType: 'Text',
-            indentIndex: block.indentIndex,
           })
           setTimeout(() => {
             blockRefs.current[block.order]?.focus()
           })
         } else if (block.blockType === 'ToggleList' && block.isChecked) {
+          // トグル展開時
           dispatch({
             type: 'addBlock',
             order: block.order + 1,
@@ -155,6 +152,7 @@ const ListBlockComponent = ({
             }
           }, 0)
         } else {
+          // トグル未展開時
           dispatch({
             type: 'addBlock',
             order: block.order + 1,
@@ -173,11 +171,9 @@ const ListBlockComponent = ({
         e.preventDefault()
         const newMessage = block.message + '\n'
         dispatch({
-          type: 'updateBlock',
+          type: 'updateBlockMessage',
           blockId: block.id,
           message: newMessage,
-          blockType: block.blockType,
-          indentIndex: block.indentIndex,
         })
       }
     },
@@ -212,7 +208,7 @@ const ListBlockComponent = ({
         outline="none"
         px={0}
         py={1}
-        w={650}
+        w="100%"
         rows={1}
         onCompositionStart={() => {
           setIsComposing(true)
@@ -222,11 +218,9 @@ const ListBlockComponent = ({
         }}
         onChange={(e) => {
           dispatch({
-            type: 'updateBlock',
+            type: 'updateBlockMessage',
             blockId: block.id,
             message: e.target.value,
-            blockType: block.blockType,
-            indentIndex: block.indentIndex,
           })
         }}
         onKeyDown={handleKeyDown}

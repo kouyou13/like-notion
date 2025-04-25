@@ -26,11 +26,9 @@ const AddBlockMenuComponent = ({
   const handleSelectBlockType = useCallback(
     (selectedBlockType: BlockType) => {
       dispatch({
-        type: 'updateBlock',
+        type: 'updateBlockType',
         blockId: block.id,
-        message: block.message,
         blockType: selectedBlockType,
-        indentIndex: block.indentIndex,
       })
       setTimeout(() => {
         blockRefs.current[block.order]?.focus()

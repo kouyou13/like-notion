@@ -115,11 +115,9 @@ const TextBlockComponent = ({
         e.preventDefault()
         if (block.message === '' && block.blockType !== 'Text') {
           dispatch({
-            type: 'updateBlock',
+            type: 'updateBlockType',
             blockId: block.id,
-            message: block.message,
             blockType: 'Text',
-            indentIndex: block.indentIndex,
           })
           setTimeout(() => {
             blockRefs.current[block.order]?.focus()
@@ -143,11 +141,9 @@ const TextBlockComponent = ({
         e.preventDefault()
         const newMessage = block.message + '\n'
         dispatch({
-          type: 'updateBlock',
+          type: 'updateBlockMessage',
           blockId: block.id,
           message: newMessage,
-          blockType: block.blockType,
-          indentIndex: block.indentIndex,
         })
       }
     },
@@ -190,11 +186,9 @@ const TextBlockComponent = ({
         const newMessage = e.target.value
         if (block.blockType === 'Text' && newMessage === '---') {
           dispatch({
-            type: 'updateBlock',
+            type: 'updateBlockType',
             blockId: block.id,
-            message: '',
             blockType: 'SeparatorLine',
-            indentIndex: block.indentIndex,
           })
           dispatch({
             type: 'addBlock',
@@ -207,11 +201,9 @@ const TextBlockComponent = ({
           })
         } else {
           dispatch({
-            type: 'updateBlock',
+            type: 'updateBlockMessage',
             blockId: block.id,
             message: newMessage,
-            blockType: block.blockType,
-            indentIndex: block.indentIndex,
           })
         }
       }}

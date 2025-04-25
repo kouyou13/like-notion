@@ -17,6 +17,16 @@ export type Action =
       indentIndex: number
     }
   | {
+      type: 'updateBlockMessage'
+      blockId: string
+      message: string
+    }
+  | {
+      type: 'updateBlockType'
+      blockId: string
+      blockType: BlockType
+    }
+  | {
       type: 'deleteBlock'
       blockId: string
     }
@@ -63,6 +73,17 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
             blockType: action.blockType,
             indentIndex: action.indentIndex,
             message: action.message,
+          }
+        }
+        return block
+      })
+    }
+    case 'updateBlockType': {
+      return blocks.map((block) => {
+        if (block.id === action.blockId) {
+          return {
+            ...block,
+            blockType: action.blockType,
           }
         }
         return block
