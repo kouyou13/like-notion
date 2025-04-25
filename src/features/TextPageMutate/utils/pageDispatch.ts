@@ -65,6 +65,17 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
         ...blocks.slice(action.order),
       ].map((b, index) => ({ ...b, order: index }))
     }
+    case 'updateBlockMessage': {
+      return blocks.map((block) => {
+        if (block.id === action.blockId) {
+          return {
+            ...block,
+            message: action.message,
+          }
+        }
+        return block
+      })
+    }
     case 'updateBlock': {
       return blocks.map((block) => {
         if (block.id === action.blockId) {

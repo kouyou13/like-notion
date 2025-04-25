@@ -18,7 +18,7 @@ const TextBlockComponent = ({
   blockRefs,
   rowLength,
 }: TextBlockProps) => {
-  const [isComposing, setIsComposing] = useState(false)
+  const [isComposing, setIsComposing] = useState(false) // IME入力中か
   const fontWeight = useMemo(() => {
     if (block.blockType === 'H1' || block.blockType === 'H2' || block.blockType === 'H3') {
       return 'bold'
@@ -34,32 +34,30 @@ const TextBlockComponent = ({
         return '見出し2'
       case 'H3':
         return '見出し3'
+      case 'Callout':
+        return '入力してください...'
     }
   }, [block.blockType])
 
   const fontSize = useMemo(() => {
     switch (block.blockType) {
-      case 'Text':
-        return 16
       case 'H1':
         return 32
       case 'H2':
         return 24
       case 'H3':
         return 20
+      default:
+        return 16
     }
   }, [block.blockType])
 
   const height = useMemo(() => {
     switch (block.blockType) {
-      case 'Text':
-        return '1rem'
       case 'H1':
         return '2.5rem'
-      case 'H2':
-        return 30
-      case 'H3':
-        return 30
+      default:
+        return '1rem'
     }
   }, [block.blockType])
 
@@ -70,6 +68,8 @@ const TextBlockComponent = ({
       case 'H2':
         return '2rem'
       case 'H3':
+        return '1.8rem'
+      case 'Callout':
         return '1.8rem'
       default:
         return '1.5rem'
