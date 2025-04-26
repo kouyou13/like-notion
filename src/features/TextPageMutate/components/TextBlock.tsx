@@ -77,8 +77,19 @@ const TextBlockComponent = ({
         return '1.8rem'
       case 'Citing':
         return '1.8rem'
+      case 'Callout':
+        return '1.5rem'
       default:
         return '1.5rem'
+    }
+  }, [block.blockType])
+
+  const py = useMemo(() => {
+    switch (block.blockType) {
+      case 'Callout':
+        return 3
+      default:
+        return 1
     }
   }, [block.blockType])
 
@@ -89,16 +100,27 @@ const TextBlockComponent = ({
         return
       } else if (e.key === 'Backspace' && block.message === '' && block.indentIndex === 0) {
         e.preventDefault()
-        if (rowLength > 1) {
-          dispatch({
-            type: 'deleteBlock',
-            blockId: block.id,
-          })
-          const prevInput =
-            block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
-          if (prevInput) {
-            prevInput.focus()
+        if (block.blockType === 'Text') {
+          if (rowLength > 1) {
+            dispatch({
+              type: 'deleteBlock',
+              blockId: block.id,
+            })
+            const prevInput =
+              block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
+            if (prevInput) {
+              prevInput.focus()
+            }
           }
+        } else {
+          dispatch({
+            type: 'updateBlockType',
+            blockId: block.id,
+            blockType: 'Text',
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.focus()
+          })
         }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
@@ -119,7 +141,7 @@ const TextBlockComponent = ({
       } else if (e.key === 'Enter' && !e.shiftKey) {
         // Shift + Enter でない時
         e.preventDefault()
-        if (block.message === '' && block.blockType !== 'Text') {
+        if (block.message === '' && block.blockType !== 'Text' && block.blockType !== 'Callout') {
           dispatch({
             type: 'updateBlockType',
             blockId: block.id,
@@ -153,12 +175,12 @@ const TextBlockComponent = ({
       }}
       fontWeight={fontWeight}
       onBlur={(e) => {
-        if (block.blockType === 'Text') {
+        if (block.blockType === 'Text' || block.blockType === 'Callout') {
           e.target.placeholder = ''
         }
       }}
       onFocus={(e) => {
-        if (block.blockType === 'Text') {
+        if (block.blockType === 'Text' || block.blockType === 'Callout') {
           e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
         }
       }}
@@ -171,7 +193,7 @@ const TextBlockComponent = ({
       border="none"
       outline="none"
       px={0}
-      py={1}
+      py={py}
       rows={1}
       onCompositionStart={() => {
         setIsComposing(true)

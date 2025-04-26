@@ -4,6 +4,7 @@ import React, { useMemo } from 'react'
 import { GrDrag } from 'react-icons/gr'
 
 import AddBlockMenu from './AddBlockMenu'
+import CallbackBlock from './CallbackBlock'
 import CitingBlock from './CitingBlock'
 import ListBlock from './ListBlock'
 import TextBlock from './TextBlock'
@@ -63,6 +64,16 @@ const BlockTypeComponent = ({
     case 'Citing':
       return (
         <CitingBlock
+          block={block}
+          dispatch={dispatch}
+          titleRef={titleRef}
+          blockRefs={blockRefs}
+          rowLength={rowLength}
+        />
+      )
+    case 'Callout':
+      return (
+        <CallbackBlock
           block={block}
           dispatch={dispatch}
           titleRef={titleRef}
@@ -159,21 +170,23 @@ const BlockRowComponent = ({
         setHoverRowIndex(null)
       }}
       onKeyDown={(e) => {
-        if (e.key === 'Tab' && !e.shiftKey) {
-          e.preventDefault()
-          dispatch({
-            type: 'addIndent',
-            blockId: block.id,
-          })
-        } else if (
-          (e.key === 'Tab' && e.shiftKey) ||
-          (e.key === 'Backspace' && block.message === '')
-        ) {
-          e.preventDefault()
-          dispatch({
-            type: 'subIndent',
-            blockId: block.id,
-          })
+        if (block.blockType !== 'Callout') {
+          if (e.key === 'Tab' && !e.shiftKey) {
+            e.preventDefault()
+            dispatch({
+              type: 'addIndent',
+              blockId: block.id,
+            })
+          } else if (
+            (e.key === 'Tab' && e.shiftKey) ||
+            (e.key === 'Backspace' && block.message === '')
+          ) {
+            e.preventDefault()
+            dispatch({
+              type: 'subIndent',
+              blockId: block.id,
+            })
+          }
         }
       }}
     >
