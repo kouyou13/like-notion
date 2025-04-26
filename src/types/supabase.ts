@@ -92,6 +92,7 @@ export type Database = {
           deleted_at: string | null
           id: string
           order: number
+          parent_block_id: string | null
           title: string
           updated_at: string
         }
@@ -100,6 +101,7 @@ export type Database = {
           deleted_at?: string | null
           id: string
           order: number
+          parent_block_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -108,6 +110,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           order?: number
+          parent_block_id?: string | null
           title?: string
           updated_at?: string
         }

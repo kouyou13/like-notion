@@ -5,6 +5,7 @@ export type Page = {
   title: string
   order: number
   deletedAt: string | null
+  parentBlockId: string | null
 }
 
 export type BlockType = (typeof Constants)['public']['Enums']['block_type'][number]

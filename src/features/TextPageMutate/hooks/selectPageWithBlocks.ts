@@ -11,8 +11,8 @@ const selectPageWithBlocks = async (
     .from('page')
     .select('*, block(*)')
     .eq('id', pageId)
-    .filter('deleted_at', 'is', null)
-    .filter('block.deleted_at', 'is', null)
+    .is('deleted_at', null)
+    .is('block.deleted_at', null)
     .single()
   const camel = page ? camelcaseKeys(page, { deep: true }) : undefined
   const camelData: PageWithBlocks | undefined = camel

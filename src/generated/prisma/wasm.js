@@ -123,7 +123,8 @@ exports.Prisma.PageScalarFieldEnum = {
   updatedAt: 'updatedAt',
   title: 'title',
   order: 'order',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  parentBlockId: 'parentBlockId'
 };
 
 exports.Prisma.BlockScalarFieldEnum = {

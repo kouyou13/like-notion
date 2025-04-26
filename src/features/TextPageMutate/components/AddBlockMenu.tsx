@@ -7,8 +7,10 @@ import { ImList2, ImListNumbered, ImQuotesLeft } from 'react-icons/im'
 import { LuListChecks, LuListCollapse } from 'react-icons/lu'
 import { RiH1, RiH2, RiH3, RiTBoxLine } from 'react-icons/ri'
 import { RxText, RxTable, RxMinus } from 'react-icons/rx'
+import { v4 } from 'uuid'
 
-import type { Block, BlockType } from '../../../types'
+import { createSupabaseClient } from '../../../lib/supabase'
+import type { Block, BlockType, PageWithBlocks } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
 type AddBlockMenuProps = {
@@ -23,18 +25,57 @@ const AddBlockMenuComponent = ({
   setIsOpenBlockSettingIndex,
   blockRefs,
 }: AddBlockMenuProps) => {
+  const supabase = createSupabaseClient()
+
   const handleSelectBlockType = useCallback(
-    (selectedBlockType: BlockType) => {
+    async (selectedBlockType: BlockType) => {
       dispatch({
         type: 'updateBlockType',
         blockId: block.id,
         blockType: selectedBlockType,
       })
-      setTimeout(() => {
-        blockRefs.current[block.order]?.focus()
-      })
+      if (selectedBlockType !== 'Page') {
+        setTimeout(() => {
+          blockRefs.current[block.order]?.focus()
+        })
+      } else {
+        const newPage: PageWithBlocks = {
+          id: v4(),
+          title: '',
+          order: -1,
+          deletedAt: null,
+          parentBlockId: block.id,
+          block: [
+            {
+              id: v4(),
+              blockType: 'Text',
+              order: 0,
+              message: '',
+              isChecked: false,
+              indentIndex: 0,
+            },
+          ],
+        }
+        await supabase.from('page').insert([
+          {
+            id: newPage.id,
+            title: newPage.title,
+            order: newPage.order,
+            parent_block_id: newPage.parentBlockId,
+          },
+        ])
+        await supabase.from('block').insert(
+          newPage.block.map((block) => ({
+            id: block.id,
+            block_type: block.blockType,
+            message: block.message,
+            order: block.order,
+            page_id: newPage.id,
+          })),
+        )
+      }
     },
-    [block, dispatch, blockRefs],
+    [block, dispatch, blockRefs, supabase],
   )
   return (
     <Menu.Root
@@ -87,8 +128,8 @@ const AddBlockMenuComponent = ({
             </Text>
             <Menu.Item
               value="Text"
-              onClick={() => {
-                handleSelectBlockType('Text')
+              onClick={async () => {
+                await handleSelectBlockType('Text')
               }}
             >
               <HStack>
@@ -100,8 +141,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="H1"
-              onClick={() => {
-                handleSelectBlockType('H1')
+              onClick={async () => {
+                await handleSelectBlockType('H1')
               }}
             >
               <HStack>
@@ -113,8 +154,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="H2"
-              onClick={() => {
-                handleSelectBlockType('H2')
+              onClick={async () => {
+                await handleSelectBlockType('H2')
               }}
             >
               <HStack>
@@ -126,8 +167,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="H3"
-              onClick={() => {
-                handleSelectBlockType('H3')
+              onClick={async () => {
+                await handleSelectBlockType('H3')
               }}
             >
               <HStack>
@@ -139,8 +180,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="List"
-              onClick={() => {
-                handleSelectBlockType('List')
+              onClick={async () => {
+                await handleSelectBlockType('List')
               }}
             >
               <HStack>
@@ -152,8 +193,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="ListNumbers"
-              onClick={() => {
-                handleSelectBlockType('ListNumbers')
+              onClick={async () => {
+                await handleSelectBlockType('ListNumbers')
               }}
             >
               <HStack>
@@ -165,8 +206,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="ToDoList"
-              onClick={() => {
-                handleSelectBlockType('ToDoList')
+              onClick={async () => {
+                await handleSelectBlockType('ToDoList')
               }}
             >
               <HStack>
@@ -178,8 +219,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="ToggleList"
-              onClick={() => {
-                handleSelectBlockType('ToggleList')
+              onClick={async () => {
+                await handleSelectBlockType('ToggleList')
               }}
             >
               <HStack>
@@ -191,8 +232,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="Page"
-              onClick={() => {
-                handleSelectBlockType('Page')
+              onClick={async () => {
+                await handleSelectBlockType('Page')
               }}
             >
               <HStack>
@@ -204,8 +245,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="Callout"
-              onClick={() => {
-                handleSelectBlockType('Callout')
+              onClick={async () => {
+                await handleSelectBlockType('Callout')
               }}
             >
               <HStack>
@@ -217,8 +258,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="Citing"
-              onClick={() => {
-                handleSelectBlockType('Citing')
+              onClick={async () => {
+                await handleSelectBlockType('Citing')
               }}
             >
               <HStack>
@@ -230,8 +271,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="Table"
-              onClick={() => {
-                handleSelectBlockType('Table')
+              onClick={async () => {
+                await handleSelectBlockType('Table')
               }}
             >
               <HStack>
@@ -243,8 +284,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="SeparatorLine"
-              onClick={() => {
-                handleSelectBlockType('SeparatorLine')
+              onClick={async () => {
+                await handleSelectBlockType('SeparatorLine')
               }}
             >
               <HStack>
@@ -256,8 +297,8 @@ const AddBlockMenuComponent = ({
             </Menu.Item>
             <Menu.Item
               value="PageLink"
-              onClick={() => {
-                handleSelectBlockType('PageLink')
+              onClick={async () => {
+                await handleSelectBlockType('PageLink')
               }}
             >
               <HStack>

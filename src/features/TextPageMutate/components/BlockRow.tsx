@@ -7,6 +7,7 @@ import AddBlockMenu from './AddBlockMenu'
 import CallbackBlock from './CallbackBlock'
 import CitingBlock from './CitingBlock'
 import ListBlock from './ListBlock'
+import PageBlock from './PageBlock'
 import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
@@ -81,6 +82,8 @@ const BlockTypeComponent = ({
           rowLength={rowLength}
         />
       )
+    case 'Page':
+      return <PageBlock block={block} />
   }
 }
 

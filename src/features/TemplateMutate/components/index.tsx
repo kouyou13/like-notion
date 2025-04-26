@@ -27,7 +27,8 @@ const Template = ({ children }: TemplateProps) => {
       const { data, error } = await supabase
         .from('page')
         .select('*')
-        .filter('deleted_at', 'is', null)
+        .is('parent_block_id', null)
+        .is('deleted_at', null)
       if (error) {
         console.error(error)
       } else {
@@ -38,6 +39,7 @@ const Template = ({ children }: TemplateProps) => {
               title: data.title,
               order: data.order,
               deletedAt: data.deleted_at,
+              parentBlockId: data.parent_block_id,
             }))
             .sort((a, b) => a.order - b.order),
         )
@@ -57,6 +59,7 @@ const Template = ({ children }: TemplateProps) => {
             title: payload.new.title,
             order: payload.new.order,
             deletedAt: payload.new.deleted_at ?? null,
+            parentBlockId: payload.new.parent_block_id ?? null,
           }
           setPages((prev) => [...prev, newPage])
         } else if (payload.eventType == 'UPDATE') {
@@ -65,11 +68,12 @@ const Template = ({ children }: TemplateProps) => {
             title: payload.new.title,
             order: payload.new.order,
             deletedAt: payload.new.deleted_at ?? null,
+            parentBlockId: payload.new.parent_block_id ?? null,
           }
           setPages((prev) =>
             prev
               .map((page) => (page.id === newPage.id ? newPage : page))
-              .filter((page) => page.deletedAt == null),
+              .filter((page) => page.deletedAt == null && page.parentBlockId == null),
           )
         }
       })
@@ -88,6 +92,7 @@ const Template = ({ children }: TemplateProps) => {
       title: '',
       order: pages.length + 1,
       deletedAt: null,
+      parentBlockId: null,
       block: [
         {
           id: v4(),

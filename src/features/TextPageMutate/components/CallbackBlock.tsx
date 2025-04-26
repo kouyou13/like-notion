@@ -22,9 +22,9 @@ const CallbackBlockComponent = ({
   rowLength,
 }: CallbackBlockProps) => {
   return (
-    <HStack minH="3.5rem" justify="center" bgColor="gray.100" gap={0} w="100%">
+    <HStack minH="3.5rem" justify="center" bgColor="gray.50" gap={0} w="100%" my={1}>
       <Flex w="3vw" align="center" justify="center">
-        <FcIdea size={24} />
+        <FcIdea size={22} />
       </Flex>
       <TextBlock
         block={block}

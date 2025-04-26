@@ -82,7 +82,7 @@ const PageTabComponent = ({ page }: PageTabProps) => {
           whiteSpace="nowrap"
           textOverflow="ellipsis"
         >
-          {page.title}
+          {page.title === '' ? '新規ページ' : page.title}
         </Text>
         <Spacer
           onClick={() => {

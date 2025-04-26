@@ -13,7 +13,7 @@ const TextPageComponent = () => {
   const supabase = createSupabaseClient()
   const router = useRouter()
   const { pageId }: { pageId: string } = useParams()
-  const [pageTitle, setPageTitle] = useState('')
+  const [pageTitle, setPageTitle] = useState<string | null>(null)
   const [blocks, dispatch] = useReducer(blocksReducer, [])
   const previousBlocksRef = useRef(blocks)
 
@@ -32,12 +32,15 @@ const TextPageComponent = () => {
   useEffect(() => {
     const fetchPages = async () => {
       const { data: page, error } = await selectPageWithBlocks(pageId)
-      if (error || page?.deletedAt != null) {
+      if (error) {
         console.error(error)
         router.push('/')
-      }
-      if (page) {
-        setPageTitle(page.title)
+      } else if (page?.deletedAt != null) {
+        router.push('/')
+      } else if (page != null) {
+        if (page.title !== '') {
+          setPageTitle(page.title)
+        }
         dispatch({
           type: 'initBlocks',
           blocks: page.block.sort((a, b) => a.order - b.order),
@@ -45,18 +48,19 @@ const TextPageComponent = () => {
       }
     }
     void fetchPages()
-  }, [pageId, supabase, router])
+  }, [pageId, router])
 
   // 定期的にタイトルを保存
   useEffect(() => {
     const saveTitle = async () => {
-      if (debouncedPageTitle === '') return
-      const { error } = await supabase
-        .from('page')
-        .update({ title: debouncedPageTitle })
-        .eq('id', pageId)
-      if (error) {
-        console.error(error)
+      if (debouncedPageTitle != null) {
+        const { error } = await supabase
+          .from('page')
+          .update({ title: debouncedPageTitle })
+          .eq('id', pageId)
+        if (error) {
+          console.error(error)
+        }
       }
     }
     void saveTitle()
@@ -139,7 +143,7 @@ const TextPageComponent = () => {
             titleRef.current = el
           }}
           placeholder="新規ページ"
-          value={pageTitle}
+          value={pageTitle ?? ''}
           onChange={(e) => {
             setPageTitle(e.target.value)
           }}

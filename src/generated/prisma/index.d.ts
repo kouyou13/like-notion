@@ -1046,6 +1046,7 @@ export namespace Prisma {
     title: string | null
     order: number | null
     deletedAt: Date | null
+    parentBlockId: string | null
   }
 
   export type PageMaxAggregateOutputType = {
@@ -1055,6 +1056,7 @@ export namespace Prisma {
     title: string | null
     order: number | null
     deletedAt: Date | null
+    parentBlockId: string | null
   }
 
   export type PageCountAggregateOutputType = {
@@ -1064,6 +1066,7 @@ export namespace Prisma {
     title: number
     order: number
     deletedAt: number
+    parentBlockId: number
     _all: number
   }
 
@@ -1083,6 +1086,7 @@ export namespace Prisma {
     title?: true
     order?: true
     deletedAt?: true
+    parentBlockId?: true
   }
 
   export type PageMaxAggregateInputType = {
@@ -1092,6 +1096,7 @@ export namespace Prisma {
     title?: true
     order?: true
     deletedAt?: true
+    parentBlockId?: true
   }
 
   export type PageCountAggregateInputType = {
@@ -1101,6 +1106,7 @@ export namespace Prisma {
     title?: true
     order?: true
     deletedAt?: true
+    parentBlockId?: true
     _all?: true
   }
 
@@ -1197,6 +1203,7 @@ export namespace Prisma {
     title: string
     order: number
     deletedAt: Date | null
+    parentBlockId: string | null
     _count: PageCountAggregateOutputType | null
     _avg: PageAvgAggregateOutputType | null
     _sum: PageSumAggregateOutputType | null
@@ -1225,6 +1232,7 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    parentBlockId?: boolean
     blocks?: boolean | Page$blocksArgs<ExtArgs>
     _count?: boolean | PageCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["page"]>
@@ -1236,6 +1244,7 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    parentBlockId?: boolean
   }, ExtArgs["result"]["page"]>
 
   export type PageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1245,6 +1254,7 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    parentBlockId?: boolean
   }, ExtArgs["result"]["page"]>
 
   export type PageSelectScalar = {
@@ -1254,9 +1264,10 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    parentBlockId?: boolean
   }
 
-  export type PageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "order" | "deletedAt", ExtArgs["result"]["page"]>
+  export type PageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "order" | "deletedAt" | "parentBlockId", ExtArgs["result"]["page"]>
   export type PageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     blocks?: boolean | Page$blocksArgs<ExtArgs>
     _count?: boolean | PageCountOutputTypeDefaultArgs<ExtArgs>
@@ -1276,6 +1287,7 @@ export namespace Prisma {
       title: string
       order: number
       deletedAt: Date | null
+      parentBlockId: string | null
     }, ExtArgs["result"]["page"]>
     composites: {}
   }
@@ -1706,6 +1718,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Page", 'String'>
     readonly order: FieldRef<"Page", 'Int'>
     readonly deletedAt: FieldRef<"Page", 'DateTime'>
+    readonly parentBlockId: FieldRef<"Page", 'String'>
   }
     
 
@@ -3323,7 +3336,8 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     title: 'title',
     order: 'order',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    parentBlockId: 'parentBlockId'
   };
 
   export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum]
@@ -3463,6 +3477,7 @@ export namespace Prisma {
     title?: StringFilter<"Page"> | string
     order?: IntFilter<"Page"> | number
     deletedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
+    parentBlockId?: UuidNullableFilter<"Page"> | string | null
     blocks?: BlockListRelationFilter
   }
 
@@ -3473,11 +3488,13 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    parentBlockId?: SortOrderInput | SortOrder
     blocks?: BlockOrderByRelationAggregateInput
   }
 
   export type PageWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    parentBlockId?: string
     id_order?: PageIdOrderCompoundUniqueInput
     AND?: PageWhereInput | PageWhereInput[]
     OR?: PageWhereInput[]
@@ -3488,7 +3505,7 @@ export namespace Prisma {
     order?: IntFilter<"Page"> | number
     deletedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
     blocks?: BlockListRelationFilter
-  }, "id" | "id_order">
+  }, "id" | "parentBlockId" | "id_order">
 
   export type PageOrderByWithAggregationInput = {
     id?: SortOrder
@@ -3497,6 +3514,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    parentBlockId?: SortOrderInput | SortOrder
     _count?: PageCountOrderByAggregateInput
     _avg?: PageAvgOrderByAggregateInput
     _max?: PageMaxOrderByAggregateInput
@@ -3514,6 +3532,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Page"> | string
     order?: IntWithAggregatesFilter<"Page"> | number
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Page"> | Date | string | null
+    parentBlockId?: UuidNullableWithAggregatesFilter<"Page"> | string | null
   }
 
   export type BlockWhereInput = {
@@ -3600,6 +3619,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    parentBlockId?: string | null
     blocks?: BlockCreateNestedManyWithoutPageInput
   }
 
@@ -3610,6 +3630,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    parentBlockId?: string | null
     blocks?: BlockUncheckedCreateNestedManyWithoutPageInput
   }
 
@@ -3620,6 +3641,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     blocks?: BlockUpdateManyWithoutPageNestedInput
   }
 
@@ -3630,6 +3652,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     blocks?: BlockUncheckedUpdateManyWithoutPageNestedInput
   }
 
@@ -3640,6 +3663,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    parentBlockId?: string | null
   }
 
   export type PageUpdateManyMutationInput = {
@@ -3649,6 +3673,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PageUncheckedUpdateManyInput = {
@@ -3658,6 +3683,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BlockCreateInput = {
@@ -3803,6 +3829,18 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type UuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
   export type BlockListRelationFilter = {
     every?: BlockWhereInput
     some?: BlockWhereInput
@@ -3830,6 +3868,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrder
+    parentBlockId?: SortOrder
   }
 
   export type PageAvgOrderByAggregateInput = {
@@ -3843,6 +3882,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrder
+    parentBlockId?: SortOrder
   }
 
   export type PageMinOrderByAggregateInput = {
@@ -3852,6 +3892,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrder
+    parentBlockId?: SortOrder
   }
 
   export type PageSumOrderByAggregateInput = {
@@ -3935,6 +3976,21 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type EnumBlockTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.BlockType | EnumBlockTypeFieldRefInput<$PrismaModel>
     in?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
@@ -3945,18 +4001,6 @@ export namespace Prisma {
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type UuidNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
   }
 
   export type PageNullableScalarRelationFilter = {
@@ -4028,21 +4072,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
   export type BlockCreateNestedManyWithoutPageInput = {
     create?: XOR<BlockCreateWithoutPageInput, BlockUncheckedCreateWithoutPageInput> | BlockCreateWithoutPageInput[] | BlockUncheckedCreateWithoutPageInput[]
     connectOrCreate?: BlockCreateOrConnectWithoutPageInput | BlockCreateOrConnectWithoutPageInput[]
@@ -4075,6 +4104,10 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type BlockUpdateManyWithoutPageNestedInput = {
@@ -4127,10 +4160,6 @@ export namespace Prisma {
     delete?: PageWhereInput | boolean
     connect?: PageWhereUniqueInput
     update?: XOR<XOR<PageUpdateToOneWithWhereWithoutBlocksInput, PageUpdateWithoutBlocksInput>, PageUncheckedUpdateWithoutBlocksInput>
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -4189,6 +4218,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedUuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
@@ -4288,47 +4328,6 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumBlockTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.BlockType | EnumBlockTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumBlockTypeFilter<$PrismaModel> | $Enums.BlockType
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedUuidNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedEnumBlockTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.BlockType | EnumBlockTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumBlockTypeWithAggregatesFilter<$PrismaModel> | $Enums.BlockType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumBlockTypeFilter<$PrismaModel>
-    _max?: NestedEnumBlockTypeFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -4355,6 +4354,36 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumBlockTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.BlockType | EnumBlockTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBlockTypeFilter<$PrismaModel> | $Enums.BlockType
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumBlockTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BlockType | EnumBlockTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BlockType[] | ListEnumBlockTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBlockTypeWithAggregatesFilter<$PrismaModel> | $Enums.BlockType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBlockTypeFilter<$PrismaModel>
+    _max?: NestedEnumBlockTypeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type BlockCreateWithoutPageInput = {
@@ -4427,6 +4456,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    parentBlockId?: string | null
   }
 
   export type PageUncheckedCreateWithoutBlocksInput = {
@@ -4436,6 +4466,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    parentBlockId?: string | null
   }
 
   export type PageCreateOrConnectWithoutBlocksInput = {
@@ -4461,6 +4492,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PageUncheckedUpdateWithoutBlocksInput = {
@@ -4470,6 +4502,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BlockCreateManyPageInput = {
