@@ -54,27 +54,31 @@ const Template = ({ children }: TemplateProps) => {
       .channel('page')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'page' }, (payload) => {
         if (payload.eventType === 'INSERT') {
-          const newPage: Page = {
-            id: payload.new.id,
-            title: payload.new.title,
-            order: payload.new.order,
-            deletedAt: payload.new.deleted_at ?? null,
-            parentBlockId: payload.new.parent_block_id ?? null,
+          if (payload.new.parent_block_id != null) {
+            const newPage: Page = {
+              id: payload.new.id,
+              title: payload.new.title,
+              order: payload.new.order,
+              deletedAt: payload.new.deleted_at ?? null,
+              parentBlockId: payload.new.parent_block_id ?? null,
+            }
+            setPages((prev) => [...prev, newPage])
           }
-          setPages((prev) => [...prev, newPage])
         } else if (payload.eventType == 'UPDATE') {
-          const newPage: Page = {
-            id: payload.new.id,
-            title: payload.new.title,
-            order: payload.new.order,
-            deletedAt: payload.new.deleted_at ?? null,
-            parentBlockId: payload.new.parent_block_id ?? null,
+          if (payload.new.parent_block_id != null) {
+            const newPage: Page = {
+              id: payload.new.id,
+              title: payload.new.title,
+              order: payload.new.order,
+              deletedAt: payload.new.deleted_at ?? null,
+              parentBlockId: payload.new.parent_block_id ?? null,
+            }
+            setPages((prev) =>
+              prev
+                .map((page) => (page.id === newPage.id ? newPage : page))
+                .filter((page) => page.deletedAt == null && page.parentBlockId == null),
+            )
           }
-          setPages((prev) =>
-            prev
-              .map((page) => (page.id === newPage.id ? newPage : page))
-              .filter((page) => page.deletedAt == null && page.parentBlockId == null),
-          )
         }
       })
       .subscribe()
