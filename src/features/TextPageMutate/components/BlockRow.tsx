@@ -4,7 +4,7 @@ import React, { useMemo } from 'react'
 import { GrDrag } from 'react-icons/gr'
 
 import AddBlockMenu from './AddBlockMenu'
-import CalloutBlock from './CalloutBlock'
+import CitingBlock from './CitingBlock'
 import ListBlock from './ListBlock'
 import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
@@ -60,9 +60,9 @@ const BlockTypeComponent = ({
           <Separator color="black" />
         </Box>
       )
-    case 'Callout':
+    case 'Citing':
       return (
-        <CalloutBlock
+        <CitingBlock
           block={block}
           dispatch={dispatch}
           titleRef={titleRef}

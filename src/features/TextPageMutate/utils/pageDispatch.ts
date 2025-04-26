@@ -27,6 +27,11 @@ export type Action =
       blockType: BlockType
     }
   | {
+      type: 'checkedBlock'
+      blockId: string
+      isChecked: boolean
+    }
+  | {
       type: 'deleteBlock'
       blockId: string
     }
@@ -46,11 +51,6 @@ export type Action =
       blockId: string
     }
   | {
-      type: 'checkedBlock'
-      blockId: string
-      isChecked: boolean
-    }
-  | {
       // block[]の読み込み
       type: 'initBlocks'
       blocks: Block[]
@@ -65,17 +65,6 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
         ...blocks.slice(action.order),
       ].map((b, index) => ({ ...b, order: index }))
     }
-    case 'updateBlockMessage': {
-      return blocks.map((block) => {
-        if (block.id === action.blockId) {
-          return {
-            ...block,
-            message: action.message,
-          }
-        }
-        return block
-      })
-    }
     case 'updateBlock': {
       return blocks.map((block) => {
         if (block.id === action.blockId) {
@@ -89,12 +78,34 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
         return block
       })
     }
+    case 'updateBlockMessage': {
+      return blocks.map((block) => {
+        if (block.id === action.blockId) {
+          return {
+            ...block,
+            message: action.message,
+          }
+        }
+        return block
+      })
+    }
     case 'updateBlockType': {
       return blocks.map((block) => {
         if (block.id === action.blockId) {
           return {
             ...block,
             blockType: action.blockType,
+          }
+        }
+        return block
+      })
+    }
+    case 'checkedBlock': {
+      return blocks.map((block) => {
+        if (block.id === action.blockId) {
+          return {
+            ...block,
+            isChecked: action.isChecked,
           }
         }
         return block
@@ -184,19 +195,8 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
         return block
       })
     }
-    case 'checkedBlock': {
-      return blocks.map((block) => {
-        if (block.id === action.blockId) {
-          return {
-            ...block,
-            isChecked: action.isChecked,
-          }
-        }
-        return block
-      })
-    }
     case 'initBlocks': {
-      return action.blocks
+      return action.blocks.map((b, index) => ({ ...b, order: index }))
     }
     default:
       return blocks

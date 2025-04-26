@@ -5,7 +5,7 @@ import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
-type CalloutBlockProps = {
+type CitingBlockProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
@@ -13,13 +13,13 @@ type CalloutBlockProps = {
   rowLength: number
 }
 
-const CalloutBlockComponent = ({
+const CitingBlockComponent = ({
   block,
   dispatch,
   titleRef,
   blockRefs,
   rowLength,
-}: CalloutBlockProps) => {
+}: CitingBlockProps) => {
   return (
     <Blockquote.Root w="100%" pr={0} my={1} colorPalette="black">
       <Blockquote.Content justifyContent="center" alignItems="center" display="flex">
@@ -34,5 +34,5 @@ const CalloutBlockComponent = ({
     </Blockquote.Root>
   )
 }
-const CalloutBlock = React.memo(CalloutBlockComponent)
-export default CalloutBlock
+const CitingBlock = React.memo(CitingBlockComponent)
+export default CitingBlock

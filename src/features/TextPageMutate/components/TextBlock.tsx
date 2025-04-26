@@ -38,7 +38,7 @@ const TextBlockComponent = ({
         return '見出し2'
       case 'H3':
         return '見出し3'
-      case 'Callout':
+      case 'Citing':
         return '入力してください...'
       default:
         return ''
@@ -75,7 +75,7 @@ const TextBlockComponent = ({
         return '2rem'
       case 'H3':
         return '1.8rem'
-      case 'Callout':
+      case 'Citing':
         return '1.8rem'
       default:
         return '1.5rem'
