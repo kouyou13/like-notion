@@ -11,18 +11,20 @@ import { RxText, RxTable, RxMinus } from 'react-icons/rx'
 import { v4 } from 'uuid'
 
 import { createSupabaseClient } from '../../../lib/supabase'
-import type { Block, BlockType, PageWithBlocks } from '../../../types'
+import type { Block, BlockType } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
 type AddBlockMenuProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
+  openBlockSettingIndex: number | null
   setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
   blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
 }
 const AddBlockMenuComponent = ({
   block,
   dispatch,
+  openBlockSettingIndex,
   setIsOpenBlockSettingIndex,
   blockRefs,
 }: AddBlockMenuProps) => {
@@ -47,41 +49,22 @@ const AddBlockMenuComponent = ({
             block_type: 'Page',
           })
           .eq('id', block.id)
-        const newPage: PageWithBlocks = {
-          id: v4(),
+        const newPageId = v4()
+        await supabase.from('page').insert({
+          id: newPageId,
           title: '',
           order: -1,
-          deletedAt: null,
-          parentBlockId: block.id,
-          block: [
-            {
-              id: v4(),
-              blockType: 'Text',
-              order: 0,
-              message: '',
-              isChecked: false,
-              indentIndex: 0,
-            },
-          ],
-        }
-        await supabase.from('page').insert([
-          {
-            id: newPage.id,
-            title: newPage.title,
-            order: newPage.order,
-            parent_block_id: newPage.parentBlockId,
-          },
-        ])
-        await supabase.from('block').insert(
-          newPage.block.map((block) => ({
-            id: block.id,
-            block_type: block.blockType,
-            message: block.message,
-            order: block.order,
-            page_id: newPage.id,
-          })),
-        )
-        router.push(`/${newPage.id}`)
+          parent_block_id: block.id,
+        })
+        await supabase.from('block').insert({
+          id: v4(),
+          block_type: 'Text',
+          message: '',
+          order: 0,
+          indent_index: 0,
+          page_id: newPageId,
+        })
+        router.push(`/${newPageId}`)
       }
     },
     [block, dispatch, blockRefs, supabase, router],
@@ -106,6 +89,7 @@ const AddBlockMenuComponent = ({
           setIsOpenBlockSettingIndex(null)
         }
       }}
+      open={openBlockSettingIndex === block.order}
     >
       <Menu.Trigger asChild>
         <Button variant="ghost" size="2xs" p={1} _hover={{ bgColor: 'gray.100' }} borderRadius="md">
@@ -141,12 +125,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('Text')
               }}
             >
-              <HStack>
-                <RxText color="gray" size={16} />
-                <Text fontSize="sm" color="gray.700">
-                  テキスト
-                </Text>
-              </HStack>
+              <RxText color="gray" size={16} />
+              <Text fontSize="sm" color="gray.700">
+                テキスト
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="H1"
@@ -154,12 +136,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('H1')
               }}
             >
-              <HStack>
-                <RiH1 color="gray" size={17} />
-                <Text fontSize="sm" color="gray.700">
-                  見出し1
-                </Text>
-              </HStack>
+              <RiH1 color="gray" size={17} />
+              <Text fontSize="sm" color="gray.700">
+                見出し1
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="H2"
@@ -167,12 +147,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('H2')
               }}
             >
-              <HStack>
-                <RiH2 color="gray" size={17} />
-                <Text fontSize="sm" color="gray.700">
-                  見出し2
-                </Text>
-              </HStack>
+              <RiH2 color="gray" size={17} />
+              <Text fontSize="sm" color="gray.700">
+                見出し2
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="H3"
@@ -180,12 +158,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('H3')
               }}
             >
-              <HStack>
-                <RiH3 color="gray" size={17} />
-                <Text fontSize="sm" color="gray.700">
-                  見出し3
-                </Text>
-              </HStack>
+              <RiH3 color="gray" size={17} />
+              <Text fontSize="sm" color="gray.700">
+                見出し3
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="List"
@@ -193,12 +169,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('List')
               }}
             >
-              <HStack>
-                <ImList2 color="gray" size={13} />
-                <Text fontSize="sm" color="gray.700">
-                  箇条書きリスト
-                </Text>
-              </HStack>
+              <ImList2 color="gray" size={13} />
+              <Text fontSize="sm" color="gray.700">
+                箇条書きリスト
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="ListNumbers"
@@ -206,12 +180,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('ListNumbers')
               }}
             >
-              <HStack>
-                <ImListNumbered color="gray" size={13} />
-                <Text fontSize="sm" color="gray.700">
-                  番号付きリスト
-                </Text>
-              </HStack>
+              <ImListNumbered color="gray" size={13} />
+              <Text fontSize="sm" color="gray.700">
+                番号付きリスト
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="ToDoList"
@@ -219,12 +191,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('ToDoList')
               }}
             >
-              <HStack>
-                <LuListChecks color="gray" size={15} />
-                <Text fontSize="sm" color="gray.700">
-                  ToDoリスト
-                </Text>
-              </HStack>
+              <LuListChecks color="gray" size={15} />
+              <Text fontSize="sm" color="gray.700">
+                ToDoリスト
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="ToggleList"
@@ -232,12 +202,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('ToggleList')
               }}
             >
-              <HStack>
-                <LuListCollapse color="gray" size={15} />
-                <Text fontSize="sm" color="gray.700">
-                  トグルリスト
-                </Text>
-              </HStack>
+              <LuListCollapse color="gray" size={15} />
+              <Text fontSize="sm" color="gray.700">
+                トグルリスト
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="Page"
@@ -245,12 +213,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('Page')
               }}
             >
-              <HStack>
-                <FaRegFileAlt color="gray" size={15} />
-                <Text fontSize="sm" color="gray.700">
-                  ページ
-                </Text>
-              </HStack>
+              <FaRegFileAlt color="gray" size={15} />
+              <Text fontSize="sm" color="gray.700">
+                ページ
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="Callout"
@@ -258,12 +224,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('Callout')
               }}
             >
-              <HStack>
-                <RiTBoxLine color="gray" size={16} />
-                <Text fontSize="sm" color="gray.700">
-                  コールアウト
-                </Text>
-              </HStack>
+              <RiTBoxLine color="gray" size={16} />
+              <Text fontSize="sm" color="gray.700">
+                コールアウト
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="Citing"
@@ -271,12 +235,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('Citing')
               }}
             >
-              <HStack>
-                <ImQuotesLeft color="gray" size={13} />
-                <Text fontSize="sm" color="gray.700">
-                  引用
-                </Text>
-              </HStack>
+              <ImQuotesLeft color="gray" size={13} />
+              <Text fontSize="sm" color="gray.700">
+                引用
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="Table"
@@ -284,12 +246,10 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('Table')
               }}
             >
-              <HStack>
-                <RxTable color="gray" size={15} />
-                <Text fontSize="sm" color="gray.700">
-                  テーブル
-                </Text>
-              </HStack>
+              <RxTable color="gray" size={15} />
+              <Text fontSize="sm" color="gray.700">
+                テーブル
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="SeparatorLine"
@@ -297,25 +257,22 @@ const AddBlockMenuComponent = ({
                 await handleSelectBlockType('SeparatorLine')
               }}
             >
-              <HStack>
-                <RxMinus color="gray" size={17} />
-                <Text fontSize="sm" color="gray.700">
-                  区切り線
-                </Text>
-              </HStack>
+              <RxMinus color="gray" size={17} />
+              <Text fontSize="sm" color="gray.700">
+                区切り線
+              </Text>
             </Menu.Item>
             <Menu.Item
               value="PageLink"
               onClick={async () => {
                 await handleSelectBlockType('PageLink')
               }}
+              ml={1}
             >
-              <HStack>
-                <FaExternalLinkAlt color="gray" size={15} />
-                <Text fontSize="sm" color="gray.700">
-                  ページリンク
-                </Text>
-              </HStack>
+              <FaExternalLinkAlt color="gray" size={13} />
+              <Text fontSize="sm" color="gray.700">
+                ページリンク
+              </Text>
             </Menu.Item>
           </Menu.Content>
         </Menu.Positioner>

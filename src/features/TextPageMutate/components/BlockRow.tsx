@@ -94,8 +94,8 @@ type BlockRowProps = {
   setHoverRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   grabbedRowIndex: number | null
   setGrabbedRowIndex: React.Dispatch<React.SetStateAction<number | null>>
-  isOpenBlockSettingIndex: number | null
-  setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
+  openBlockSettingIndex: number | null
+  setOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
   blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
   rowLength: number
@@ -108,8 +108,8 @@ const BlockRowComponent = ({
   setHoverRowIndex,
   grabbedRowIndex,
   setGrabbedRowIndex,
-  isOpenBlockSettingIndex,
-  setIsOpenBlockSettingIndex,
+  openBlockSettingIndex,
+  setOpenBlockSettingIndex,
   titleRef,
   blockRefs,
   rowLength,
@@ -144,7 +144,7 @@ const BlockRowComponent = ({
       pl={`${String(block.indentIndex * 1.5)}vw`}
       w="100%"
       onMouseEnter={() => {
-        if (isOpenBlockSettingIndex == null) {
+        if (openBlockSettingIndex == null) {
           setHoverRowIndex(block.order)
         }
       }}
@@ -193,12 +193,13 @@ const BlockRowComponent = ({
         }
       }}
     >
-      {hoverRowIndex === block.order || isOpenBlockSettingIndex === block.order ? (
+      {hoverRowIndex === block.order || openBlockSettingIndex === block.order ? (
         <HStack w="2.5vw" gap={0}>
           <AddBlockMenu
             block={block}
             dispatch={dispatch}
-            setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
+            openBlockSettingIndex={openBlockSettingIndex}
+            setIsOpenBlockSettingIndex={setOpenBlockSettingIndex}
             blockRefs={blockRefs}
           />
           <Tooltip

@@ -24,7 +24,7 @@ const TextPageComponent = () => {
   const blockRefs = useRef<(HTMLTextAreaElement | null)[]>([])
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
-  const [isOpenBlockSettingIndex, setIsOpenBlockSettingIndex] = useState<number | null>(null)
+  const [openBlockSettingIndex, setOpenBlockSettingIndex] = useState<number | null>(null)
   const [isComposing, setIsComposing] = useState(false)
 
   let listNumber = 0
@@ -32,10 +32,10 @@ const TextPageComponent = () => {
   useEffect(() => {
     const fetchPages = async () => {
       const { data: page, error } = await selectPageWithBlocks(pageId)
-      if (error) {
-        console.error(error)
+      if (page?.deletedAt != null) {
         router.push('/')
-      } else if (page?.deletedAt != null) {
+      } else if (error) {
+        console.error(error)
         router.push('/')
       } else if (page != null) {
         if (page.title !== '') {
@@ -205,8 +205,8 @@ const TextPageComponent = () => {
               setHoverRowIndex={setHoverRowIndex}
               grabbedRowIndex={grabbedRowIndex}
               setGrabbedRowIndex={setGrabbedRowIndex}
-              isOpenBlockSettingIndex={isOpenBlockSettingIndex}
-              setIsOpenBlockSettingIndex={setIsOpenBlockSettingIndex}
+              openBlockSettingIndex={openBlockSettingIndex}
+              setOpenBlockSettingIndex={setOpenBlockSettingIndex}
               titleRef={titleRef}
               blockRefs={blockRefs}
               rowLength={blocks.length}

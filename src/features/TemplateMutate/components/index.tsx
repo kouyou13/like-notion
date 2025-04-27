@@ -54,7 +54,7 @@ const Template = ({ children }: TemplateProps) => {
       .channel('page')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'page' }, (payload) => {
         if (payload.eventType === 'INSERT') {
-          if (payload.new.parent_block_id != null) {
+          if (payload.new.parent_block_id == null) {
             const newPage: Page = {
               id: payload.new.id,
               title: payload.new.title,
@@ -65,7 +65,7 @@ const Template = ({ children }: TemplateProps) => {
             setPages((prev) => [...prev, newPage])
           }
         } else if (payload.eventType == 'UPDATE') {
-          if (payload.new.parent_block_id != null) {
+          if (payload.new.parent_block_id == null) {
             const newPage: Page = {
               id: payload.new.id,
               title: payload.new.title,
