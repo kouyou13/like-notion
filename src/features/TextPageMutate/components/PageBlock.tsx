@@ -58,7 +58,7 @@ const PageBlockComponent = ({ block }: PageBlockProps) => {
       }}
     >
       <Flex w="1vw" align="center" justify="center">
-        <FaRegFile size={18} color="gray" />
+        <FaRegFile size={17} color="gray" />
       </Flex>
       <Text fontWeight="bold" fontSize={16} borderBottom="1px solid gray" h="1.4rem">
         {page?.title ?? '新規ページ'}

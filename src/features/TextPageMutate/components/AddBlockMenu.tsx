@@ -1,5 +1,6 @@
 import { Box, HStack, Text, Button, Menu, Portal } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
+import { useRouter } from 'next/navigation'
 import React, { useCallback } from 'react'
 import { FaRegFileAlt, FaExternalLinkAlt } from 'react-icons/fa'
 import { GrAdd } from 'react-icons/gr'
@@ -26,19 +27,26 @@ const AddBlockMenuComponent = ({
   blockRefs,
 }: AddBlockMenuProps) => {
   const supabase = createSupabaseClient()
+  const router = useRouter()
 
   const handleSelectBlockType = useCallback(
     async (selectedBlockType: BlockType) => {
-      dispatch({
-        type: 'updateBlockType',
-        blockId: block.id,
-        blockType: selectedBlockType,
-      })
       if (selectedBlockType !== 'Page') {
+        dispatch({
+          type: 'updateBlockType',
+          blockId: block.id,
+          blockType: selectedBlockType,
+        })
         setTimeout(() => {
           blockRefs.current[block.order]?.focus()
         })
       } else {
+        await supabase
+          .from('block')
+          .update({
+            block_type: 'Page',
+          })
+          .eq('id', block.id)
         const newPage: PageWithBlocks = {
           id: v4(),
           title: '',
@@ -73,9 +81,10 @@ const AddBlockMenuComponent = ({
             page_id: newPage.id,
           })),
         )
+        router.push(`/${newPage.id}`)
       }
     },
-    [block, dispatch, blockRefs, supabase],
+    [block, dispatch, blockRefs, supabase, router],
   )
   return (
     <Menu.Root
