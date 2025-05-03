@@ -200,6 +200,18 @@ const TextBlockComponent = ({
       }}
       onCompositionEnd={() => {
         setIsComposing(false)
+        if (block.blockType === 'Text' && block.message === '・') {
+          dispatch({
+            type: 'updateBlock',
+            blockId: block.id,
+            blockType: 'List',
+            message: '',
+            indentIndex: block.indentIndex,
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.focus()
+          })
+        }
       }}
       onChange={(e) => {
         const newMessage = e.target.value
@@ -217,6 +229,17 @@ const TextBlockComponent = ({
           })
           setTimeout(() => {
             blockRefs.current[block.order + 1]?.focus()
+          })
+        } else if (block.blockType === 'Text' && newMessage === '- ') {
+          dispatch({
+            type: 'updateBlock',
+            blockId: block.id,
+            blockType: 'List',
+            message: '',
+            indentIndex: block.indentIndex,
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.focus()
           })
         } else {
           dispatch({
