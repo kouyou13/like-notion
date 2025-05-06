@@ -123,7 +123,7 @@ const TextPageComponent = () => {
   return (
     <Box
       h="85vh"
-      w="40vw"
+      w="39vw"
       overflowY="scroll"
       display="flex"
       pt="9.5vh"
@@ -137,7 +137,7 @@ const TextPageComponent = () => {
         }
       }}
     >
-      <Box w="40vw">
+      <Box w="39vw">
         <Textarea
           ref={(el) => {
             titleRef.current = el

@@ -120,29 +120,20 @@ const BlockRowComponent = ({
       case 'Text':
         return 0
       case 'H1':
-        return 4
+        return 9
       case 'H2':
-        return 3
+        return 7
       case 'H3':
-        return 1
+        return 5
     }
   }, [block.blockType])
 
-  const mb = useMemo(() => {
-    switch (block.blockType) {
-      case 'H1':
-        return 2
-      default:
-        return 0
-    }
-  }, [block.blockType])
   return (
     <HStack
       gap={0}
       mt={mt}
-      mb={mb}
       pl={`${String(block.indentIndex * 1.5)}vw`}
-      w="100%"
+      w="39vw"
       onMouseEnter={() => {
         if (openBlockSettingIndex == null) {
           setHoverRowIndex(block.order)
@@ -239,7 +230,7 @@ const BlockRowComponent = ({
         <Box w="2.5vw" />
       )}
       <HStack
-        w="100%"
+        w="36.5vw"
         borderBottom={
           grabbedRowIndex != null &&
           grabbedRowIndex !== hoverRowIndex &&

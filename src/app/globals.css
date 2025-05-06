@@ -12,6 +12,35 @@ body {
   background-color:rgb(25, 25, 25)
 } */
 
+p {
+  font-size: 16;
+  line-height: 1.5rem;
+  padding: 4px 0;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 32;
+  line-height: 2.5rem;
+  padding: 0 0 9px 0;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 24;
+  line-height: 2rem;
+}
+
+h3 {
+  font-weight: bold;
+  font-size: 20;
+  line-height: 1.8rem;
+}
+
+em {
+  font-style: italic;
+}
+
 /* tiptap系 */
 .text-editor {
   width: 100%;
@@ -23,4 +52,12 @@ body {
 .ProseMirror {
   outline: none;
   border: none;
+}
+
+.is-editor-empty:first-child::before {
+  color: #d4d4d8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
