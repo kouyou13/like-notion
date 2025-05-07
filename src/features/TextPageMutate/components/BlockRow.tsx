@@ -1,5 +1,6 @@
 import { Box, HStack, Text, Separator } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
+import { Editor } from '@tiptap/core'
 import React, { useMemo } from 'react'
 import { GrDrag } from 'react-icons/gr'
 
@@ -16,8 +17,7 @@ type BlockTypeProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
-  rowLength: number
+  blockRefs: React.RefObject<(Editor | null)[]>
   listNumber: number
 }
 const BlockTypeComponent = ({
@@ -25,7 +25,6 @@ const BlockTypeComponent = ({
   dispatch,
   titleRef,
   blockRefs,
-  rowLength,
   listNumber,
 }: BlockTypeProps) => {
   switch (block.blockType) {
@@ -34,13 +33,7 @@ const BlockTypeComponent = ({
     case 'H2':
     case 'H3':
       return (
-        <TextBlock
-          block={block}
-          dispatch={dispatch}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-          rowLength={rowLength}
-        />
+        <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
       )
     case 'List':
     case 'ListNumbers':
@@ -52,7 +45,6 @@ const BlockTypeComponent = ({
           dispatch={dispatch}
           titleRef={titleRef}
           blockRefs={blockRefs}
-          rowLength={rowLength}
           listNumber={listNumber}
         />
       )
@@ -64,13 +56,7 @@ const BlockTypeComponent = ({
       )
     case 'Citing':
       return (
-        <CitingBlock
-          block={block}
-          dispatch={dispatch}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-          rowLength={rowLength}
-        />
+        <CitingBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
       )
     case 'Callout':
       return (
@@ -79,7 +65,6 @@ const BlockTypeComponent = ({
           dispatch={dispatch}
           titleRef={titleRef}
           blockRefs={blockRefs}
-          rowLength={rowLength}
         />
       )
     case 'Page':
@@ -97,8 +82,7 @@ type BlockRowProps = {
   openBlockSettingIndex: number | null
   setOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
-  rowLength: number
+  blockRefs: React.RefObject<(Editor | null)[]>
   listNumber: number
 }
 const BlockRowComponent = ({
@@ -112,7 +96,6 @@ const BlockRowComponent = ({
   setOpenBlockSettingIndex,
   titleRef,
   blockRefs,
-  rowLength,
   listNumber,
 }: BlockRowProps) => {
   const mt = useMemo(() => {
@@ -244,7 +227,6 @@ const BlockRowComponent = ({
           dispatch={dispatch}
           titleRef={titleRef}
           blockRefs={blockRefs}
-          rowLength={rowLength}
           listNumber={listNumber}
         />
       </HStack>

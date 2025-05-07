@@ -15,7 +15,7 @@ body {
 p {
   font-size: 16;
   line-height: 1.5rem;
-  padding: 4px 0;
+  padding: 3px 0;
 }
 
 h1 {
@@ -41,6 +41,10 @@ em {
   font-style: italic;
 }
 
+ol {
+  line-height: 1.5rem;
+}
+
 /* tiptap系 */
 .text-editor {
   width: 100%;
@@ -60,4 +64,9 @@ em {
   float: left;
   height: 0;
   pointer-events: none;
+  font-weight: bold;
+}
+
+ul.is-editor-empty:first-child::before {
+  padding-top: 3px;
 }

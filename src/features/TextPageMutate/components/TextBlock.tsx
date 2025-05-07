@@ -1,3 +1,4 @@
+import { Editor } from '@tiptap/core'
 import Placeholder from '@tiptap/extension-placeholder'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -10,30 +11,28 @@ type TextBlockProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
-  rowLength: number
+  blockRefs: React.RefObject<(Editor | null)[]>
 }
-const TextBlockComponent = ({
-  block,
-  dispatch,
-  titleRef,
-  blockRefs,
-  rowLength,
-}: TextBlockProps) => {
-  console.log(titleRef, blockRefs, rowLength)
+const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockProps) => {
   // const [isComposing, setIsComposing] = useState(false) // IME入力中か
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: ({ node }) => {
+        placeholder: ({ node, editor }) => {
           if (node.type.name === 'heading' && node.attrs.level === 1) {
             return '見出し1'
           } else if (node.type.name === 'heading' && node.attrs.level === 2) {
             return '見出し2'
           } else if (node.type.name === 'heading' && node.attrs.level === 3) {
             return '見出し3'
+          } else if (node.type.name === 'bulletList' || node.type.name === 'orderedList') {
+            return 'リスト'
+          } else if (node.type.name === 'blockquote') {
+            return 'トグル'
+          } else if (node.type.name === 'paragraph' && editor.isFocused) {
+            return '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
           }
           // case 'Citing':
           //   return '入力してください...'
@@ -60,6 +59,9 @@ const TextBlockComponent = ({
             blockId: block.id,
             blockType: 'H1',
           })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.commands.focus()
+          })
         }
         return
       }
@@ -70,6 +72,9 @@ const TextBlockComponent = ({
             type: 'updateBlockType',
             blockId: block.id,
             blockType: 'H2',
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.commands.focus()
           })
         }
         return
@@ -82,6 +87,51 @@ const TextBlockComponent = ({
             blockId: block.id,
             blockType: 'H3',
           })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.commands.focus()
+          })
+        }
+        return
+      }
+      const ulTags = doc.querySelectorAll('ul')
+      if (ulTags.length > 0) {
+        if (block.blockType !== 'List') {
+          dispatch({
+            type: 'updateBlockType',
+            blockId: block.id,
+            blockType: 'List',
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.commands.focus()
+          })
+        }
+        return
+      }
+      const olTags = doc.querySelectorAll('ol')
+      if (olTags.length > 0) {
+        if (block.blockType !== 'ListNumbers') {
+          dispatch({
+            type: 'updateBlockType',
+            blockId: block.id,
+            blockType: 'ListNumbers',
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.commands.focus()
+          })
+        }
+        return
+      }
+      const blockquoteTags = doc.querySelectorAll('blockquote')
+      if (blockquoteTags.length > 0) {
+        if (block.blockType !== 'ToggleList') {
+          dispatch({
+            type: 'updateBlockType',
+            blockId: block.id,
+            blockType: 'ToggleList',
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.commands.focus()
+          })
         }
         return
       }
@@ -91,170 +141,59 @@ const TextBlockComponent = ({
           blockId: block.id,
           blockType: 'Text',
         })
+        setTimeout(() => {
+          blockRefs.current[block.order]?.commands.focus()
+        })
       }
+    },
+    editorProps: {
+      handleKeyDown: (view, event: KeyboardEvent) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault()
+          dispatch({
+            type: 'addBlock',
+            order: block.order + 1,
+            blockType: block.blockType,
+            indentIndex: block.indentIndex,
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order + 1]?.commands.focus()
+          })
+          return true // trueの時, 無効化
+        } else if (event.key === 'Backspace') {
+          if (block.message === '<p></p>' || block.message === '') {
+            dispatch({
+              type: 'deleteBlock',
+              blockId: block.id,
+            })
+            setTimeout(() => {
+              blockRefs.current[block.order - 1]?.commands.focus()
+            })
+          }
+        } else if (event.key === 'ArrowUp') {
+          if (block.order > 0) {
+            blockRefs.current[block.order - 1]?.commands.focus()
+          } else if (block.order === 0) {
+            titleRef.current?.focus()
+          }
+        } else if (event.key === 'ArrowDown') {
+          if (block.order < blockRefs.current.length) {
+            blockRefs.current[block.order + 1]?.commands.focus()
+          }
+        }
+        return false
+      },
     },
   })
 
-  // const handleKeyDown = useCallback(
-  //   (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-  //     if (isComposing) {
-  //       // IME入力中は何もしない
-  //       return
-  //     } else if (e.key === 'Backspace' && block.message === '' && block.indentIndex === 0) {
-  //       e.preventDefault()
-  //       if (block.blockType === 'Text') {
-  //         if (rowLength > 1) {
-  //           dispatch({
-  //             type: 'deleteBlock',
-  //             blockId: block.id,
-  //           })
-  //           const prevInput =
-  //             block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
-  //           if (prevInput) {
-  //             prevInput.focus()
-  //           }
-  //         }
-  //       } else {
-  //         dispatch({
-  //           type: 'updateBlockType',
-  //           blockId: block.id,
-  //           blockType: 'Text',
-  //         })
-  //         setTimeout(() => {
-  //           blockRefs.current[block.order]?.focus()
-  //         })
-  //       }
-  //     } else if (e.key === 'ArrowUp') {
-  //       e.preventDefault()
-  //       if (block.order > 0) {
-  //         const prevInput = blockRefs.current[block.order - 1]
-  //         if (prevInput) {
-  //           prevInput.focus()
-  //         }
-  //       } else if (block.order === 0) {
-  //         titleRef.current?.focus()
-  //       }
-  //     } else if (e.key === 'ArrowDown' && block.order < rowLength - 1) {
-  //       e.preventDefault()
-  //       const nextInput = blockRefs.current[block.order + 1]
-  //       if (nextInput) {
-  //         nextInput.focus()
-  //       }
-  //     } else if (e.key === 'Enter' && !e.shiftKey) {
-  //       // Shift + Enter でない時
-  //       e.preventDefault()
-  //       if (block.message === '' && block.blockType !== 'Text' && block.blockType !== 'Callout') {
-  //         dispatch({
-  //           type: 'updateBlockType',
-  //           blockId: block.id,
-  //           blockType: 'Text',
-  //         })
-  //         setTimeout(() => {
-  //           blockRefs.current[block.order]?.focus()
-  //         })
-  //       } else {
-  //         dispatch({
-  //           type: 'addBlock',
-  //           order: block.order + 1,
-  //           blockType: 'Text',
-  //           indentIndex: block.indentIndex,
-  //         })
-  //         setTimeout(() => {
-  //           const nextInput = blockRefs.current[block.order + 1]
-  //           if (nextInput) {
-  //             nextInput.focus()
-  //           }
-  //         }, 0)
-  //       }
-  //     }
-  //   },
-  //   [block, blockRefs, dispatch, rowLength, titleRef, isComposing],
-  // )
   return (
-    // <Textarea
-    //   ref={(el) => {
-    //     blockRefs.current[block.order] = el
-    //   }}
-    //   fontWeight={fontWeight}
-    //   onBlur={(e) => {
-    //     if (block.blockType === 'Text' || block.blockType === 'Callout') {
-    //       e.target.placeholder = ''
-    //     }
-    //   }}
-    //   onFocus={(e) => {
-    //     if (block.blockType === 'Text' || block.blockType === 'Callout') {
-    //       e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
-    //     }
-    //   }}
-    //   placeholder={placeholder}
-    //   value={block.message}
-    //   h={height}
-    //   w="100%"
-    //   fontSize={fontSize}
-    //   lineHeight={lineHeight}
-    //   border="none"
-    //   outline="none"
-    //   px={0}
-    //   py={py}
-    //   rows={1}
-    //   onCompositionStart={() => {
-    //     setIsComposing(true)
-    //   }}
-    //   onCompositionEnd={() => {
-    //     setIsComposing(false)
-    //     if (block.blockType === 'Text' && block.message === '・') {
-    //       dispatch({
-    //         type: 'updateBlock',
-    //         blockId: block.id,
-    //         blockType: 'List',
-    //         message: '',
-    //         indentIndex: block.indentIndex,
-    //       })
-    //       setTimeout(() => {
-    //         blockRefs.current[block.order]?.focus()
-    //       })
-    //     }
-    //   }}
-    //   onChange={(e) => {
-    //     const newMessage = e.target.value
-    //     if (block.blockType === 'Text' && newMessage === '---') {
-    //       dispatch({
-    //         type: 'updateBlockType',
-    //         blockId: block.id,
-    //         blockType: 'SeparatorLine',
-    //       })
-    //       dispatch({
-    //         type: 'addBlock',
-    //         order: block.order + 1,
-    //         blockType: 'Text',
-    //         indentIndex: block.indentIndex,
-    //       })
-    //       setTimeout(() => {
-    //         blockRefs.current[block.order + 1]?.focus()
-    //       })
-    //     } else if (block.blockType === 'Text' && newMessage === '- ') {
-    //       dispatch({
-    //         type: 'updateBlock',
-    //         blockId: block.id,
-    //         blockType: 'List',
-    //         message: '',
-    //         indentIndex: block.indentIndex,
-    //       })
-    //       setTimeout(() => {
-    //         blockRefs.current[block.order]?.focus()
-    //       })
-    //     } else {
-    //       dispatch({
-    //         type: 'updateBlockMessage',
-    //         blockId: block.id,
-    //         message: newMessage,
-    //       })
-    //     }
-    //   }}
-    //   onKeyDown={handleKeyDown}
-    //   autoresize
-    // />
-    <EditorContent editor={editor} style={{ width: '100%' }} />
+    <EditorContent
+      editor={editor}
+      style={{ width: '100%' }}
+      ref={() => {
+        blockRefs.current[block.order] = editor
+      }}
+    />
   )
 }
 const TextBlock = React.memo(TextBlockComponent)

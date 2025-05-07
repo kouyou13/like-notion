@@ -1,4 +1,5 @@
 import { Box, Textarea } from '@chakra-ui/react'
+import { Editor } from '@tiptap/core'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState, useRef, useEffect, useReducer, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -21,7 +22,7 @@ const TextPageComponent = () => {
   const [debouncedBlocks] = useDebounce(blocks, 1000) // 編集後1秒間の遅延を設定
 
   const titleRef = useRef<HTMLTextAreaElement | null>(null)
-  const blockRefs = useRef<(HTMLTextAreaElement | null)[]>([])
+  const blockRefs = useRef<(Editor | null)[]>([])
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const [openBlockSettingIndex, setOpenBlockSettingIndex] = useState<number | null>(null)
@@ -132,7 +133,7 @@ const TextPageComponent = () => {
         if (e.target === e.currentTarget) {
           const prevInput = blockRefs.current.slice(-1)[0]
           if (prevInput) {
-            prevInput.focus()
+            prevInput.commands.focus()
           }
         }
       }}
@@ -157,7 +158,7 @@ const TextPageComponent = () => {
           pr={0}
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}
-          mb="0.1vh"
+          mb="0.5vh"
           textAlign="left"
           autoresize
           onKeyDown={(e) => {
@@ -165,7 +166,7 @@ const TextPageComponent = () => {
               // IME入力中は何もしない
               return
             } else if (e.key === 'ArrowDown') {
-              blockRefs.current[0]?.focus()
+              blockRefs.current[0]?.commands.focus()
             } else if (e.key === 'Enter') {
               e.preventDefault()
               dispatch({
@@ -175,7 +176,7 @@ const TextPageComponent = () => {
                 indentIndex: 0,
               })
               setTimeout(() => {
-                blockRefs.current[0]?.focus()
+                blockRefs.current[0]?.commands.focus()
               })
             }
           }}
@@ -209,7 +210,6 @@ const TextPageComponent = () => {
               setOpenBlockSettingIndex={setOpenBlockSettingIndex}
               titleRef={titleRef}
               blockRefs={blockRefs}
-              rowLength={blocks.length}
               listNumber={listNumber}
             />
           )

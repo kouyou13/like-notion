@@ -1,5 +1,6 @@
 import { Box, HStack, Text, Button, Menu, Portal } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
+import { Editor } from '@tiptap/core'
 import { useRouter } from 'next/navigation'
 import React, { useCallback } from 'react'
 import { FaRegFileAlt, FaExternalLinkAlt } from 'react-icons/fa'
@@ -19,7 +20,7 @@ type AddBlockMenuProps = {
   dispatch: React.ActionDispatch<[action: Action]>
   openBlockSettingIndex: number | null
   setIsOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
-  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
+  blockRefs: React.RefObject<(Editor | null)[]>
 }
 const AddBlockMenuComponent = ({
   block,
@@ -40,7 +41,7 @@ const AddBlockMenuComponent = ({
           blockType: selectedBlockType,
         })
         setTimeout(() => {
-          blockRefs.current[block.order]?.focus()
+          blockRefs.current[block.order]?.commands.focus()
         })
       } else {
         await supabase
