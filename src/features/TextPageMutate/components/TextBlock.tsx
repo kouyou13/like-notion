@@ -154,7 +154,6 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
     },
     editorProps: {
       handleKeyDown: (_, event: KeyboardEvent) => {
-        console.log(editor?.state.selection.$from.pos)
         if (event.key === 'Enter' && !event.shiftKey) {
           event.preventDefault()
           if (block.blockType === 'ToggleList') {
@@ -202,22 +201,61 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
               })
             }
           }
-        } else if (event.key === 'ArrowUp') {
-          if (block.order > 0) {
-            for (let i = 1; block.order - i >= 0; i++) {
-              if (blockRefs.current[block.order - i] != null) {
-                blockRefs.current[block.order - i]?.commands.focus()
-                break
+        }
+        // else if (event.key === 'ArrowUp') {
+        // if (block.order > 0) {
+        // for (let i = 1; block.order - i >= 0; i++) {
+        //   if (blockRefs.current[block.order - i] != null) {
+        //     blockRefs.current[block.order - i]?.commands.focus()
+        //     break
+        //   }
+        // }
+        // } else if (block.order === 0) {
+        //   titleRef.current?.focus()
+        // }
+        // } else if (event.key === 'ArrowDown') {
+        // for (let i = 1; block.order + i < blockRefs.current.length; i++) {
+        //   if (blockRefs.current[block.order + i] != null) {
+        //     blockRefs.current[block.order + i]?.commands.focus()
+        //     break
+        //   }
+        // }
+        // }
+        else if (event.key === 'ArrowUp') {
+          const selection = editor?.state.selection
+          const resolvedFrom = selection?.$from // 現在のカーソル位置
+          // 最初の行全体にいるかどうかを判定
+          const isAtFirstLine =
+            resolvedFrom?.parent === resolvedFrom?.node(1) && resolvedFrom?.index() === 0
+
+          if (isAtFirstLine) {
+            if (block.order > 0) {
+              // 上のブロックに移動
+              for (let i = 1; block.order - i >= 0; i++) {
+                if (blockRefs.current[block.order - i] != null) {
+                  blockRefs.current[block.order - i]?.commands.focus()
+                  break
+                }
               }
+            } else {
+              titleRef.current?.focus()
             }
-          } else if (block.order === 0) {
-            titleRef.current?.focus()
           }
         } else if (event.key === 'ArrowDown') {
-          for (let i = 1; block.order + i < blockRefs.current.length; i++) {
-            if (blockRefs.current[block.order + i] != null) {
-              blockRefs.current[block.order + i]?.commands.focus()
-              break
+          const selection = editor?.state.selection
+          const resolvedTo = selection?.$to // 現在のカーソル位置
+          // 最後の行全体にいるかどうかを判定
+          console.log(resolvedTo?.index() === (resolvedTo?.parent.childCount ?? 1) - 1)
+          const isAtLastLine =
+            resolvedTo?.parent === resolvedTo?.node(1) &&
+            resolvedTo?.index() === (resolvedTo?.parent.childCount ?? 1) - 1
+          if (isAtLastLine && block.order + 1 < blockRefs.current.length) {
+            // 下のブロックに移動
+            for (let i = 1; block.order + i < blockRefs.current.length; i++) {
+              if (blockRefs.current[block.order + i] != null) {
+                blockRefs.current[block.order + i]?.commands.focus()
+                break
+              }
             }
           }
         }
