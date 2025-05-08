@@ -213,7 +213,7 @@ const BlockRowComponent = ({
         <Box w="2.5vw" />
       )}
       <HStack
-        w="36.5vw"
+        w="100%"
         borderBottom={
           grabbedRowIndex != null &&
           grabbedRowIndex !== hoverRowIndex &&

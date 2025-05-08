@@ -49,7 +49,8 @@ const TextPageComponent = () => {
       }
     }
     void fetchPages()
-  }, [pageId, router])
+    // eslint-disable-next-line
+  }, [])
 
   // 定期的にタイトルを保存
   useEffect(() => {

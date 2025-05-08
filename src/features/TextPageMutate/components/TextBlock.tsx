@@ -1,5 +1,7 @@
 import { Editor } from '@tiptap/core'
 import Placeholder from '@tiptap/extension-placeholder'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React from 'react'
@@ -14,11 +16,11 @@ type TextBlockProps = {
   blockRefs: React.RefObject<(Editor | null)[]>
 }
 const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockProps) => {
-  // const [isComposing, setIsComposing] = useState(false) // IME入力中か
-
   const editor = useEditor({
     extensions: [
       StarterKit,
+      TaskItem,
+      TaskList,
       Placeholder.configure({
         placeholder: ({ node, editor }) => {
           if (node.type.name === 'heading' && node.attrs.level === 1) {
@@ -31,6 +33,8 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
             return 'リスト'
           } else if (node.type.name === 'blockquote') {
             return 'トグル'
+          } else if (node.type.name === 'taskList') {
+            return 'ToDo'
           } else if (node.type.name === 'paragraph' && editor.isFocused) {
             return '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
           }
@@ -51,8 +55,7 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
       })
       const parser = new DOMParser()
       const doc = parser.parseFromString(html, 'text/html')
-      const h1Tags = doc.querySelectorAll('h1')
-      if (h1Tags.length > 0) {
+      if (doc.querySelectorAll('h1').length > 0) {
         if (block.blockType !== 'H1') {
           dispatch({
             type: 'updateBlockType',
@@ -64,9 +67,7 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
           })
         }
         return
-      }
-      const h2Tags = doc.querySelectorAll('h2')
-      if (h2Tags.length > 0) {
+      } else if (doc.querySelectorAll('h2').length > 0) {
         if (block.blockType !== 'H2') {
           dispatch({
             type: 'updateBlockType',
@@ -78,9 +79,7 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
           })
         }
         return
-      }
-      const h3Tags = doc.querySelectorAll('h3')
-      if (h3Tags.length > 0) {
+      } else if (doc.querySelectorAll('h3').length > 0) {
         if (block.blockType !== 'H3') {
           dispatch({
             type: 'updateBlockType',
@@ -92,23 +91,33 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
           })
         }
         return
-      }
-      const ulTags = doc.querySelectorAll('ul')
-      if (ulTags.length > 0) {
-        if (block.blockType !== 'List') {
-          dispatch({
-            type: 'updateBlockType',
-            blockId: block.id,
-            blockType: 'List',
-          })
-          setTimeout(() => {
-            blockRefs.current[block.order]?.commands.focus()
-          })
+      } else if (doc.querySelectorAll('ul').length > 0) {
+        if (doc.querySelectorAll('label').length > 0) {
+          if (block.blockType !== 'ToDoList') {
+            dispatch({
+              type: 'updateBlockType',
+              blockId: block.id,
+              blockType: 'ToDoList',
+            })
+            setTimeout(() => {
+              blockRefs.current[block.order]?.commands.focus()
+            })
+          }
+          return
+        } else {
+          if (block.blockType !== 'List') {
+            dispatch({
+              type: 'updateBlockType',
+              blockId: block.id,
+              blockType: 'List',
+            })
+            setTimeout(() => {
+              blockRefs.current[block.order]?.commands.focus()
+            })
+          }
+          return
         }
-        return
-      }
-      const olTags = doc.querySelectorAll('ol')
-      if (olTags.length > 0) {
+      } else if (doc.querySelectorAll('ol').length > 0) {
         if (block.blockType !== 'ListNumbers') {
           dispatch({
             type: 'updateBlockType',
@@ -120,9 +129,7 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
           })
         }
         return
-      }
-      const blockquoteTags = doc.querySelectorAll('blockquote')
-      if (blockquoteTags.length > 0) {
+      } else if (doc.querySelectorAll('blockquote').length > 0) {
         if (block.blockType !== 'ToggleList') {
           dispatch({
             type: 'updateBlockType',
@@ -134,8 +141,7 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
           })
         }
         return
-      }
-      if (block.blockType !== 'Text') {
+      } else if (block.blockType !== 'Text') {
         dispatch({
           type: 'updateBlockType',
           blockId: block.id,
@@ -147,38 +153,72 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
       }
     },
     editorProps: {
-      handleKeyDown: (view, event: KeyboardEvent) => {
+      handleKeyDown: (_, event: KeyboardEvent) => {
+        console.log(editor?.state.selection.$from.pos)
         if (event.key === 'Enter' && !event.shiftKey) {
           event.preventDefault()
-          dispatch({
-            type: 'addBlock',
-            order: block.order + 1,
-            blockType: block.blockType,
-            indentIndex: block.indentIndex,
-          })
-          setTimeout(() => {
-            blockRefs.current[block.order + 1]?.commands.focus()
-          })
+          if (block.blockType === 'ToggleList') {
+            // トグル展開時
+            if (block.isChecked) {
+              dispatch({
+                type: 'addBlock',
+                order: block.order + 1,
+                blockType: block.blockType,
+                indentIndex: block.indentIndex + 1,
+              })
+              setTimeout(() => {
+                blockRefs.current[block.order + 1]?.commands.focus()
+              })
+            }
+          } else {
+            dispatch({
+              type: 'addBlock',
+              order: block.order + 1,
+              blockType: block.blockType,
+              indentIndex: block.indentIndex,
+            })
+            setTimeout(() => {
+              blockRefs.current[block.order + 1]?.commands.focus()
+            })
+          }
           return true // trueの時, 無効化
         } else if (event.key === 'Backspace') {
           if (block.message === '<p></p>' || block.message === '') {
-            dispatch({
-              type: 'deleteBlock',
-              blockId: block.id,
-            })
-            setTimeout(() => {
-              blockRefs.current[block.order - 1]?.commands.focus()
-            })
+            if (block.indentIndex > 0) {
+              dispatch({
+                type: 'subIndent',
+                blockId: block.id,
+              })
+              setTimeout(() => {
+                blockRefs.current[block.order]?.commands.focus()
+              })
+            } else {
+              dispatch({
+                type: 'deleteBlock',
+                blockId: block.id,
+              })
+              setTimeout(() => {
+                blockRefs.current[block.order - 1]?.commands.focus()
+              })
+            }
           }
         } else if (event.key === 'ArrowUp') {
           if (block.order > 0) {
-            blockRefs.current[block.order - 1]?.commands.focus()
+            for (let i = 1; block.order - i >= 0; i++) {
+              if (blockRefs.current[block.order - i] != null) {
+                blockRefs.current[block.order - i]?.commands.focus()
+                break
+              }
+            }
           } else if (block.order === 0) {
             titleRef.current?.focus()
           }
         } else if (event.key === 'ArrowDown') {
-          if (block.order < blockRefs.current.length) {
-            blockRefs.current[block.order + 1]?.commands.focus()
+          for (let i = 1; block.order + i < blockRefs.current.length; i++) {
+            if (blockRefs.current[block.order + i] != null) {
+              blockRefs.current[block.order + i]?.commands.focus()
+              break
+            }
           }
         }
         return false
@@ -186,15 +226,9 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
     },
   })
 
-  return (
-    <EditorContent
-      editor={editor}
-      style={{ width: '100%' }}
-      ref={() => {
-        blockRefs.current[block.order] = editor
-      }}
-    />
-  )
+  blockRefs.current[block.order] = editor
+
+  return <EditorContent editor={editor} style={{ width: '100%' }} />
 }
 const TextBlock = React.memo(TextBlockComponent)
 export default TextBlock

@@ -12,7 +12,7 @@ body {
   background-color:rgb(25, 25, 25)
 } */
 
-p {
+.ProseMirror p {
   font-size: 16;
   line-height: 1.5rem;
   padding: 3px 0;
@@ -69,4 +69,12 @@ ol {
 
 ul.is-editor-empty:first-child::before {
   padding-top: 3px;
+}
+
+ol.is-editor-empty:first-child::before {
+  padding-top: 3px;
+}
+
+li label {
+  display: none;
 }
