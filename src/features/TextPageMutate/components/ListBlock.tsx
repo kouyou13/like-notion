@@ -82,42 +82,6 @@ const ListBlockComponent = ({
   blockRefs,
   listNumber,
 }: ListBlockProps) => {
-  // const handleKeyDown = useCallback(
-  //   (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-  //       } else if (block.blockType === 'ToggleList' && block.isChecked) {
-  //         // トグル展開時
-  //         dispatch({
-  //           type: 'addBlock',
-  //           order: block.order + 1,
-  //           blockType: 'Text',
-  //           indentIndex: block.indentIndex + 1,
-  //         })
-  //         setTimeout(() => {
-  //           const nextInput = blockRefs.current[block.order + 1]
-  //           if (nextInput) {
-  //             nextInput.focus()
-  //           }
-  //         }, 0)
-  //       } else {
-  //         // トグル未展開時
-  //         dispatch({
-  //           type: 'addBlock',
-  //           order: block.order + 1,
-  //           blockType: block.blockType,
-  //           indentIndex: block.indentIndex,
-  //         })
-  //         setTimeout(() => {
-  //           const nextInput = blockRefs.current[block.order + 1]
-  //           if (nextInput) {
-  //             nextInput.focus()
-  //           }
-  //         }, 0)
-  //       }
-  //     }
-  //   },
-  //   [block, blockRefs, dispatch, rowLength, titleRef, isComposing],
-  // )
-
   const handleChecked = useCallback(
     (isChecked: boolean) => {
       dispatch({
