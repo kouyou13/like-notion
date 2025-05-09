@@ -85,8 +85,8 @@ const textEditorHandleKeyDown = ({
       }
     }
   } else if (event.key === 'ArrowUp') {
-    const isAtFirstLine = editor?.state.selection.$from.index() === 0
-    if (isAtFirstLine) {
+    const index = editor?.state.selection.$from.index()
+    if (index === 0 || index === 1) {
       if (block.order > 0) {
         // 上のブロックに移動
         for (let i = 1; block.order - i >= 0; i++) {
