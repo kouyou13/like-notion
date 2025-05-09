@@ -87,10 +87,10 @@ const Template = ({ children }: TemplateProps) => {
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [supabase, router])
+    // eslint-disable-next-line
+  }, [])
 
   const handleAddPage = useCallback(async () => {
-    const defaultBlockType = 'Text'
     const newPage: PageWithBlocks = {
       id: v4(),
       title: '',
@@ -100,7 +100,7 @@ const Template = ({ children }: TemplateProps) => {
       block: [
         {
           id: v4(),
-          blockType: defaultBlockType,
+          blockType: 'Text',
           order: 0,
           message: '',
           isChecked: false,
@@ -108,7 +108,7 @@ const Template = ({ children }: TemplateProps) => {
         },
         {
           id: v4(),
-          blockType: defaultBlockType,
+          blockType: 'Text',
           order: 1,
           message: '',
           isChecked: false,
@@ -116,7 +116,7 @@ const Template = ({ children }: TemplateProps) => {
         },
         {
           id: v4(),
-          blockType: defaultBlockType,
+          blockType: 'Text',
           order: 2,
           message: '',
           isChecked: false,
