@@ -51,7 +51,6 @@ const PageBlockComponent = ({ block }: PageBlockProps) => {
       borderRadius={3}
       cursor="pointer"
       onClick={() => {
-        console.log(page)
         if (page) {
           router.push(`/${page.id}`)
         }

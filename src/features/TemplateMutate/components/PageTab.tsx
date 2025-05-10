@@ -5,9 +5,9 @@ import { FaRegFileAlt } from 'react-icons/fa'
 import { GrMore, GrAdd } from 'react-icons/gr'
 import { RiDeleteBinLine } from 'react-icons/ri'
 
+import { successToast } from '../../../common/toast'
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { Page } from '../../../types'
-import { successToast } from '../../Common/toast'
 
 type PageTabProps = {
   page: Page

@@ -1,16 +1,17 @@
 import { Box, Textarea } from '@chakra-ui/react'
+import { Editor } from '@tiptap/core'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState, useRef, useEffect, useReducer, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import BlockRow from './BlockRow'
-import { createSupabaseClient } from '../../../lib/supabase'
+import regularlySaveBlocks from '../hooks/regularlySaveBlocks'
+import regularlySavePageTitle from '../hooks/regularlySavePageTitle'
 import selectPageWithBlocks from '../hooks/selectPageWithBlocks'
 import { blocksReducer } from '../utils/pageDispatch'
 import showBlockFilter from '../utils/showBlockFilter'
 
 const TextPageComponent = () => {
-  const supabase = createSupabaseClient()
   const router = useRouter()
   const { pageId }: { pageId: string } = useParams()
   const [pageTitle, setPageTitle] = useState<string | null>(null)
@@ -21,11 +22,11 @@ const TextPageComponent = () => {
   const [debouncedBlocks] = useDebounce(blocks, 1000) // 編集後1秒間の遅延を設定
 
   const titleRef = useRef<HTMLTextAreaElement | null>(null)
-  const blockRefs = useRef<(HTMLTextAreaElement | null)[]>([])
+  const blockRefs = useRef<(Editor | null)[]>([])
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const [openBlockSettingIndex, setOpenBlockSettingIndex] = useState<number | null>(null)
-  const [isComposing, setIsComposing] = useState(false)
+  const [isComposingTitle, setIsComposingTitle] = useState(false)
 
   let listNumber = 0
 
@@ -48,83 +49,36 @@ const TextPageComponent = () => {
       }
     }
     void fetchPages()
-  }, [pageId, router])
+    // eslint-disable-next-line
+  }, [])
 
   // 定期的にタイトルを保存
   useEffect(() => {
-    const saveTitle = async () => {
-      if (debouncedPageTitle != null) {
-        const { error } = await supabase
-          .from('page')
-          .update({ title: debouncedPageTitle })
-          .eq('id', pageId)
-        if (error) {
-          console.error(error)
-        }
-      }
-    }
-    void saveTitle()
-  }, [debouncedPageTitle, supabase, pageId])
+    void regularlySavePageTitle({
+      debouncedPageTitle,
+      pageId,
+    })
+  }, [debouncedPageTitle, pageId])
 
   // 定期的にブロックの情報を保存
   useEffect(() => {
-    const saveBlocks = async () => {
-      if (JSON.stringify(previousBlocksRef.current) === JSON.stringify(debouncedBlocks)) return
+    void regularlySaveBlocks({
+      previousBlocksRef,
+      debouncedBlocks,
+      pageId,
+    })
+  }, [debouncedBlocks, pageId])
 
-      const prevIds = previousBlocksRef.current.map((b) => b.id)
-      const currentIds = debouncedBlocks.map((b) => b.id)
-      const deletedIds = prevIds.filter((id) => !currentIds.includes(id))
-
-      try {
-        const updates = debouncedBlocks.map((block) => ({
-          id: block.id,
-          block_type: block.blockType,
-          order: block.order,
-          indent_index: block.indentIndex,
-          message: block.message,
-          is_checked: block.isChecked,
-          page_id: pageId,
-        }))
-
-        const { error } = await supabase.from('block').upsert(updates, {
-          onConflict: 'id',
-        })
-        if (error) {
-          console.error('保存失敗:', error)
-        }
-
-        await supabase
-          .from('page')
-          .update({ updated_at: new Date().toISOString() })
-          .eq('id', pageId)
-
-        previousBlocksRef.current = debouncedBlocks
-
-        if (deletedIds.length > 0) {
-          const { error: deleteError } = await supabase
-            .from('block')
-            .update({ deleted_at: `{${new Date().toISOString()}}` })
-            .in('id', deletedIds)
-
-          if (deleteError) {
-            console.error('削除マークの更新に失敗:', deleteError)
-          }
-        }
-      } catch (err) {
-        console.error('保存エラー:', err)
-      }
-    }
-
-    void saveBlocks()
-  }, [debouncedBlocks, pageId, supabase])
-
-  const filteredBlocks = useMemo(() => showBlockFilter(blocks), [blocks])
+  const filteredBlocks = useMemo(() => showBlockFilter(blocks, blockRefs), [blocks])
+  // blockRefsの個数を合わせる処理
+  if (blocks.length < blockRefs.current.length) {
+    blockRefs.current = blockRefs.current.slice(0, blocks.length)
+  }
 
   return (
     <Box
-      h="85vh"
-      w="40vw"
-      overflowY="scroll"
+      h="95vh"
+      w="39vw"
       display="flex"
       pt="9.5vh"
       ml="23.5vw"
@@ -132,12 +86,12 @@ const TextPageComponent = () => {
         if (e.target === e.currentTarget) {
           const prevInput = blockRefs.current.slice(-1)[0]
           if (prevInput) {
-            prevInput.focus()
+            prevInput.commands.focus()
           }
         }
       }}
     >
-      <Box w="40vw">
+      <Box w="39vw">
         <Textarea
           ref={(el) => {
             titleRef.current = el
@@ -157,15 +111,15 @@ const TextPageComponent = () => {
           pr={0}
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}
-          mb="0.1vh"
+          mb="0.5vh"
           textAlign="left"
           autoresize
           onKeyDown={(e) => {
-            if (isComposing) {
+            if (isComposingTitle) {
               // IME入力中は何もしない
               return
             } else if (e.key === 'ArrowDown') {
-              blockRefs.current[0]?.focus()
+              blockRefs.current[0]?.commands.focus()
             } else if (e.key === 'Enter') {
               e.preventDefault()
               dispatch({
@@ -175,20 +129,21 @@ const TextPageComponent = () => {
                 indentIndex: 0,
               })
               setTimeout(() => {
-                blockRefs.current[0]?.focus()
+                blockRefs.current[0]?.commands.focus()
               })
             }
           }}
           onCompositionStart={() => {
-            setIsComposing(true)
+            setIsComposingTitle(true)
           }}
           onCompositionEnd={() => {
-            setIsComposing(false)
+            setIsComposingTitle(false)
           }}
         />
         {filteredBlocks.map((block, index) => {
-          if (blocks[index].blockType === 'ListNumbers') {
-            if (index === 0 || blocks[index - 1].indentIndex === blocks[index].indentIndex) {
+          // ListNumbersの番号計算
+          if (block.blockType === 'ListNumbers') {
+            if (index === 0 || filteredBlocks[index - 1].indentIndex === block.indentIndex) {
               listNumber += 1
             } else {
               listNumber = 1
@@ -209,7 +164,6 @@ const TextPageComponent = () => {
               setOpenBlockSettingIndex={setOpenBlockSettingIndex}
               titleRef={titleRef}
               blockRefs={blockRefs}
-              rowLength={blocks.length}
               listNumber={listNumber}
             />
           )

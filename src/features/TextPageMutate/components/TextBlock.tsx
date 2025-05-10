@@ -1,258 +1,86 @@
-import { Textarea } from '@chakra-ui/react'
-import React, { useMemo, useCallback, useState } from 'react'
+import { Editor } from '@tiptap/core'
+import ToggleList from '@tiptap/extension-blockquote' // blockquoteをトグルリストとして扱う
+import BulletList from '@tiptap/extension-bullet-list'
+import Document from '@tiptap/extension-document'
+import HardBreak from '@tiptap/extension-hard-break'
+import Heading from '@tiptap/extension-heading'
+import ListItem from '@tiptap/extension-list-item'
+import OrderedList from '@tiptap/extension-ordered-list'
+import Paragraph from '@tiptap/extension-paragraph'
+import Placeholder from '@tiptap/extension-placeholder'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
+import Text from '@tiptap/extension-text'
+import { useEditor, EditorContent } from '@tiptap/react'
+import React from 'react'
 
 import type { Block } from '../../../types'
+import convertNodeTypeToPlaceHolder from '../utils/convertNodeTypeToPlaceHolder'
 import type { Action } from '../utils/pageDispatch'
+import textEditorHandleKeyDown from '../utils/textEditorHandleKeyDown'
+import textEditorOnUpdate from '../utils/textEditorOnUpdate'
 
 type TextBlockProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
-  rowLength: number
+  blockRefs: React.RefObject<(Editor | null)[]>
 }
-const TextBlockComponent = ({
-  block,
-  dispatch,
-  titleRef,
-  blockRefs,
-  rowLength,
-}: TextBlockProps) => {
-  const [isComposing, setIsComposing] = useState(false) // IME入力中か
-  const fontWeight = useMemo(() => {
-    switch (block.blockType) {
-      case 'H1':
-      case 'H2':
-      case 'H3':
-        return 'bold'
-      default:
-        return undefined
-    }
-  }, [block.blockType])
-
-  const placeholder = useMemo(() => {
-    switch (block.blockType) {
-      case 'H1':
-        return '見出し1'
-      case 'H2':
-        return '見出し2'
-      case 'H3':
-        return '見出し3'
-      case 'Citing':
-        return '入力してください...'
-      default:
-        return ''
-    }
-  }, [block.blockType])
-
-  const fontSize = useMemo(() => {
-    switch (block.blockType) {
-      case 'H1':
-        return 32
-      case 'H2':
-        return 24
-      case 'H3':
-        return 20
-      default:
-        return 16
-    }
-  }, [block.blockType])
-
-  const height = useMemo(() => {
-    switch (block.blockType) {
-      case 'H1':
-        return '2.5rem'
-      default:
-        return '1rem'
-    }
-  }, [block.blockType])
-
-  const lineHeight = useMemo(() => {
-    switch (block.blockType) {
-      case 'H1':
-        return '2.5rem'
-      case 'H2':
-        return '2rem'
-      case 'H3':
-        return '1.8rem'
-      case 'Citing':
-        return '1.8rem'
-      case 'Callout':
-        return '1.5rem'
-      default:
-        return '1.5rem'
-    }
-  }, [block.blockType])
-
-  const py = useMemo(() => {
-    switch (block.blockType) {
-      case 'Callout':
-        return 3
-      default:
-        return 1
-    }
-  }, [block.blockType])
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (isComposing) {
-        // IME入力中は何もしない
-        return
-      } else if (e.key === 'Backspace' && block.message === '' && block.indentIndex === 0) {
-        e.preventDefault()
-        if (block.blockType === 'Text') {
-          if (rowLength > 1) {
-            dispatch({
-              type: 'deleteBlock',
-              blockId: block.id,
-            })
-            const prevInput =
-              block.order > 0 ? blockRefs.current[block.order - 1] : blockRefs.current[1]
-            if (prevInput) {
-              prevInput.focus()
-            }
-          }
-        } else {
-          dispatch({
-            type: 'updateBlockType',
-            blockId: block.id,
-            blockType: 'Text',
-          })
-          setTimeout(() => {
-            blockRefs.current[block.order]?.focus()
-          })
-        }
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        if (block.order > 0) {
-          const prevInput = blockRefs.current[block.order - 1]
-          if (prevInput) {
-            prevInput.focus()
-          }
-        } else if (block.order === 0) {
-          titleRef.current?.focus()
-        }
-      } else if (e.key === 'ArrowDown' && block.order < rowLength - 1) {
-        e.preventDefault()
-        const nextInput = blockRefs.current[block.order + 1]
-        if (nextInput) {
-          nextInput.focus()
-        }
-      } else if (e.key === 'Enter' && !e.shiftKey) {
-        // Shift + Enter でない時
-        e.preventDefault()
-        if (block.message === '' && block.blockType !== 'Text' && block.blockType !== 'Callout') {
-          dispatch({
-            type: 'updateBlockType',
-            blockId: block.id,
-            blockType: 'Text',
-          })
-          setTimeout(() => {
-            blockRefs.current[block.order]?.focus()
-          })
-        } else {
-          dispatch({
-            type: 'addBlock',
-            order: block.order + 1,
-            blockType: 'Text',
-            indentIndex: block.indentIndex,
-          })
-          setTimeout(() => {
-            const nextInput = blockRefs.current[block.order + 1]
-            if (nextInput) {
-              nextInput.focus()
-            }
-          }, 0)
-        }
-      }
-    },
-    [block, blockRefs, dispatch, rowLength, titleRef, isComposing],
-  )
-  return (
-    <Textarea
-      ref={(el) => {
-        blockRefs.current[block.order] = el
-      }}
-      fontWeight={fontWeight}
-      onBlur={(e) => {
-        if (block.blockType === 'Text' || block.blockType === 'Callout') {
-          e.target.placeholder = ''
-        }
-      }}
-      onFocus={(e) => {
-        if (block.blockType === 'Text' || block.blockType === 'Callout') {
-          e.target.placeholder = '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
-        }
-      }}
-      placeholder={placeholder}
-      value={block.message}
-      h={height}
-      w="100%"
-      fontSize={fontSize}
-      lineHeight={lineHeight}
-      border="none"
-      outline="none"
-      px={0}
-      py={py}
-      rows={1}
-      onCompositionStart={() => {
-        setIsComposing(true)
-      }}
-      onCompositionEnd={() => {
-        setIsComposing(false)
-        if (block.blockType === 'Text' && block.message === '・') {
-          dispatch({
-            type: 'updateBlock',
-            blockId: block.id,
-            blockType: 'List',
-            message: '',
-            indentIndex: block.indentIndex,
-          })
-          setTimeout(() => {
-            blockRefs.current[block.order]?.focus()
-          })
-        }
-      }}
-      onChange={(e) => {
-        const newMessage = e.target.value
-        if (block.blockType === 'Text' && newMessage === '---') {
+const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockProps) => {
+  const editor = useEditor({
+    extensions: [
+      Document,
+      Text,
+      Heading,
+      Paragraph,
+      BulletList,
+      OrderedList,
+      ListItem,
+      TaskItem,
+      TaskList,
+      ToggleList,
+      HardBreak,
+      Placeholder.configure({
+        placeholder: ({ node, editor }) => {
+          return convertNodeTypeToPlaceHolder({ node, editor })
+        },
+      }),
+    ],
+    content: block.message,
+    immediatelyRender: false,
+    onUpdate: ({ editor }) => {
+      textEditorOnUpdate({ editor, block, dispatch, blockRefs })
+      setTimeout(() => {
+        if (editor.options.content === '<p>---</p>') {
           dispatch({
             type: 'updateBlockType',
             blockId: block.id,
             blockType: 'SeparatorLine',
           })
-          dispatch({
-            type: 'addBlock',
-            order: block.order + 1,
-            blockType: 'Text',
-            indentIndex: block.indentIndex,
-          })
-          setTimeout(() => {
-            blockRefs.current[block.order + 1]?.focus()
-          })
-        } else if (block.blockType === 'Text' && newMessage === '- ') {
-          dispatch({
-            type: 'updateBlock',
-            blockId: block.id,
-            blockType: 'List',
-            message: '',
-            indentIndex: block.indentIndex,
-          })
-          setTimeout(() => {
-            blockRefs.current[block.order]?.focus()
-          })
-        } else {
-          dispatch({
-            type: 'updateBlockMessage',
-            blockId: block.id,
-            message: newMessage,
-          })
         }
-      }}
-      onKeyDown={handleKeyDown}
-      autoresize
-    />
-  )
+      })
+    },
+    editorProps: {
+      handleKeyDown: (_, event: KeyboardEvent): boolean => {
+        return textEditorHandleKeyDown({
+          editor,
+          event,
+          block,
+          dispatch,
+          titleRef,
+          blockRefs,
+        })
+      },
+    },
+  })
+
+  if (!editor) {
+    return
+  }
+
+  blockRefs.current[block.order] = editor
+
+  return <EditorContent editor={editor} style={{ width: '100%' }} />
 }
 const TextBlock = React.memo(TextBlockComponent)
 export default TextBlock

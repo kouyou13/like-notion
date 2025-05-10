@@ -205,9 +205,24 @@ export const blocksReducer = (blocks: Block[], action: Action): Block[] => {
 
 const defaultBlock = (order: number, blockType: BlockType, indentIndex?: number): Block => ({
   id: v4(),
-  blockType,
   order,
   indentIndex: indentIndex ?? 0,
-  message: '',
   isChecked: false,
+  ...convertDefaultMessage(blockType),
 })
+
+const convertDefaultMessage = (blockType: BlockType): { blockType: BlockType; message: string } => {
+  switch (blockType) {
+    case 'List':
+      return { blockType: 'List', message: '<ul></ul>' }
+    case 'ToDoList':
+      return {
+        blockType: 'ToDoList',
+        message: '<ul data-type="taskList"></ul>',
+      }
+    case 'ListNumbers':
+      return { blockType: 'ListNumbers', message: '<ol></ol>' }
+    default:
+      return { blockType: 'Text', message: '<p></p>' }
+  }
+}

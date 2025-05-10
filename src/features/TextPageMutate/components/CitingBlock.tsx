@@ -1,4 +1,5 @@
 import { Blockquote } from '@chakra-ui/react'
+import { Editor } from '@tiptap/core'
 import React from 'react'
 
 import TextBlock from './TextBlock'
@@ -9,27 +10,14 @@ type CitingBlockProps = {
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(HTMLTextAreaElement | null)[]>
-  rowLength: number
+  blockRefs: React.RefObject<(Editor | null)[]>
 }
 
-const CitingBlockComponent = ({
-  block,
-  dispatch,
-  titleRef,
-  blockRefs,
-  rowLength,
-}: CitingBlockProps) => {
+const CitingBlockComponent = ({ block, dispatch, titleRef, blockRefs }: CitingBlockProps) => {
   return (
     <Blockquote.Root w="100%" pr={0} my={1} colorPalette="black">
       <Blockquote.Content justifyContent="center" alignItems="center" display="flex">
-        <TextBlock
-          block={block}
-          dispatch={dispatch}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-          rowLength={rowLength}
-        />
+        <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
       </Blockquote.Content>
     </Blockquote.Root>
   )

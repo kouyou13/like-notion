@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run fmt
-
 npm run gen
+
+npm run fmt
 
 npx eslint . --max-warnings=0 --fix
 if [ $? -ne 0 ]; then
