@@ -3,6 +3,11 @@ import camelcaseKeys from 'camelcase-keys'
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { PageWithBlocks } from '../../../types'
 
+/**
+ * 開始時にページ内のブロックをまとめて取得する関数
+ * @param pageId ページid
+ * @return ページデータ
+ */
 const selectPageWithBlocks = async (
   pageId: string,
 ): Promise<{ data: PageWithBlocks | undefined; error: Error | null }> => {

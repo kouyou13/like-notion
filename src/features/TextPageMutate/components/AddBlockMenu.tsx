@@ -1,4 +1,4 @@
-import { Box, HStack, Text, Button, Menu, Portal } from '@chakra-ui/react'
+import { Box, HStack, Text, Button, Menu, Portal, Flex } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import { Editor } from '@tiptap/core'
 import { useRouter } from 'next/navigation'
@@ -70,6 +70,32 @@ const AddBlockMenuComponent = ({
     },
     [block, dispatch, blockRefs, supabase, router],
   )
+
+  const menuItems = [
+    { value: 'Text', label: 'テキスト', icon: <RxText color="gray" size={16} /> },
+    { value: 'H1', label: '見出し1', icon: <RiH1 color="gray" size={17} /> },
+    { value: 'H2', label: '見出し2', icon: <RiH2 color="gray" size={17} /> },
+    { value: 'H3', label: '見出し3', icon: <RiH3 color="gray" size={17} /> },
+    { value: 'List', label: '箇条書きリスト', icon: <ImList2 color="gray" size={13} /> },
+    {
+      value: 'ListNumbers',
+      label: '番号付きリスト',
+      icon: <ImListNumbered color="gray" size={13} />,
+    },
+    { value: 'ToDoList', label: 'ToDoリスト', icon: <LuListChecks color="gray" size={15} /> },
+    { value: 'ToggleList', label: 'トグルリスト', icon: <LuListCollapse color="gray" size={15} /> },
+    { value: 'Page', label: 'ページ', icon: <FaRegFileAlt color="gray" size={15} /> },
+    { value: 'Callout', label: 'コールアウト', icon: <RiTBoxLine color="gray" size={16} /> },
+    { value: 'Citing', label: '引用', icon: <ImQuotesLeft color="gray" size={11} /> },
+    { value: 'Table', label: 'テーブル', icon: <RxTable color="gray" size={15} /> },
+    { value: 'SeparatorLine', label: '区切り線', icon: <RxMinus color="gray" size={17} /> },
+    {
+      value: 'PageLink',
+      label: 'ページリンク',
+      icon: <FaExternalLinkAlt color="gray" size={13} />,
+    },
+  ]
+
   return (
     <Menu.Root
       positioning={{ placement: 'bottom-start' }}
@@ -120,161 +146,22 @@ const AddBlockMenuComponent = ({
             <Text fontSize="xs" color="gray.600" p={1}>
               基本
             </Text>
-            <Menu.Item
-              value="Text"
-              onClick={async () => {
-                await handleSelectBlockType('Text')
-              }}
-            >
-              <RxText color="gray" size={16} />
-              <Text fontSize="sm" color="gray.700">
-                テキスト
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="H1"
-              onClick={async () => {
-                await handleSelectBlockType('H1')
-              }}
-            >
-              <RiH1 color="gray" size={17} />
-              <Text fontSize="sm" color="gray.700">
-                見出し1
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="H2"
-              onClick={async () => {
-                await handleSelectBlockType('H2')
-              }}
-            >
-              <RiH2 color="gray" size={17} />
-              <Text fontSize="sm" color="gray.700">
-                見出し2
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="H3"
-              onClick={async () => {
-                await handleSelectBlockType('H3')
-              }}
-            >
-              <RiH3 color="gray" size={17} />
-              <Text fontSize="sm" color="gray.700">
-                見出し3
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="List"
-              onClick={async () => {
-                await handleSelectBlockType('List')
-              }}
-            >
-              <ImList2 color="gray" size={13} />
-              <Text fontSize="sm" color="gray.700">
-                箇条書きリスト
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="ListNumbers"
-              onClick={async () => {
-                await handleSelectBlockType('ListNumbers')
-              }}
-            >
-              <ImListNumbered color="gray" size={13} />
-              <Text fontSize="sm" color="gray.700">
-                番号付きリスト
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="ToDoList"
-              onClick={async () => {
-                await handleSelectBlockType('ToDoList')
-              }}
-            >
-              <LuListChecks color="gray" size={15} />
-              <Text fontSize="sm" color="gray.700">
-                ToDoリスト
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="ToggleList"
-              onClick={async () => {
-                await handleSelectBlockType('ToggleList')
-              }}
-            >
-              <LuListCollapse color="gray" size={15} />
-              <Text fontSize="sm" color="gray.700">
-                トグルリスト
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="Page"
-              onClick={async () => {
-                await handleSelectBlockType('Page')
-              }}
-            >
-              <FaRegFileAlt color="gray" size={15} />
-              <Text fontSize="sm" color="gray.700">
-                ページ
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="Callout"
-              onClick={async () => {
-                await handleSelectBlockType('Callout')
-              }}
-            >
-              <RiTBoxLine color="gray" size={16} />
-              <Text fontSize="sm" color="gray.700">
-                コールアウト
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="Citing"
-              onClick={async () => {
-                await handleSelectBlockType('Citing')
-              }}
-            >
-              <ImQuotesLeft color="gray" size={13} />
-              <Text fontSize="sm" color="gray.700">
-                引用
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="Table"
-              onClick={async () => {
-                await handleSelectBlockType('Table')
-              }}
-            >
-              <RxTable color="gray" size={15} />
-              <Text fontSize="sm" color="gray.700">
-                テーブル
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="SeparatorLine"
-              onClick={async () => {
-                await handleSelectBlockType('SeparatorLine')
-              }}
-            >
-              <RxMinus color="gray" size={17} />
-              <Text fontSize="sm" color="gray.700">
-                区切り線
-              </Text>
-            </Menu.Item>
-            <Menu.Item
-              value="PageLink"
-              onClick={async () => {
-                await handleSelectBlockType('PageLink')
-              }}
-              ml={1}
-            >
-              <FaExternalLinkAlt color="gray" size={13} />
-              <Text fontSize="sm" color="gray.700">
-                ページリンク
-              </Text>
-            </Menu.Item>
+            {menuItems.map((item) => (
+              <Menu.Item
+                key={item.value}
+                value={item.value}
+                onClick={async () => {
+                  await handleSelectBlockType(item.value as BlockType)
+                }}
+              >
+                <Flex w={5} justifyContent="center" alignItems="center">
+                  {item.icon}
+                </Flex>
+                <Text fontSize="sm" color="gray.700">
+                  {item.label}
+                </Text>
+              </Menu.Item>
+            ))}
           </Menu.Content>
         </Menu.Positioner>
       </Portal>

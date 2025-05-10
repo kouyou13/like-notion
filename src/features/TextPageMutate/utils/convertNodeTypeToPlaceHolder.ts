@@ -5,7 +5,12 @@ type Props = {
   node: Node
   editor: Editor
 }
-
+/**
+ * Nodeの種類からplaceholderの文字列を返す関数
+ * @param node tiptapで出力されるNode
+ * @param editor tiptapのEditor
+ * @return placeholderの文字列
+ */
 const convertNodeTypeToPlaceHolder = ({ node, editor }: Props): string => {
   if (node.type.name === 'heading' && node.attrs.level === 1) {
     return '見出し1'
@@ -22,6 +27,7 @@ const convertNodeTypeToPlaceHolder = ({ node, editor }: Props): string => {
   } else if (node.type.name === 'paragraph' && editor.isFocused) {
     return '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
   }
+  // 今後追加した時用に残す
   // case 'Citing':
   //   return '入力してください...'
   return ''

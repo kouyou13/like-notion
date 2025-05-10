@@ -4,9 +4,7 @@ import React from 'react'
 const HomeMutateComponent = () => {
   return (
     <>
-      <Box border="1px red solid" m={5} minH={500}>
-        ホーム
-      </Box>
+      <Box>ホーム</Box>
     </>
   )
 }

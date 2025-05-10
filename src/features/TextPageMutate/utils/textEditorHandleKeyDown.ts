@@ -11,7 +11,16 @@ type Props = {
   titleRef: React.RefObject<HTMLTextAreaElement | null>
   blockRefs: React.RefObject<(Editor | null)[]>
 }
-
+/**
+ * テキストブロックで特定のキーを押した時の処理
+ * @param editor tiptapのEditor
+ * @param event tiptapのKeyを押した時のEvent
+ * @param block 対象のブロックデータ
+ * @param dispatch 編集内容を読み込むdispatch
+ * @param titleRef タイトル部分のuseRef
+ * @param blockRefs ブロック部分のuseRef
+ * @return キーのデフォルト処理を行うかのboolean (trueならデフォルト処理をしない)
+ */
 const textEditorHandleKeyDown = ({
   editor,
   event,
@@ -20,7 +29,6 @@ const textEditorHandleKeyDown = ({
   titleRef,
   blockRefs,
 }: Props): boolean => {
-  console.log(blockRefs.current)
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault()
     if (block.blockType === 'ToggleList') {

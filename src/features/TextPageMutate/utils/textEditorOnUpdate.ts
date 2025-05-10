@@ -9,6 +9,13 @@ type Props = {
   dispatch: React.ActionDispatch<[action: Action]>
   blockRefs: React.RefObject<(Editor | null)[]>
 }
+/**
+ * テキストブロックで編集した時の処理 (コマンドによってblockTypeを変更したい時も含む)
+ * @param editor tiptapのEditor
+ * @param block 対象のブロックデータ
+ * @param dispatch 編集内容を読み込むdispatch
+ * @return void
+ */
 const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void => {
   const updateBlockType = (blockType: BlockType) => {
     dispatch({

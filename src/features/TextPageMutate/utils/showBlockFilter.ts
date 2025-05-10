@@ -1,5 +1,10 @@
 import type { Block } from '../../../types'
 
+/**
+ * トグルリストによって隠れている部分を除くための関数
+ * @param blocks ページのブロックデータ
+ * @return filter処理をしたページのブロックデータ
+ */
 const showBlockFilter = (blocks: Block[]): Block[] => {
   let toggleBlockIndent: number | null = null
   return blocks.filter((block) => {
