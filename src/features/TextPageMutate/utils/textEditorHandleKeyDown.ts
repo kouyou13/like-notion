@@ -29,6 +29,7 @@ const textEditorHandleKeyDown = ({
   titleRef,
   blockRefs,
 }: Props): boolean => {
+  console.log(editor?.state.selection.$from)
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault()
     if (block.blockType === 'ToggleList') {
@@ -61,17 +62,32 @@ const textEditorHandleKeyDown = ({
         })
       }
     } else {
-      dispatch({
-        type: 'addBlock',
-        order: block.order + 1,
-        blockType: block.blockType,
-        indentIndex: block.indentIndex,
-      })
-      setTimeout(() => {
-        blockRefs.current[block.order + 1]?.commands.focus()
-      })
+      const index =
+        (editor?.state.selection.$from.pos ?? 1) - (editor?.state.selection.$from.depth ?? 0)
+      // ブロックの先頭にカーソルがある時
+      if (!editor?.isEmpty && index === 0) {
+        dispatch({
+          type: 'addBlock',
+          order: block.order,
+          blockType: block.blockType,
+          indentIndex: block.indentIndex,
+        })
+        setTimeout(() => {
+          blockRefs.current[block.order]?.commands.focus()
+        })
+      } else {
+        dispatch({
+          type: 'addBlock',
+          order: block.order + 1,
+          blockType: block.blockType,
+          indentIndex: block.indentIndex,
+        })
+        setTimeout(() => {
+          blockRefs.current[block.order + 1]?.commands.focus()
+        })
+      }
     }
-    return true // trueの時, 無効化
+    return true
   } else if (event.key === 'Backspace') {
     if (block.message === '<p></p>' || block.message === '') {
       if (block.indentIndex > 0) {
@@ -108,10 +124,10 @@ const textEditorHandleKeyDown = ({
       }
     }
   } else if (event.key === 'ArrowDown') {
-    const index = editor?.state.selection.$from.index()
-    const childCount = editor?.state.selection.$from.parent.childCount
+    const index = editor?.state.selection.$to.index()
+    const childCount = editor?.state.selection.$to.parent.childCount
     const isAtLastLine = childCount && (index === childCount - 1 || index === childCount)
-    if (isAtLastLine && block.order + 1 < blockRefs.current.length) {
+    if (editor?.isEmpty || (isAtLastLine && block.order + 1 < blockRefs.current.length)) {
       // 下のブロックに移動
       for (let i = 1; block.order + i < blockRefs.current.length; i++) {
         if (blockRefs.current[block.order + i] != null) {

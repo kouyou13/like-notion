@@ -26,7 +26,7 @@ const TextPageComponent = () => {
   const [hoverRowIndex, setHoverRowIndex] = useState<number | null>(null)
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const [openBlockSettingIndex, setOpenBlockSettingIndex] = useState<number | null>(null)
-  const [isComposing, setIsComposing] = useState(false)
+  const [isComposingTitle, setIsComposingTitle] = useState(false)
 
   let listNumber = 0
 
@@ -69,13 +69,16 @@ const TextPageComponent = () => {
     })
   }, [debouncedBlocks, pageId])
 
-  const filteredBlocks = useMemo(() => showBlockFilter(blocks), [blocks])
+  const filteredBlocks = useMemo(() => showBlockFilter(blocks, blockRefs), [blocks])
+  // blockRefsの個数を合わせる処理
+  if (blocks.length < blockRefs.current.length) {
+    blockRefs.current = blockRefs.current.slice(0, blocks.length)
+  }
 
   return (
     <Box
-      h="85vh"
+      h="95vh"
       w="39vw"
-      overflowY="scroll"
       display="flex"
       pt="9.5vh"
       ml="23.5vw"
@@ -112,7 +115,7 @@ const TextPageComponent = () => {
           textAlign="left"
           autoresize
           onKeyDown={(e) => {
-            if (isComposing) {
+            if (isComposingTitle) {
               // IME入力中は何もしない
               return
             } else if (e.key === 'ArrowDown') {
@@ -131,15 +134,16 @@ const TextPageComponent = () => {
             }
           }}
           onCompositionStart={() => {
-            setIsComposing(true)
+            setIsComposingTitle(true)
           }}
           onCompositionEnd={() => {
-            setIsComposing(false)
+            setIsComposingTitle(false)
           }}
         />
         {filteredBlocks.map((block, index) => {
-          if (blocks[index].blockType === 'ListNumbers') {
-            if (index === 0 || blocks[index - 1].indentIndex === blocks[index].indentIndex) {
+          // ListNumbersの番号計算
+          if (block.blockType === 'ListNumbers') {
+            if (index === 0 || filteredBlocks[index - 1].indentIndex === block.indentIndex) {
               listNumber += 1
             } else {
               listNumber = 1
