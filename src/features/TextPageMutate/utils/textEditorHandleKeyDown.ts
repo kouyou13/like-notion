@@ -89,7 +89,7 @@ const textEditorHandleKeyDown = ({
     }
     return true
   } else if (event.key === 'Backspace') {
-    if (block.message === '<p></p>' || block.message === '') {
+    if ((block.message === '<p></p>' || block.message === '') && block.blockType === 'Text') {
       if (block.indentIndex > 0) {
         dispatch({
           type: 'subIndent',

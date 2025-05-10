@@ -1,10 +1,9 @@
-import { Box, HStack, Text, Separator } from '@chakra-ui/react'
-import { Tooltip } from '@chakra-ui/tooltip'
+import { Box, HStack, Separator } from '@chakra-ui/react'
 import { Editor } from '@tiptap/core'
 import React, { useMemo } from 'react'
-import { GrDrag } from 'react-icons/gr'
 
 import AddBlockMenu from './AddBlockMenu'
+import BlockMenu from './BlockMenu'
 import CallbackBlock from './CallbackBlock'
 import CitingBlock from './CitingBlock'
 import ListBlock from './ListBlock'
@@ -168,7 +167,7 @@ const BlockRowComponent = ({
       }}
     >
       {hoverRowIndex === block.order || openBlockSettingIndex === block.order ? (
-        <HStack w="2.5vw" gap={0}>
+        <HStack w="3vw" gap={0}>
           <AddBlockMenu
             block={block}
             dispatch={dispatch}
@@ -176,41 +175,10 @@ const BlockRowComponent = ({
             setIsOpenBlockSettingIndex={setOpenBlockSettingIndex}
             blockRefs={blockRefs}
           />
-          <Tooltip
-            label={
-              <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
-                <HStack justify="center" align="center" gap={0}>
-                  ドラッグして<Text color="gray">移動する</Text>
-                </HStack>
-                <HStack gap={0}>
-                  クリックして<Text color="gray">メニューを開く</Text>
-                </HStack>
-              </Box>
-            }
-            bgColor="black"
-            color="white"
-            borderRadius={5}
-            borderColor="black"
-          >
-            <Box
-              _hover={{ bgColor: 'gray.100' }}
-              py={1}
-              borderRadius="md"
-              cursor="grab"
-              onMouseDown={(e) => {
-                e.currentTarget.style.cursor = 'grabbing'
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.cursor = 'grab'
-              }}
-              draggable
-            >
-              <GrDrag color="gray" size={16} />
-            </Box>
-          </Tooltip>
+          <BlockMenu block={block} dispatch={dispatch} />
         </HStack>
       ) : (
-        <Box w="2.5vw" />
+        <Box w="3vw" />
       )}
       <HStack
         w="100%"

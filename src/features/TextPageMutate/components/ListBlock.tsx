@@ -16,21 +16,17 @@ const ListSignComponent = ({ block, listNumber, handleChecked }: ListSignProps) 
   switch (block.blockType) {
     case 'List':
       return (
-        <Box my={0} ml={2} mr={1} p={0} gap={0}>
+        <Box my={0} p={0} gap={0}>
           <BiSolidCircle size={8} />
         </Box>
       )
     case 'ListNumbers':
-      return (
-        <Box pb={0} ml={2}>
-          {listNumber}.
-        </Box>
-      )
+      return <Box pb={0}>{listNumber}.</Box>
     case 'ToDoList':
       return (
         <Checkbox.Root
           variant="solid"
-          size="sm"
+          size="xs"
           colorPalette="blue"
           checked={block.isChecked}
           border="1px solid black"
@@ -47,22 +43,17 @@ const ListSignComponent = ({ block, listNumber, handleChecked }: ListSignProps) 
       )
     case 'ToggleList':
       return (
-        <Box my={0} mr={1} p={1} gap={0} _hover={{ bgColor: 'gray.100' }} borderRadius="md">
-          {block.isChecked ? (
-            <BiSolidDownArrow
-              size={12}
-              onClick={() => {
-                handleChecked(false)
-              }}
-            />
-          ) : (
-            <BiSolidRightArrow
-              size={12}
-              onClick={() => {
-                handleChecked(true)
-              }}
-            />
-          )}
+        <Box
+          my={0}
+          gap={0}
+          _hover={{ bgColor: 'gray.100' }}
+          borderRadius="md"
+          onClick={() => {
+            handleChecked(!block.isChecked)
+          }}
+          p={1}
+        >
+          {block.isChecked ? <BiSolidDownArrow size={12} /> : <BiSolidRightArrow size={12} />}
         </Box>
       )
   }
@@ -94,7 +85,7 @@ const ListBlockComponent = ({
   )
   return (
     <HStack gap={0} w="100%">
-      <Flex w="1.5vw">
+      <Flex w="1.5vw" pl={0.5}>
         <ListSignComponent block={block} listNumber={listNumber} handleChecked={handleChecked} />
       </Flex>
       <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />

@@ -75,6 +75,10 @@ ol.is-editor-empty:first-child::before {
   padding-top: 3px;
 }
 
+blockquote.is-editor-empty:first-child::before {
+  padding-top: 3px;
+}
+
 li label {
   display: none;
 }

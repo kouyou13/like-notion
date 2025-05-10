@@ -78,10 +78,10 @@ const TextPageComponent = () => {
   return (
     <Box
       h="95vh"
-      w="39vw"
+      w="40vw"
       display="flex"
       pt="9.5vh"
-      ml="23.5vw"
+      ml="23vw"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           const prevInput = blockRefs.current.slice(-1)[0]
@@ -91,7 +91,7 @@ const TextPageComponent = () => {
         }
       }}
     >
-      <Box w="39vw">
+      <Box w="100%">
         <Textarea
           ref={(el) => {
             titleRef.current = el
@@ -107,7 +107,7 @@ const TextPageComponent = () => {
           fontSize={40}
           lineHeight="3rem"
           py="auto"
-          pl="2.5vw"
+          pl="3vw"
           pr={0}
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}
