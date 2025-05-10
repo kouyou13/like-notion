@@ -50,15 +50,6 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       textEditorOnUpdate({ editor, block, dispatch, blockRefs })
-      setTimeout(() => {
-        if (editor.options.content === '<p>---</p>') {
-          dispatch({
-            type: 'updateBlockType',
-            blockId: block.id,
-            blockType: 'SeparatorLine',
-          })
-        }
-      })
     },
     editorProps: {
       handleKeyDown: (_, event: KeyboardEvent): boolean => {

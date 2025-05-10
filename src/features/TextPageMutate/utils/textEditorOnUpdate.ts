@@ -17,12 +17,19 @@ type Props = {
  * @return void
  */
 const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void => {
-  const updateBlockType = (blockType: BlockType) => {
+  const updateBlockType = (blockType: BlockType, isChecked?: boolean) => {
     dispatch({
       type: 'updateBlockType',
       blockId: block.id,
       blockType,
     })
+    if (isChecked != null) {
+      dispatch({
+        type: 'checkedBlock',
+        blockId: block.id,
+        isChecked,
+      })
+    }
     setTimeout(() => {
       blockRefs.current[block.order]?.commands.focus()
     })
@@ -51,8 +58,9 @@ const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void
     }
   } else if (doc.querySelectorAll('ul').length > 0) {
     if (doc.querySelectorAll('label').length > 0) {
+      const uncheckedItems = doc.querySelectorAll('ul li[data-checked="true"]')
       if (block.blockType !== 'ToDoList') {
-        updateBlockType('ToDoList')
+        updateBlockType('ToDoList', uncheckedItems.length > 0)
       }
     } else {
       if (block.blockType !== 'List') {
@@ -70,5 +78,21 @@ const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void
   } else if (block.blockType !== 'Text') {
     updateBlockType('Text')
   }
+
+  setTimeout(() => {
+    if (editor.options.content === '<p>---</p>') {
+      dispatch({
+        type: 'updateBlockType',
+        blockId: block.id,
+        blockType: 'SeparatorLine',
+      })
+      dispatch({
+        type: 'addBlock',
+        order: block.order + 1,
+        blockType: 'Text',
+        indentIndex: block.indentIndex,
+      })
+    }
+  })
 }
 export default textEditorOnUpdate

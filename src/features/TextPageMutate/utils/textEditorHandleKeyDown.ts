@@ -29,7 +29,6 @@ const textEditorHandleKeyDown = ({
   titleRef,
   blockRefs,
 }: Props): boolean => {
-  console.log(editor?.state.selection.$from)
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault()
     if (block.blockType === 'ToggleList') {
