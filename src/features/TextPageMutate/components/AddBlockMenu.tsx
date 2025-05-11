@@ -101,7 +101,7 @@ const AddBlockMenuComponent = ({
       positioning={{ placement: 'bottom-start' }}
       onOpenChange={(isOpen) => {
         if (isOpen.open) {
-          if (block.message !== '' || block.blockType === 'SeparatorLine') {
+          if (block.message !== '<p></p>' || block.blockType === 'SeparatorLine') {
             dispatch({
               type: 'addBlock',
               order: block.order + 1,
@@ -124,10 +124,10 @@ const AddBlockMenuComponent = ({
             label={
               <Box textAlign="center" fontSize="xs" py={1} px={2} alignContent="center">
                 <HStack justify="center" align="center" gap={0}>
-                  クリックして<Text color="gray">下に追加</Text>
+                  クリックして<Text color="gray.400">下に追加</Text>
                 </HStack>
                 <HStack gap={0}>
-                  Opt+クリック/Alt+クリックで<Text color="gray">上に追加</Text>
+                  Opt+クリック/Alt+クリックで<Text color="gray.400">上に追加</Text>
                 </HStack>
               </Box>
             }

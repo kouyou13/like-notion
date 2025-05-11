@@ -54,6 +54,7 @@ const BlockTypeComponent = ({
         </Box>
       )
     case 'Citing':
+      // 引用
       return (
         <CitingBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
       )
@@ -115,7 +116,7 @@ const BlockRowComponent = ({
       gap={0}
       mt={mt}
       pl={`${String(block.indentIndex * 1.5)}vw`}
-      w="39vw"
+      w="40vw"
       onMouseEnter={() => {
         if (openBlockSettingIndex == null) {
           setHoverRowIndex(block.order)
@@ -181,7 +182,7 @@ const BlockRowComponent = ({
         <Box w="3vw" />
       )}
       <HStack
-        w="100%"
+        w="37vw"
         borderBottom={
           grabbedRowIndex != null &&
           grabbedRowIndex !== hoverRowIndex &&

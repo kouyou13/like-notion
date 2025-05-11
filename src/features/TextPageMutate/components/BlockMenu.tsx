@@ -1,6 +1,6 @@
-import { Box, HStack, Text, Menu, Portal, Flex, Button } from '@chakra-ui/react'
+import { Box, HStack, Text, Menu, Portal, Flex } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
-import React from 'react'
+import React, { useState } from 'react'
 import { GrDrag } from 'react-icons/gr'
 import { RiDeleteBinLine } from 'react-icons/ri'
 
@@ -12,18 +12,40 @@ type BlockMenuProps = {
   dispatch: React.ActionDispatch<[action: Action]>
 }
 const BlockMenuComponent = ({ block, dispatch }: BlockMenuProps) => {
+  const [isOpenMenu, setIsOpenMenu] = useState(false)
   return (
-    <Menu.Root positioning={{ placement: 'left' }}>
-      <Menu.Trigger asChild>
-        <Button variant="ghost" size="2xs" p={0} _hover={{ bgColor: 'gray.100' }}>
+    <Box
+      borderRadius="md"
+      cursor="grab"
+      draggable
+      onMouseDown={(e) => {
+        e.currentTarget.style.cursor = 'grabbing'
+      }}
+      onMouseUp={(e) => {
+        e.currentTarget.style.cursor = 'grab'
+      }}
+      _hover={{ bgColor: 'gray.100' }}
+      onClick={() => {
+        setIsOpenMenu(true)
+      }}
+      px={1}
+    >
+      <Menu.Root
+        positioning={{ placement: 'left' }}
+        open={isOpenMenu}
+        onOpenChange={(isOpen) => {
+          setIsOpenMenu(isOpen.open)
+        }}
+      >
+        <Menu.Trigger>
           <Tooltip
             label={
-              <Box textAlign="center" fontSize="xs" py={1} px={0} alignContent="center">
+              <Box textAlign="center" fontSize="xs" p={1} alignContent="center">
                 <HStack justify="center" align="center" gap={0}>
-                  ドラッグして<Text color="gray">移動する</Text>
+                  ドラッグして<Text color="gray.400">移動する</Text>
                 </HStack>
                 <HStack gap={0}>
-                  クリックして<Text color="gray">メニューを開く</Text>
+                  クリックして<Text color="gray.400">メニューを開く</Text>
                 </HStack>
               </Box>
             }
@@ -31,46 +53,35 @@ const BlockMenuComponent = ({ block, dispatch }: BlockMenuProps) => {
             color="white"
             borderRadius={5}
             borderColor="black"
+            draggable
           >
-            <Box
-              borderRadius="md"
-              cursor="grab"
-              onMouseDown={(e) => {
-                e.currentTarget.style.cursor = 'grabbing'
-              }}
-              onMouseUp={(e) => {
-                e.currentTarget.style.cursor = 'grab'
-              }}
-              draggable
-            >
-              <GrDrag color="gray" size={16} />
-            </Box>
+            <GrDrag color="gray" size={16} />
           </Tooltip>
-        </Button>
-      </Menu.Trigger>
-      <Portal>
-        <Menu.Positioner>
-          <Menu.Content w={200}>
-            <Menu.Item
-              value="delete"
-              onClick={() => {
-                dispatch({
-                  type: 'deleteBlock',
-                  blockId: block.id,
-                })
-              }}
-            >
-              <Flex w={5} justifyContent="center" alignItems="center">
-                <RiDeleteBinLine size={14} />
-              </Flex>
-              <Text fontSize="sm" color="gray.700">
-                削除
-              </Text>
-            </Menu.Item>
-          </Menu.Content>
-        </Menu.Positioner>
-      </Portal>
-    </Menu.Root>
+        </Menu.Trigger>
+        <Portal>
+          <Menu.Positioner>
+            <Menu.Content w={200}>
+              <Menu.Item
+                value="delete"
+                onClick={() => {
+                  dispatch({
+                    type: 'deleteBlock',
+                    blockId: block.id,
+                  })
+                }}
+              >
+                <Flex w={5} justifyContent="center" alignItems="center">
+                  <RiDeleteBinLine size={14} />
+                </Flex>
+                <Text fontSize="sm" color="gray.700">
+                  削除
+                </Text>
+              </Menu.Item>
+            </Menu.Content>
+          </Menu.Positioner>
+        </Portal>
+      </Menu.Root>
+    </Box>
   )
 }
 const BlockMenu = React.memo(BlockMenuComponent)

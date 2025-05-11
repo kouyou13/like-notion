@@ -75,7 +75,11 @@ const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void
     if (block.blockType !== 'ToggleList') {
       updateBlockType('ToggleList')
     }
-  } else if (block.blockType !== 'Text') {
+  } else if (
+    block.blockType !== 'Text' &&
+    block.blockType !== 'Callout' &&
+    block.blockType !== 'Citing'
+  ) {
     updateBlockType('Text')
   }
 
@@ -91,6 +95,17 @@ const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void
         order: block.order + 1,
         blockType: 'Text',
         indentIndex: block.indentIndex,
+      })
+    } else if (editor.options.content === '<p>| </p>') {
+      dispatch({
+        type: 'updateBlock',
+        blockId: block.id,
+        message: '<p></p>',
+        indentIndex: block.indentIndex,
+        blockType: 'Citing',
+      })
+      setTimeout(() => {
+        blockRefs.current[block.order]?.commands.focus()
       })
     }
   })

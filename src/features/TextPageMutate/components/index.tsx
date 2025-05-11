@@ -77,11 +77,11 @@ const TextPageComponent = () => {
 
   return (
     <Box
-      h="95vh"
       w="40vw"
       display="flex"
       pt="9.5vh"
       ml="23vw"
+      mb="31vh"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           const prevInput = blockRefs.current.slice(-1)[0]

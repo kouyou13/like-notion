@@ -151,7 +151,9 @@ const Template = ({ children }: TemplateProps) => {
         />
         <Box justifyContent="start" w={isOpenSidebar ? '88vw' : '100vw'} h="100vh">
           <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
-          {children}
+          <Box w="100%" h="97vh" overflowY="scroll">
+            {children}
+          </Box>
         </Box>
       </HStack>
     </Box>

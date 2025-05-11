@@ -31,7 +31,16 @@ const textEditorHandleKeyDown = ({
 }: Props): boolean => {
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault()
-    if (block.blockType === 'ToggleList') {
+    if (editor?.isEmpty && block.blockType !== 'Text') {
+      dispatch({
+        type: 'updateBlockType',
+        blockId: block.id,
+        blockType: 'Text',
+      })
+      setTimeout(() => {
+        blockRefs.current[block.order]?.commands.focus()
+      })
+    } else if (block.blockType === 'ToggleList') {
       // トグル展開時
       if (block.isChecked) {
         dispatch({
@@ -88,22 +97,38 @@ const textEditorHandleKeyDown = ({
     }
     return true
   } else if (event.key === 'Backspace') {
-    if ((block.message === '<p></p>' || block.message === '') && block.blockType === 'Text') {
-      if (block.indentIndex > 0) {
+    if (block.message === '<p></p>' || block.message === '') {
+      if (block.blockType === 'Text') {
+        if (block.indentIndex > 0) {
+          dispatch({
+            type: 'subIndent',
+            blockId: block.id,
+          })
+          setTimeout(() => {
+            blockRefs.current[block.order]?.commands.focus()
+          })
+        } else {
+          dispatch({
+            type: 'deleteBlock',
+            blockId: block.id,
+          })
+          setTimeout(() => {
+            for (let i = 1; block.order - i >= 0; i++) {
+              if (blockRefs.current[block.order - i] != null) {
+                blockRefs.current[block.order - i]?.commands.focus()
+                break
+              }
+            }
+          })
+        }
+      } else if (block.blockType === 'Callout' || block.blockType === 'Citing') {
         dispatch({
-          type: 'subIndent',
+          type: 'updateBlockType',
           blockId: block.id,
+          blockType: 'Text',
         })
         setTimeout(() => {
           blockRefs.current[block.order]?.commands.focus()
-        })
-      } else {
-        dispatch({
-          type: 'deleteBlock',
-          blockId: block.id,
-        })
-        setTimeout(() => {
-          blockRefs.current[block.order - 1]?.commands.focus()
         })
       }
     }

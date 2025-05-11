@@ -16,9 +16,9 @@ type CallbackBlockProps = {
 
 const CallbackBlockComponent = ({ block, dispatch, titleRef, blockRefs }: CallbackBlockProps) => {
   return (
-    <HStack minH="3.5rem" justify="center" bgColor="gray.50" gap={0} w="100%" my={1}>
+    <HStack minH="3.5rem" justify="center" bgColor="gray.50" gap={0} w="100%" my={1} py={3}>
       <Flex w="3vw" align="center" justify="center">
-        <FcIdea size={22} />
+        <FcIdea size={18} />
       </Flex>
       <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
     </HStack>

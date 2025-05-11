@@ -15,8 +15,8 @@ type CitingBlockProps = {
 
 const CitingBlockComponent = ({ block, dispatch, titleRef, blockRefs }: CitingBlockProps) => {
   return (
-    <Blockquote.Root w="100%" pr={0} my={1} colorPalette="black">
-      <Blockquote.Content justifyContent="center" alignItems="center" display="flex">
+    <Blockquote.Root w="100%" my={1} colorPalette="black">
+      <Blockquote.Content justifyContent="center" alignItems="center" display="flex" w="100%">
         <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
       </Blockquote.Content>
     </Blockquote.Root>
