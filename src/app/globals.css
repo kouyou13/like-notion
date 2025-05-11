@@ -45,6 +45,13 @@ ol {
   line-height: 1.5rem;
 }
 
+pre {
+  background-color: #fafafa;
+  padding: 25px;
+  margin: 5px 0;
+  font-size: 14px;
+}
+
 /* tiptap系 */
 .text-editor {
   width: 100%;

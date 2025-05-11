@@ -42,7 +42,8 @@ export namespace $Enums {
   Citing: 'Citing',
   Table: 'Table',
   SeparatorLine: 'SeparatorLine',
-  PageLink: 'PageLink'
+  PageLink: 'PageLink',
+  Code: 'Code'
 };
 
 export type BlockType = (typeof BlockType)[keyof typeof BlockType]

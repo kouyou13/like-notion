@@ -167,7 +167,8 @@ exports.BlockType = exports.$Enums.BlockType = {
   Citing: 'Citing',
   Table: 'Table',
   SeparatorLine: 'SeparatorLine',
-  PageLink: 'PageLink'
+  PageLink: 'PageLink',
+  Code: 'Code'
 };
 
 exports.Prisma.ModelName = {

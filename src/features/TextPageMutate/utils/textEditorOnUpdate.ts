@@ -75,6 +75,10 @@ const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void
     if (block.blockType !== 'ToggleList') {
       updateBlockType('ToggleList')
     }
+  } else if (doc.querySelectorAll('pre').length > 0) {
+    if (block.blockType !== 'Code') {
+      updateBlockType('Code')
+    }
   } else if (
     block.blockType !== 'Text' &&
     block.blockType !== 'Callout' &&

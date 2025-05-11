@@ -29,7 +29,7 @@ const textEditorHandleKeyDown = ({
   titleRef,
   blockRefs,
 }: Props): boolean => {
-  if (event.key === 'Enter' && !event.shiftKey) {
+  if (event.key === 'Enter' && !event.shiftKey && block.blockType !== 'Code') {
     event.preventDefault()
     if (editor?.isEmpty && block.blockType !== 'Text') {
       dispatch({
@@ -95,6 +95,24 @@ const textEditorHandleKeyDown = ({
         })
       }
     }
+    return true
+  } else if (event.key === 'Enter' && event.shiftKey && block.blockType === 'Code') {
+    event.preventDefault()
+    let i
+    for (i = 1; block.order + i < blockRefs.current.length; i++) {
+      if (blockRefs.current[block.order + i] != null) {
+        break
+      }
+    }
+    dispatch({
+      type: 'addBlock',
+      order: block.order + i,
+      blockType: block.blockType,
+      indentIndex: block.indentIndex,
+    })
+    setTimeout(() => {
+      blockRefs.current[block.order + i]?.commands.focus()
+    })
     return true
   } else if (event.key === 'Backspace') {
     if (block.message === '<p></p>' || block.message === '') {

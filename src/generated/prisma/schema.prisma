@@ -53,6 +53,7 @@ enum BlockType {
   Table
   SeparatorLine
   PageLink
+  Code
 
   @@map("block_type")
 }

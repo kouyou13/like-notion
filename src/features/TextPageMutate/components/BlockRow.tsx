@@ -31,6 +31,7 @@ const BlockTypeComponent = ({
     case 'H1':
     case 'H2':
     case 'H3':
+    case 'Code':
       return (
         <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
       )
@@ -69,6 +70,8 @@ const BlockTypeComponent = ({
       )
     case 'Page':
       return <PageBlock block={block} />
+    default:
+      return <Box>default</Box>
   }
 }
 
@@ -98,7 +101,7 @@ const BlockRowComponent = ({
   blockRefs,
   listNumber,
 }: BlockRowProps) => {
-  const mt = useMemo(() => {
+  const pt = useMemo(() => {
     switch (block.blockType) {
       case 'Text':
         return 0
@@ -114,7 +117,7 @@ const BlockRowComponent = ({
   return (
     <HStack
       gap={0}
-      mt={mt}
+      pt={pt}
       pl={`${String(block.indentIndex * 1.5)}vw`}
       w="40vw"
       onMouseEnter={() => {
@@ -166,6 +169,7 @@ const BlockRowComponent = ({
           }
         }
       }}
+      cursor="text"
     >
       {hoverRowIndex === block.order || openBlockSettingIndex === block.order ? (
         <HStack w="3vw" gap={0}>

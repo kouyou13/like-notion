@@ -3,7 +3,7 @@ import { Tooltip } from '@chakra-ui/tooltip'
 import { Editor } from '@tiptap/core'
 import { useRouter } from 'next/navigation'
 import React, { useCallback } from 'react'
-import { FaRegFileAlt, FaExternalLinkAlt } from 'react-icons/fa'
+import { FaRegFileAlt } from 'react-icons/fa'
 import { GrAdd } from 'react-icons/gr'
 import { ImList2, ImListNumbered, ImQuotesLeft } from 'react-icons/im'
 import { LuListChecks, LuListCollapse } from 'react-icons/lu'
@@ -89,11 +89,8 @@ const AddBlockMenuComponent = ({
     { value: 'Citing', label: '引用', icon: <ImQuotesLeft color="gray" size={11} /> },
     { value: 'Table', label: 'テーブル', icon: <RxTable color="gray" size={15} /> },
     { value: 'SeparatorLine', label: '区切り線', icon: <RxMinus color="gray" size={17} /> },
-    {
-      value: 'PageLink',
-      label: 'ページリンク',
-      icon: <FaExternalLinkAlt color="gray" size={13} />,
-    },
+    // 大変そうやから後回し
+    // { value: 'PageLink', label: 'ページリンク', icon: <FaExternalLinkAlt color="gray" size={13} />},
   ]
 
   return (

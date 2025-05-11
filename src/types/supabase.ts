@@ -133,6 +133,7 @@ export type Database = {
         | 'Table'
         | 'SeparatorLine'
         | 'PageLink'
+        | 'Code'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -259,6 +260,7 @@ export const Constants = {
         'Table',
         'SeparatorLine',
         'PageLink',
+        'Code',
       ],
     },
   },
