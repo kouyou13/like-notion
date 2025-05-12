@@ -10,11 +10,11 @@ datasource db {
 
 model Page {
   id            String    @id @default(uuid()) @db.Uuid
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @map("updated_at")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt     DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
   title         String    @default("")
   order         Int
-  deletedAt     DateTime? @map("deleted_at")
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz()
   blocks        Block[]
   parentBlockId String?   @unique @map("parent_block_id") @db.Uuid
 
@@ -24,12 +24,12 @@ model Page {
 
 model Block {
   id          String    @id @default(uuid()) @db.Uuid
-  createdAt   DateTime  @default(now()) @map("created_at")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
   blockType   BlockType @default(Text) @map("block_type")
   indentIndex Int       @default(0) @map("indent_index")
   order       Int
   message     String    @default("")
-  deletedAt   DateTime? @map("deleted_at")
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz()
   isChecked   Boolean   @default(false) @map("is_checked")
   pageId      String?   @map("page_id") @db.Uuid
   page        Page?     @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)

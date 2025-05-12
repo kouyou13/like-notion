@@ -1,3 +1,5 @@
+import type { Dayjs } from 'dayjs'
+
 import type { Constants } from './supabase'
 
 export type Page = {
@@ -6,6 +8,7 @@ export type Page = {
   order: number
   deletedAt: string | null
   parentBlockId: string | null
+  updatedAt?: Dayjs
 }
 
 export type BlockType = (typeof Constants)['public']['Enums']['block_type'][number]

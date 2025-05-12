@@ -62,11 +62,13 @@ const TextPageComponent = () => {
 
   // 定期的にブロックの情報を保存
   useEffect(() => {
-    void regularlySaveBlocks({
-      previousBlocksRef,
-      debouncedBlocks,
-      pageId,
-    })
+    if (debouncedBlocks.length > 0) {
+      void regularlySaveBlocks({
+        previousBlocksRef,
+        debouncedBlocks,
+        pageId,
+      })
+    }
   }, [debouncedBlocks, pageId])
 
   const filteredBlocks = useMemo(() => showBlockFilter(blocks, blockRefs), [blocks])

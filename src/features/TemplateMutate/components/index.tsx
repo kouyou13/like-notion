@@ -1,6 +1,7 @@
 'use client'
 
 import { Box, HStack } from '@chakra-ui/react'
+import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import React, { useState, useEffect, useCallback } from 'react'
 import { v4 } from 'uuid'
@@ -13,7 +14,6 @@ import TopBar from '../../TopBarMutate/components'
 type TemplateProps = {
   children: React.ReactNode
 }
-
 const Template = ({ children }: TemplateProps) => {
   const supabase = createSupabaseClient()
   const router = useRouter()
@@ -40,6 +40,7 @@ const Template = ({ children }: TemplateProps) => {
               order: data.order,
               deletedAt: data.deleted_at,
               parentBlockId: data.parent_block_id,
+              updatedAt: dayjs(data.updated_at),
             }))
             .sort((a, b) => a.order - b.order),
         )
@@ -61,6 +62,7 @@ const Template = ({ children }: TemplateProps) => {
               order: payload.new.order,
               deletedAt: payload.new.deleted_at ?? null,
               parentBlockId: payload.new.parent_block_id ?? null,
+              updatedAt: payload.new.updated_at,
             }
             setPages((prev) => [...prev, newPage])
           }
@@ -150,7 +152,7 @@ const Template = ({ children }: TemplateProps) => {
           handleAddPage={handleAddPage}
         />
         <Box justifyContent="start" w={isOpenSidebar ? '88vw' : '100vw'} h="100vh">
-          <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
+          <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} pages={pages} />
           <Box w="100%" h="97vh" overflowY="scroll">
             {children}
           </Box>

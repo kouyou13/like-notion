@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { Block } from '../../../types'
 
@@ -15,8 +17,16 @@ type Props = {
  */
 const regularlySaveBlocks = async ({ previousBlocksRef, debouncedBlocks, pageId }: Props) => {
   const supabase = createSupabaseClient()
-  if (JSON.stringify(previousBlocksRef.current) === JSON.stringify(debouncedBlocks)) return
-
+  // 画面起動時に更新されないようにするための対策
+  if (
+    previousBlocksRef.current.length === 0 ||
+    JSON.stringify(previousBlocksRef.current) === JSON.stringify(debouncedBlocks)
+  ) {
+    if (previousBlocksRef.current.length === 0) {
+      previousBlocksRef.current = debouncedBlocks
+    }
+    return
+  }
   const prevIds = previousBlocksRef.current.map((b) => b.id)
   const currentIds = debouncedBlocks.map((b) => b.id)
   const deletedIds = prevIds.filter((id) => !currentIds.includes(id))
@@ -39,7 +49,7 @@ const regularlySaveBlocks = async ({ previousBlocksRef, debouncedBlocks, pageId 
       console.error('保存失敗:', error)
     }
 
-    await supabase.from('page').update({ updated_at: new Date().toISOString() }).eq('id', pageId)
+    await supabase.from('page').update({ updated_at: dayjs().format() }).eq('id', pageId)
 
     previousBlocksRef.current = debouncedBlocks
 
