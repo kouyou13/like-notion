@@ -74,6 +74,7 @@ const Template = ({ children }: TemplateProps) => {
               order: payload.new.order,
               deletedAt: payload.new.deleted_at ?? null,
               parentBlockId: payload.new.parent_block_id ?? null,
+              updatedAt: payload.new.updated_at,
             }
             setPages((prev) =>
               prev
