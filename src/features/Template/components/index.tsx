@@ -9,7 +9,7 @@ import { v4 } from 'uuid'
 import SidebarComponent from './Sidebar'
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { PageWithBlocks, Page } from '../../../types'
-import TopBar from '../../TopBarMutate/components'
+import TopBar from '../../TopBar/components'
 
 type TemplateProps = {
   children: React.ReactNode

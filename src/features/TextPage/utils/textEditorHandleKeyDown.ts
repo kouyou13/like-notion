@@ -1,7 +1,7 @@
 import { Editor } from '@tiptap/core'
 
+import type { Action } from './pageDispatch'
 import type { Block } from '../../../types'
-import type { Action } from '../utils/pageDispatch'
 
 type Props = {
   editor: Editor | null

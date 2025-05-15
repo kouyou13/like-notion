@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import TextPage from '../../features/TextPageMutate/components'
+import TextPage from '../../features/TextPage/components'
 
 const Page = () => {
   return <TextPage />

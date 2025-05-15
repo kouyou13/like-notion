@@ -2,7 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 
 import { Providers } from './providers'
-import Template from '../features/TemplateMutate/components'
+import Template from '../features/Template/components'
 
 export const metadata: Metadata = {
   title: 'like Notion',

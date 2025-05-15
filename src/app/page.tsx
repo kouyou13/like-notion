@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import Home from '../features/HomeMutate/components'
+import Home from '../features/Home/components'
 
 const App = () => {
   return <Home />
