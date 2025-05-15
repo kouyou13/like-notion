@@ -256,8 +256,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.6.0
-   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
+   * Prisma Client JS version: 6.7.0
+   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
    */
   export type PrismaVersion = {
     client: string
@@ -1048,6 +1048,7 @@ export namespace Prisma {
     order: number | null
     deletedAt: Date | null
     parentBlockId: string | null
+    userId: string | null
   }
 
   export type PageMaxAggregateOutputType = {
@@ -1058,6 +1059,7 @@ export namespace Prisma {
     order: number | null
     deletedAt: Date | null
     parentBlockId: string | null
+    userId: string | null
   }
 
   export type PageCountAggregateOutputType = {
@@ -1068,6 +1070,7 @@ export namespace Prisma {
     order: number
     deletedAt: number
     parentBlockId: number
+    userId: number
     _all: number
   }
 
@@ -1088,6 +1091,7 @@ export namespace Prisma {
     order?: true
     deletedAt?: true
     parentBlockId?: true
+    userId?: true
   }
 
   export type PageMaxAggregateInputType = {
@@ -1098,6 +1102,7 @@ export namespace Prisma {
     order?: true
     deletedAt?: true
     parentBlockId?: true
+    userId?: true
   }
 
   export type PageCountAggregateInputType = {
@@ -1108,6 +1113,7 @@ export namespace Prisma {
     order?: true
     deletedAt?: true
     parentBlockId?: true
+    userId?: true
     _all?: true
   }
 
@@ -1205,6 +1211,7 @@ export namespace Prisma {
     order: number
     deletedAt: Date | null
     parentBlockId: string | null
+    userId: string
     _count: PageCountAggregateOutputType | null
     _avg: PageAvgAggregateOutputType | null
     _sum: PageSumAggregateOutputType | null
@@ -1234,6 +1241,7 @@ export namespace Prisma {
     order?: boolean
     deletedAt?: boolean
     parentBlockId?: boolean
+    userId?: boolean
     blocks?: boolean | Page$blocksArgs<ExtArgs>
     _count?: boolean | PageCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["page"]>
@@ -1246,6 +1254,7 @@ export namespace Prisma {
     order?: boolean
     deletedAt?: boolean
     parentBlockId?: boolean
+    userId?: boolean
   }, ExtArgs["result"]["page"]>
 
   export type PageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1256,6 +1265,7 @@ export namespace Prisma {
     order?: boolean
     deletedAt?: boolean
     parentBlockId?: boolean
+    userId?: boolean
   }, ExtArgs["result"]["page"]>
 
   export type PageSelectScalar = {
@@ -1266,9 +1276,10 @@ export namespace Prisma {
     order?: boolean
     deletedAt?: boolean
     parentBlockId?: boolean
+    userId?: boolean
   }
 
-  export type PageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "order" | "deletedAt" | "parentBlockId", ExtArgs["result"]["page"]>
+  export type PageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "order" | "deletedAt" | "parentBlockId" | "userId", ExtArgs["result"]["page"]>
   export type PageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     blocks?: boolean | Page$blocksArgs<ExtArgs>
     _count?: boolean | PageCountOutputTypeDefaultArgs<ExtArgs>
@@ -1289,6 +1300,7 @@ export namespace Prisma {
       order: number
       deletedAt: Date | null
       parentBlockId: string | null
+      userId: string
     }, ExtArgs["result"]["page"]>
     composites: {}
   }
@@ -1720,6 +1732,7 @@ export namespace Prisma {
     readonly order: FieldRef<"Page", 'Int'>
     readonly deletedAt: FieldRef<"Page", 'DateTime'>
     readonly parentBlockId: FieldRef<"Page", 'String'>
+    readonly userId: FieldRef<"Page", 'String'>
   }
     
 
@@ -3338,7 +3351,8 @@ export namespace Prisma {
     title: 'title',
     order: 'order',
     deletedAt: 'deletedAt',
-    parentBlockId: 'parentBlockId'
+    parentBlockId: 'parentBlockId',
+    userId: 'userId'
   };
 
   export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum]
@@ -3479,6 +3493,7 @@ export namespace Prisma {
     order?: IntFilter<"Page"> | number
     deletedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
     parentBlockId?: UuidNullableFilter<"Page"> | string | null
+    userId?: UuidFilter<"Page"> | string
     blocks?: BlockListRelationFilter
   }
 
@@ -3490,6 +3505,7 @@ export namespace Prisma {
     order?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     parentBlockId?: SortOrderInput | SortOrder
+    userId?: SortOrder
     blocks?: BlockOrderByRelationAggregateInput
   }
 
@@ -3505,6 +3521,7 @@ export namespace Prisma {
     title?: StringFilter<"Page"> | string
     order?: IntFilter<"Page"> | number
     deletedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
+    userId?: UuidFilter<"Page"> | string
     blocks?: BlockListRelationFilter
   }, "id" | "parentBlockId" | "id_order">
 
@@ -3516,6 +3533,7 @@ export namespace Prisma {
     order?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     parentBlockId?: SortOrderInput | SortOrder
+    userId?: SortOrder
     _count?: PageCountOrderByAggregateInput
     _avg?: PageAvgOrderByAggregateInput
     _max?: PageMaxOrderByAggregateInput
@@ -3534,6 +3552,7 @@ export namespace Prisma {
     order?: IntWithAggregatesFilter<"Page"> | number
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Page"> | Date | string | null
     parentBlockId?: UuidNullableWithAggregatesFilter<"Page"> | string | null
+    userId?: UuidWithAggregatesFilter<"Page"> | string
   }
 
   export type BlockWhereInput = {
@@ -3621,6 +3640,7 @@ export namespace Prisma {
     order: number
     deletedAt?: Date | string | null
     parentBlockId?: string | null
+    userId: string
     blocks?: BlockCreateNestedManyWithoutPageInput
   }
 
@@ -3632,6 +3652,7 @@ export namespace Prisma {
     order: number
     deletedAt?: Date | string | null
     parentBlockId?: string | null
+    userId: string
     blocks?: BlockUncheckedCreateNestedManyWithoutPageInput
   }
 
@@ -3643,6 +3664,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     blocks?: BlockUpdateManyWithoutPageNestedInput
   }
 
@@ -3654,6 +3676,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     blocks?: BlockUncheckedUpdateManyWithoutPageNestedInput
   }
 
@@ -3665,6 +3688,7 @@ export namespace Prisma {
     order: number
     deletedAt?: Date | string | null
     parentBlockId?: string | null
+    userId: string
   }
 
   export type PageUpdateManyMutationInput = {
@@ -3675,6 +3699,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PageUncheckedUpdateManyInput = {
@@ -3685,6 +3710,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type BlockCreateInput = {
@@ -3870,6 +3896,7 @@ export namespace Prisma {
     order?: SortOrder
     deletedAt?: SortOrder
     parentBlockId?: SortOrder
+    userId?: SortOrder
   }
 
   export type PageAvgOrderByAggregateInput = {
@@ -3884,6 +3911,7 @@ export namespace Prisma {
     order?: SortOrder
     deletedAt?: SortOrder
     parentBlockId?: SortOrder
+    userId?: SortOrder
   }
 
   export type PageMinOrderByAggregateInput = {
@@ -3894,6 +3922,7 @@ export namespace Prisma {
     order?: SortOrder
     deletedAt?: SortOrder
     parentBlockId?: SortOrder
+    userId?: SortOrder
   }
 
   export type PageSumOrderByAggregateInput = {
@@ -4458,6 +4487,7 @@ export namespace Prisma {
     order: number
     deletedAt?: Date | string | null
     parentBlockId?: string | null
+    userId: string
   }
 
   export type PageUncheckedCreateWithoutBlocksInput = {
@@ -4468,6 +4498,7 @@ export namespace Prisma {
     order: number
     deletedAt?: Date | string | null
     parentBlockId?: string | null
+    userId: string
   }
 
   export type PageCreateOrConnectWithoutBlocksInput = {
@@ -4494,6 +4525,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PageUncheckedUpdateWithoutBlocksInput = {
@@ -4504,6 +4536,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type BlockCreateManyPageInput = {

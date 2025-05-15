@@ -14,7 +14,7 @@ import TopBar from '../../TopBar/components'
 type TemplateProps = {
   children: React.ReactNode
 }
-const Template = ({ children }: TemplateProps) => {
+const TemplateComponent = ({ children }: TemplateProps) => {
   const supabase = createSupabaseClient()
   const router = useRouter()
 
@@ -162,5 +162,5 @@ const Template = ({ children }: TemplateProps) => {
     </Box>
   )
 }
-
+const Template = React.memo(TemplateComponent)
 export default Template

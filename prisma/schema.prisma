@@ -17,6 +17,7 @@ model Page {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
   blocks Block[]
   parentBlockId String? @map("parent_block_id") @db.Uuid @unique
+  userId String @map("user_id") @db.Uuid
 
   @@unique([id, order])
   @@map("page")

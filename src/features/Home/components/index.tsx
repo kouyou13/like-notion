@@ -1,12 +1,12 @@
 import { Box } from '@chakra-ui/react'
 import React from 'react'
 
-const HomeMutateComponent = () => {
+const HomeComponent = () => {
   return (
     <>
       <Box>ホーム</Box>
     </>
   )
 }
-const Home = React.memo(HomeMutateComponent)
+const Home = React.memo(HomeComponent)
 export default Home

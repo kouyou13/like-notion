@@ -1,7 +1,7 @@
 import './globals.css'
+import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
 import type { Metadata } from 'next'
 
-import { Providers } from './providers'
 import Template from '../features/Template/components'
 
 export const metadata: Metadata = {
@@ -13,9 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <Providers>
+        <ChakraProvider value={defaultSystem}>
           <Template>{children}</Template>
-        </Providers>
+        </ChakraProvider>
       </body>
     </html>
   )
