@@ -11,6 +11,8 @@ import { RiH1, RiH2, RiH3, RiTBoxLine } from 'react-icons/ri'
 import { RxText, RxTable, RxMinus } from 'react-icons/rx'
 import { v4 } from 'uuid'
 
+import useUser from '@/common/useUser'
+
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { Block, BlockType } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
@@ -31,6 +33,7 @@ const AddBlockMenuComponent = ({
 }: AddBlockMenuProps) => {
   const supabase = createSupabaseClient()
   const router = useRouter()
+  const user = useUser()
 
   const handleSelectBlockType = useCallback(
     async (selectedBlockType: BlockType) => {
@@ -56,6 +59,7 @@ const AddBlockMenuComponent = ({
           title: '',
           order: -1,
           parent_block_id: block.id,
+          user_id: user?.id ?? '',
         })
         await supabase.from('block').insert({
           id: v4(),
@@ -68,7 +72,7 @@ const AddBlockMenuComponent = ({
         router.push(`/${newPageId}`)
       }
     },
-    [block, dispatch, blockRefs, supabase, router],
+    [block, dispatch, blockRefs, supabase, router, user?.id],
   )
 
   const menuItems = [

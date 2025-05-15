@@ -5,6 +5,8 @@ import { FaRegFileAlt } from 'react-icons/fa'
 import { GrMore, GrAdd } from 'react-icons/gr'
 import { RiDeleteBinLine } from 'react-icons/ri'
 
+import useUser from '@/common/useUser'
+
 import { successToast } from '../../../common/toast'
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { Page } from '../../../types'
@@ -16,6 +18,7 @@ const PageTabComponent = ({ page }: PageTabProps) => {
   const router = useRouter()
   const supabase = createSupabaseClient()
   const [isHover, setIsHover] = useState(false)
+  const user = useUser()
 
   const handleDeletePage = useCallback(async () => {
     try {
@@ -39,6 +42,7 @@ const PageTabComponent = ({ page }: PageTabProps) => {
       const updatedPages = remainingPages.map((page, index) => ({
         id: page.id,
         order: index,
+        user_id: user?.id ?? '',
       }))
 
       const { error: updateError } = await supabase.from('page').upsert(updatedPages, {
@@ -53,7 +57,7 @@ const PageTabComponent = ({ page }: PageTabProps) => {
     } catch (err) {
       console.error('ページ削除中にエラーが発生しました:', err)
     }
-  }, [supabase, page.id, router])
+  }, [supabase, page.id, router, user?.id])
   return (
     <HStack
       gap={1}

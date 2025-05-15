@@ -44,7 +44,7 @@ const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar, pages }: TopBarProps
       </IconButton>
       {targetPage && (
         <Text textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden" w="14vw">
-          {targetPage.title}
+          {targetPage.title !== '' ? targetPage.title : '新規ページ'}
         </Text>
       )}
       <Spacer />

@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
+import dayjs from 'dayjs'
 
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { PageWithBlocks } from '../../../types'
@@ -21,7 +22,7 @@ const selectPageWithBlocks = async (
     .single()
   const camel = page ? camelcaseKeys(page, { deep: true }) : undefined
   const camelData: PageWithBlocks | undefined = camel
-    ? { ...camel, block: camel.block.map((b) => ({ ...b, children: [] })) }
+    ? { ...camel, updatedAt: dayjs(camel.updatedAt), block: camel.block.map((b) => ({ ...b })) }
     : undefined
   return { data: camelData, error: pageError }
 }

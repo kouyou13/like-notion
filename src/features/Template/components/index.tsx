@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import React, { useState, useEffect, useCallback } from 'react'
 import { v4 } from 'uuid'
 
+import useUser from '@/common/useUser'
+
 import SidebarComponent from './Sidebar'
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { PageWithBlocks, Page } from '../../../types'
@@ -17,6 +19,7 @@ type TemplateProps = {
 const TemplateComponent = ({ children }: TemplateProps) => {
   const supabase = createSupabaseClient()
   const router = useRouter()
+  const user = useUser()
 
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
@@ -129,7 +132,9 @@ const TemplateComponent = ({ children }: TemplateProps) => {
     }
     await supabase
       .from('page')
-      .insert([{ id: newPage.id, title: newPage.title, order: newPage.order }])
+      .insert([
+        { id: newPage.id, title: newPage.title, order: newPage.order, user_id: user?.id ?? '' },
+      ])
     await supabase.from('block').insert(
       newPage.block.map((block) => ({
         id: block.id,
@@ -140,7 +145,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
       })),
     )
     router.push(`/${newPage.id}`)
-  }, [supabase, router, pages.length])
+  }, [supabase, router, pages.length, user?.id])
 
   return (
     <Box w="100vw" h="100vh">
