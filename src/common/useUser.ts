@@ -9,7 +9,10 @@ const useUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const supabase = createSupabaseClient()
-      const { data } = await supabase.auth.getUser()
+      const { data, error } = await supabase.auth.getUser()
+      if (error) {
+        console.error(error)
+      }
       setUser(data.user ?? null)
     }
     void fetchUser()

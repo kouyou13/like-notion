@@ -24,6 +24,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [pages, setPages] = useState<Page[]>([])
+  const [favoritePages, setFavoritePages] = useState<Page[]>([])
 
   useEffect(() => {
     const fetchPages = async () => {
@@ -44,57 +45,79 @@ const TemplateComponent = ({ children }: TemplateProps) => {
               deletedAt: data.deleted_at,
               parentBlockId: data.parent_block_id,
               updatedAt: dayjs(data.updated_at),
+              favoritedAt: data.favorited_at ? dayjs(data.favorited_at) : undefined,
             }))
             .sort((a, b) => a.order - b.order),
         )
       }
+
+      const { data: favoriteData, error: favoriteError } = await supabase
+        .from('page')
+        .select('*')
+        .is('deleted_at', null)
+        .not('favorited_at', 'is', null)
+      if (favoriteError) {
+        console.error(favoriteError)
+      } else {
+        setFavoritePages(
+          favoriteData.map((data) => ({
+            id: data.id,
+            title: data.title,
+            order: data.order,
+            deletedAt: data.deleted_at,
+            parentBlockId: data.parent_block_id,
+            updatedAt: dayjs(data.updated_at),
+            favoritedAt: data.favorited_at ? dayjs(data.favorited_at) : undefined,
+          })),
+        )
+      }
       setIsLoading(false)
     }
-
     void fetchPages()
-
-    // リアルタイムに更新
-    const channel = supabase
-      .channel('page')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'page' }, (payload) => {
-        if (payload.eventType === 'INSERT') {
-          if (payload.new.parent_block_id == null) {
-            const newPage: Page = {
-              id: payload.new.id,
-              title: payload.new.title,
-              order: payload.new.order,
-              deletedAt: payload.new.deleted_at ?? null,
-              parentBlockId: payload.new.parent_block_id ?? null,
-              updatedAt: payload.new.updated_at,
-            }
-            setPages((prev) => [...prev, newPage])
-          }
-        } else if (payload.eventType == 'UPDATE') {
-          if (payload.new.parent_block_id == null) {
-            const newPage: Page = {
-              id: payload.new.id,
-              title: payload.new.title,
-              order: payload.new.order,
-              deletedAt: payload.new.deleted_at ?? null,
-              parentBlockId: payload.new.parent_block_id ?? null,
-              updatedAt: payload.new.updated_at,
-            }
-            setPages((prev) =>
-              prev
-                .map((page) => (page.id === newPage.id ? newPage : page))
-                .filter((page) => page.deletedAt == null && page.parentBlockId == null),
-            )
-          }
-        }
-      })
-      .subscribe()
-
-    // クリーンアップ
-    return () => {
-      void supabase.removeChannel(channel)
-    }
     // eslint-disable-next-line
   }, [])
+
+  // リアルタイムに更新
+  supabase
+    .channel('page')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'page' }, (payload) => {
+      if (payload.eventType === 'INSERT') {
+        if (payload.new.parent_block_id == null) {
+          const newPage: Page = {
+            id: payload.new.id,
+            title: payload.new.title,
+            order: payload.new.order,
+            deletedAt: payload.new.deleted_at ?? null,
+            parentBlockId: payload.new.parent_block_id ?? null,
+            updatedAt: payload.new.updated_at,
+          }
+          setPages((prev) => [...prev, newPage])
+        }
+      } else if (payload.eventType == 'UPDATE') {
+        const newPage: Page = {
+          id: payload.new.id,
+          title: payload.new.title,
+          order: payload.new.order,
+          deletedAt: payload.new.deleted_at ?? null,
+          parentBlockId: payload.new.parent_block_id ?? null,
+          updatedAt: payload.new.updated_at,
+          favoritedAt: payload.new.favorited_at,
+        }
+        setPages((prev) =>
+          prev
+            .map((page) => (page.id === newPage.id ? newPage : page))
+            .filter((page) => page.deletedAt == null && page.parentBlockId == null),
+        )
+        if (newPage.favoritedAt) {
+          if (!favoritePages.find((page) => page.id === newPage.id)) {
+            setFavoritePages([...favoritePages, newPage])
+          }
+        } else {
+          setFavoritePages(favoritePages.filter((page) => page.id !== newPage.id))
+        }
+      }
+    })
+    .subscribe()
 
   const handleAddPage = useCallback(async () => {
     const newPage: PageWithBlocks = {
@@ -155,10 +178,11 @@ const TemplateComponent = ({ children }: TemplateProps) => {
           setIsOpenSidebar={setIsOpenSidebar}
           isLoading={isLoading}
           pages={pages}
+          favoritePages={favoritePages}
           handleAddPage={handleAddPage}
         />
         <Box justifyContent="start" w={isOpenSidebar ? '88vw' : '100vw'} h="100vh">
-          <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} pages={pages} />
+          <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
           <Box w="100%" h="97vh" overflowY="scroll">
             {children}
           </Box>
