@@ -9,31 +9,32 @@ datasource db {
 }
 
 model Page {
-  id String @id @default(uuid()) @db.Uuid
-  createdAt DateTime @map("created_at") @default(now()) @db.Timestamptz()
-  updatedAt DateTime @map("updated_at") @default(now()) @db.Timestamptz()
-  title String @default("")
-  order Int
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
-  blocks Block[]
-  parentBlockId String? @map("parent_block_id") @db.Uuid @unique
-  userId String @map("user_id") @db.Uuid
+  id            String    @id @default(uuid()) @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt     DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+  title         String    @default("")
+  order         Int
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz()
+  favoritedAt   DateTime? @map("favorited_at") @db.Timestamptz()
+  blocks        Block[]
+  parentBlockId String?   @unique @map("parent_block_id") @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
 
   @@unique([id, order])
   @@map("page")
 }
 
 model Block {
-  id String @id @default(uuid()) @db.Uuid
-  createdAt DateTime @map("created_at") @default(now()) @db.Timestamptz()
-  blockType BlockType @map("block_type") @default(Text)
-  indentIndex Int @map("indent_index") @default(0)
-  order Int
-  message String @default("")
-  deletedAt DateTime?  @map("deleted_at") @db.Timestamptz()
-  isChecked Boolean @map("is_checked") @default(false)
-  pageId String? @map("page_id") @db.Uuid
-  page Page? @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  id          String    @id @default(uuid()) @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  blockType   BlockType @default(Text) @map("block_type")
+  indentIndex Int       @default(0) @map("indent_index")
+  order       Int
+  message     String    @default("")
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz()
+  isChecked   Boolean   @default(false) @map("is_checked")
+  pageId      String?   @map("page_id") @db.Uuid
+  page        Page?     @relation(fields: [pageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 
   @@index([pageId])
   @@map("block")

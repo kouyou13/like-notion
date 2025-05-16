@@ -22,7 +22,12 @@ const selectPageWithBlocks = async (
     .single()
   const camel = page ? camelcaseKeys(page, { deep: true }) : undefined
   const camelData: PageWithBlocks | undefined = camel
-    ? { ...camel, updatedAt: dayjs(camel.updatedAt), block: camel.block.map((b) => ({ ...b })) }
+    ? {
+        ...camel,
+        updatedAt: dayjs(camel.updatedAt),
+        favoritedAt: camel.favoritedAt ? dayjs(camel.favoritedAt) : undefined,
+        block: camel.block.map((b) => ({ ...b })),
+      }
     : undefined
   return { data: camelData, error: pageError }
 }

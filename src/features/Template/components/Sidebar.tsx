@@ -12,6 +12,7 @@ type SidebarProps = {
   setIsOpenSidebar: (isOpen: boolean) => void
   isLoading: boolean
   pages: Page[]
+  favoritePages: Page[]
   handleAddPage: () => Promise<void>
 }
 const SidebarComponent = ({
@@ -19,9 +20,11 @@ const SidebarComponent = ({
   setIsOpenSidebar,
   isLoading,
   pages,
+  favoritePages,
   handleAddPage,
 }: SidebarProps) => {
   const router = useRouter()
+  const [isHoverFavorite, setIsHoverFavorite] = useState(false)
   const [isHoverPrivate, setIsHoverPrivate] = useState(false)
   return (
     <Box w="12vw" bgColor="gray.100" minH="100vh" px={2} py={1} hidden={!isOpenSidebar}>
@@ -62,10 +65,44 @@ const SidebarComponent = ({
             ホーム
           </Text>
         </HStack>
+        {/* お気に入り */}
+        {favoritePages.length > 0 && (
+          <>
+            <HStack
+              gap={1}
+              borderRadius="md"
+              pl={1}
+              pr={2}
+              _hover={{ bgColor: 'gray.200' }}
+              onMouseEnter={() => {
+                setIsHoverFavorite(true)
+              }}
+              onMouseLeave={() => {
+                setIsHoverFavorite(false)
+              }}
+            >
+              <Text fontSize="xs" color="gray.600" py={1}>
+                お気に入り
+              </Text>
+              <Spacer />
+              {isHoverFavorite && (
+                <Box borderRadius="md" p={1} _hover={{ bgColor: 'gray.300' }}>
+                  <GrMore color="gray" size={13} />
+                </Box>
+              )}
+            </HStack>
+            <Skeleton loading={isLoading}>
+              {favoritePages.map((page) => (
+                <PageTab key={`favorite-${String(page.id)}`} page={page} />
+              ))}
+            </Skeleton>
+          </>
+        )}
         {/* プライベート */}
         <HStack
           gap={1}
           borderRadius="md"
+          mt={5}
           pl={1}
           pr={2}
           _hover={{ bgColor: 'gray.200' }}
@@ -93,7 +130,7 @@ const SidebarComponent = ({
         </HStack>
         <Skeleton loading={isLoading}>
           {pages.map((page) => (
-            <PageTab key={page.id} page={page} />
+            <PageTab key={`private-${String(page.id)}`} page={page} />
           ))}
         </Skeleton>
         {pages.length < 3 && (

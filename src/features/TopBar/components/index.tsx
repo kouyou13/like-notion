@@ -1,22 +1,53 @@
-import { HStack, Box, IconButton, Text, Spacer } from '@chakra-ui/react'
+import { HStack, Box, IconButton, Text, Spacer, Icon } from '@chakra-ui/react'
+import dayjs from 'dayjs'
 import { useParams } from 'next/navigation'
-import React, { useMemo } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { AiOutlineDoubleRight } from 'react-icons/ai'
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
+import { FaStar, FaRegStar } from 'react-icons/fa'
 import { GrAdd } from 'react-icons/gr'
 
+import { createSupabaseClient } from '../../../lib/supabase'
 import type { Page } from '../../../types'
+import selectPage from '../hooks/selectPage'
 import calcMinutesSinceEdited from '../utils/calcMinutesSinceEdited'
 
 type TopBarProps = {
   isOpenSidebar: boolean
   setIsOpenSidebar: (isOpen: boolean) => void
-  pages: Page[]
 }
 
-const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar, pages }: TopBarProps) => {
+const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
   const { pageId }: { pageId?: string } = useParams()
-  const targetPage = useMemo(() => pages.find((page) => page.id === pageId), [pageId, pages])
+  const supabase = createSupabaseClient()
+  const [page, setPage] = useState<Page | null>(null)
+  const [isFavorite, setIsFavorite] = useState(false)
+
+  useEffect(() => {
+    const getPage = async () => {
+      const currentPage = await selectPage(pageId)
+      setPage(currentPage)
+      setIsFavorite(!!currentPage?.favoritedAt)
+    }
+    void getPage()
+  }, [pageId])
+
+  const handleFavorite = useCallback(
+    (isChecked: boolean) => {
+      setIsFavorite(isChecked)
+      const favorite = async () => {
+        const { error } = await supabase
+          .from('page')
+          .update({ favorited_at: isChecked ? dayjs().format() : null })
+          .eq('id', pageId ?? '')
+        if (error) {
+          console.error(error)
+        }
+      }
+      void favorite()
+    },
+    [supabase, pageId],
+  )
   return (
     <HStack h="3vh" bgColor="white" px={2} my={1} gap={1}>
       {!isOpenSidebar && (
@@ -34,23 +65,40 @@ const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar, pages }: TopBarProps
         </Box>
       )}
       <IconButton variant="solid" size="2xs" bgColor="white" _hover={{ bgColor: 'gray.200' }}>
-        <BsArrowLeft color="gray" />
+        <Icon size="md">
+          <BsArrowLeft color="gray" />
+        </Icon>
       </IconButton>
       <IconButton variant="solid" size="2xs" bgColor="white" _hover={{ bgColor: 'gray.200' }}>
-        <BsArrowRight color="gray" />
+        <Icon size="md">
+          <BsArrowRight color="gray" />
+        </Icon>
       </IconButton>
-      <IconButton variant="solid" size="xs" bgColor="white" _hover={{ bgColor: 'gray.200' }}>
-        <GrAdd color="gray" />
+      <IconButton variant="solid" size="2xs" bgColor="white" _hover={{ bgColor: 'gray.200' }}>
+        <Icon size="md">
+          <GrAdd color="gray" />
+        </Icon>
       </IconButton>
-      {targetPage && (
+      {page && (
         <Text textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden" w="14vw">
-          {targetPage.title !== '' ? targetPage.title : '新規ページ'}
+          {page.title !== '' ? page.title : '新規ページ'}
         </Text>
       )}
       <Spacer />
       <Text color="gray" fontSize="sm">
-        {calcMinutesSinceEdited(targetPage)}
+        {calcMinutesSinceEdited(page ?? null)}
       </Text>
+      <IconButton
+        variant="solid"
+        size="2xs"
+        bgColor="white"
+        _hover={{ bgColor: 'gray.200' }}
+        onClick={() => {
+          handleFavorite(!isFavorite)
+        }}
+      >
+        <Icon size="sm">{isFavorite ? <FaStar color="orange" /> : <FaRegStar color="gray" />}</Icon>
+      </IconButton>
     </HStack>
   )
 }

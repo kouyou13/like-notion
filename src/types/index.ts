@@ -9,6 +9,7 @@ export type Page = {
   deletedAt: string | null
   parentBlockId: string | null
   updatedAt?: Dayjs
+  favoritedAt?: Dayjs
 }
 
 export type BlockType = (typeof Constants)['public']['Enums']['block_type'][number]

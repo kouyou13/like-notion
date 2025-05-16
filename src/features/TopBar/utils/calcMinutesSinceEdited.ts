@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 
 import type { Page } from '../../../types'
 
-const calcMinutesSinceEdited = (page: Page | undefined) => {
+const calcMinutesSinceEdited = (page: Page | null) => {
   if (page?.updatedAt) {
     const now = dayjs()
     const targetPageUpdatedAt = page.updatedAt

@@ -84,6 +84,7 @@ export type Database = {
         Row: {
           created_at: string
           deleted_at: string | null
+          favorited_at: string | null
           id: string
           order: number
           parent_block_id: string | null
@@ -94,6 +95,7 @@ export type Database = {
         Insert: {
           created_at?: string
           deleted_at?: string | null
+          favorited_at?: string | null
           id: string
           order: number
           parent_block_id?: string | null
@@ -104,6 +106,7 @@ export type Database = {
         Update: {
           created_at?: string
           deleted_at?: string | null
+          favorited_at?: string | null
           id?: string
           order?: number
           parent_block_id?: string | null
