@@ -2,9 +2,16 @@
 
 import React from 'react'
 
+import { Toaster } from '@/components/ui/toaster'
+
 import Login from '../../features/Login/components'
 
 const Page = () => {
-  return <Login />
+  return (
+    <>
+      <Toaster />
+      <Login />
+    </>
+  )
 }
 export default Page

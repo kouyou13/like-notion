@@ -88,17 +88,21 @@ const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
       <Text color="gray" fontSize="sm">
         {calcMinutesSinceEdited(page ?? null)}
       </Text>
-      <IconButton
-        variant="solid"
-        size="2xs"
-        bgColor="white"
-        _hover={{ bgColor: 'gray.200' }}
-        onClick={() => {
-          handleFavorite(!isFavorite)
-        }}
-      >
-        <Icon size="sm">{isFavorite ? <FaStar color="orange" /> : <FaRegStar color="gray" />}</Icon>
-      </IconButton>
+      {page && (
+        <IconButton
+          variant="solid"
+          size="2xs"
+          bgColor="white"
+          _hover={{ bgColor: 'gray.200' }}
+          onClick={() => {
+            handleFavorite(!isFavorite)
+          }}
+        >
+          <Icon size="sm">
+            {isFavorite ? <FaStar color="orange" /> : <FaRegStar color="gray" />}
+          </Icon>
+        </IconButton>
+      )}
     </HStack>
   )
 }

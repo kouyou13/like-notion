@@ -1,4 +1,4 @@
-import { Box, HStack, Text, Button, Menu, Portal, Flex } from '@chakra-ui/react'
+import { Box, HStack, Text, Button, Menu, Portal, Flex, Spacer } from '@chakra-ui/react'
 import { Tooltip } from '@chakra-ui/tooltip'
 import { Editor } from '@tiptap/core'
 import { useRouter } from 'next/navigation'
@@ -76,25 +76,56 @@ const AddBlockMenuComponent = ({
   )
 
   const menuItems = [
-    { value: 'Text', label: 'テキスト', icon: <RxText color="gray" size={16} /> },
-    { value: 'H1', label: '見出し1', icon: <RiH1 color="gray" size={17} /> },
-    { value: 'H2', label: '見出し2', icon: <RiH2 color="gray" size={17} /> },
-    { value: 'H3', label: '見出し3', icon: <RiH3 color="gray" size={17} /> },
-    { value: 'List', label: '箇条書きリスト', icon: <ImList2 color="gray" size={13} /> },
+    { value: 'Text', label: 'テキスト', icon: <RxText color="gray" size={16} />, shortcut: '' },
+    { value: 'H1', label: '見出し1', icon: <RiH1 color="gray" size={17} />, shortcut: '#' },
+    { value: 'H2', label: '見出し2', icon: <RiH2 color="gray" size={17} />, shortcut: '##' },
+    { value: 'H3', label: '見出し3', icon: <RiH3 color="gray" size={17} />, shortcut: '###' },
+    {
+      value: 'List',
+      label: '箇条書きリスト',
+      icon: <ImList2 color="gray" size={13} />,
+      shortcut: '.',
+    },
     {
       value: 'ListNumbers',
       label: '番号付きリスト',
       icon: <ImListNumbered color="gray" size={13} />,
+      shortcut: '1.',
     },
-    { value: 'ToDoList', label: 'ToDoリスト', icon: <LuListChecks color="gray" size={15} /> },
-    { value: 'ToggleList', label: 'トグルリスト', icon: <LuListCollapse color="gray" size={15} /> },
-    { value: 'Page', label: 'ページ', icon: <FaRegFileAlt color="gray" size={15} /> },
-    { value: 'Callout', label: 'コールアウト', icon: <RiTBoxLine color="gray" size={16} /> },
-    { value: 'Citing', label: '引用', icon: <ImQuotesLeft color="gray" size={11} /> },
-    { value: 'Table', label: 'テーブル', icon: <RxTable color="gray" size={15} /> },
-    { value: 'SeparatorLine', label: '区切り線', icon: <RxMinus color="gray" size={17} /> },
+    {
+      value: 'ToDoList',
+      label: 'ToDoリスト',
+      icon: <LuListChecks color="gray" size={15} />,
+      shortcut: '[]',
+    },
+    {
+      value: 'ToggleList',
+      label: 'トグルリスト',
+      icon: <LuListCollapse color="gray" size={15} />,
+      shortcut: '>',
+    },
+    { value: 'Page', label: 'ページ', icon: <FaRegFileAlt color="gray" size={15} />, shortcut: '' },
+    {
+      value: 'Callout',
+      label: 'コールアウト',
+      icon: <RiTBoxLine color="gray" size={16} />,
+      shortcut: '',
+    },
+    {
+      value: 'Citing',
+      label: '引用',
+      icon: <ImQuotesLeft color="gray" size={11} />,
+      shortcut: '"',
+    },
+    { value: 'Table', label: 'テーブル', icon: <RxTable color="gray" size={15} />, shortcut: '' },
+    {
+      value: 'SeparatorLine',
+      label: '区切り線',
+      icon: <RxMinus color="gray" size={17} />,
+      shortcut: '---',
+    },
     // 大変そうやから後回し
-    // { value: 'PageLink', label: 'ページリンク', icon: <FaExternalLinkAlt color="gray" size={13} />},
+    // { value: 'PageLink', label: 'ページリンク', icon: <FaExternalLinkAlt color="gray" size={13} />, shortcut:""},
   ]
 
   return (
@@ -102,7 +133,7 @@ const AddBlockMenuComponent = ({
       positioning={{ placement: 'bottom-start' }}
       onOpenChange={(isOpen) => {
         if (isOpen.open) {
-          if (block.message !== '<p></p>' || block.blockType === 'SeparatorLine') {
+          if (block.blockType !== 'Text' || block.message !== '<p></p>') {
             dispatch({
               type: 'addBlock',
               order: block.order + 1,
@@ -143,8 +174,8 @@ const AddBlockMenuComponent = ({
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
-          <Menu.Content w={300}>
-            <Text fontSize="xs" color="gray.600" p={1}>
+          <Menu.Content w={330} h={390} overflowY="scroll">
+            <Text fontSize="xs" color="gray.600" fontWeight="bold" p={1}>
               基本
             </Text>
             {menuItems.map((item) => (
@@ -158,8 +189,12 @@ const AddBlockMenuComponent = ({
                 <Flex w={5} justifyContent="center" alignItems="center">
                   {item.icon}
                 </Flex>
-                <Text fontSize="sm" color="gray.700">
+                <Text fontSize="sm" color="black">
                   {item.label}
+                </Text>
+                <Spacer />
+                <Text fontSize="xs" color="gray.400">
+                  {item.shortcut}
                 </Text>
               </Menu.Item>
             ))}

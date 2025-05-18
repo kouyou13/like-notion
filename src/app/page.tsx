@@ -1,7 +1,10 @@
 'use client'
 
+import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
+
+import { errorToast } from '@/common/toast'
 
 import Home from '../features/Home/components'
 import Template from '../features/Template/components'
@@ -16,7 +19,12 @@ const App = () => {
       const {
         data: { user },
       } = await supabase.auth.getUser()
-      if (user?.id == null) {
+      if (
+        user?.id == null ||
+        (user.last_sign_in_at && dayjs().diff(dayjs(user.last_sign_in_at), 'second') >= 1)
+      ) {
+        errorToast('セッション切れです')
+        await supabase.auth.refreshSession()
         router.push(`/login`)
       }
     }

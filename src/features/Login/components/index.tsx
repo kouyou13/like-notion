@@ -2,6 +2,8 @@ import { Heading, Flex, Box, Text, Input, Separator, Button } from '@chakra-ui/r
 import { useRouter } from 'next/navigation'
 import React, { useState, useCallback } from 'react'
 
+import { errorToast } from '@/common/toast'
+
 import { createSupabaseClient } from '../../../lib/supabase'
 
 const LoginComponent = () => {
@@ -15,7 +17,8 @@ const LoginComponent = () => {
     const login = async () => {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
-        console.error(error.message)
+        errorToast('メールアドレスかパスワードが異なります')
+        return
       }
       router.push('/')
     }

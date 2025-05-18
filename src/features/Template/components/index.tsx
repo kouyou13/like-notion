@@ -7,6 +7,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { v4 } from 'uuid'
 
 import useUser from '@/common/useUser'
+import { Toaster } from '@/components/ui/toaster'
 
 import SidebarComponent from './Sidebar'
 import { createSupabaseClient } from '../../../lib/supabase'
@@ -172,6 +173,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
 
   return (
     <Box w="100vw" h="100vh">
+      <Toaster />
       <HStack gap={0}>
         <SidebarComponent
           isOpenSidebar={isOpenSidebar}

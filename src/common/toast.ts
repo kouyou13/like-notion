@@ -1,15 +1,11 @@
-import { createToaster } from '@chakra-ui/react'
-
-const toaster = createToaster({
-  placement: 'bottom',
-  pauseOnPageIdle: true,
-})
+import { toaster } from '@/components/ui/toaster'
 
 export const successToast = (message: string) => {
   toaster.create({
     type: 'success',
     description: message,
     duration: 5000,
+    closable: true,
   })
 }
 
@@ -18,6 +14,7 @@ export const errorToast = (message: string) => {
     type: 'error',
     description: message,
     duration: 5000,
+    closable: true,
   })
 }
 
@@ -26,6 +23,7 @@ export const infoToast = (message: string) => {
     type: 'info',
     description: message,
     duration: 5000,
+    closable: true,
   })
 }
 
@@ -34,5 +32,6 @@ export const warningToast = (message: string) => {
     type: 'warning',
     description: message,
     duration: 5000,
+    closable: true,
   })
 }

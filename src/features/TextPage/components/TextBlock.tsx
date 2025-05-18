@@ -7,6 +7,7 @@ import Document from '@tiptap/extension-document'
 import HardBreak from '@tiptap/extension-hard-break'
 import Heading from '@tiptap/extension-heading'
 import Italic from '@tiptap/extension-italic'
+import Link from '@tiptap/extension-link'
 import ListItem from '@tiptap/extension-list-item'
 import OrderedList from '@tiptap/extension-ordered-list'
 import Paragraph from '@tiptap/extension-paragraph'
@@ -49,6 +50,11 @@ const TextBlockComponent = ({ block, dispatch, titleRef, blockRefs }: TextBlockP
       TaskList,
       ToggleList,
       HardBreak,
+      Link.configure({
+        shouldAutoLink: (url) => url.startsWith('https://') || url.startsWith('http://'),
+      }).extend({
+        inclusive: false,
+      }),
       CodeBlock.configure({
         languageClassPrefix: 'language-',
       }),

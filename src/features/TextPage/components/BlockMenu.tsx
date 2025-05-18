@@ -14,7 +14,7 @@ type BlockMenuProps = {
 const BlockMenuComponent = ({ block, dispatch }: BlockMenuProps) => {
   const [isOpenMenu, setIsOpenMenu] = useState(false)
   return (
-    <Box
+    <Flex
       borderRadius="md"
       cursor="grab"
       draggable
@@ -28,7 +28,7 @@ const BlockMenuComponent = ({ block, dispatch }: BlockMenuProps) => {
       onClick={() => {
         setIsOpenMenu(true)
       }}
-      px={1}
+      p={1}
     >
       <Menu.Root
         positioning={{ placement: 'left' }}
@@ -81,7 +81,7 @@ const BlockMenuComponent = ({ block, dispatch }: BlockMenuProps) => {
           </Menu.Positioner>
         </Portal>
       </Menu.Root>
-    </Box>
+    </Flex>
   )
 }
 const BlockMenu = React.memo(BlockMenuComponent)
