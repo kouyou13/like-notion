@@ -78,22 +78,16 @@ const TextPageComponent = () => {
   }
 
   return (
-    <Box
-      w="40vw"
-      display="flex"
-      pt="9.5vh"
-      ml="23vw"
-      mb="31vh"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          const prevInput = blockRefs.current.slice(-1)[0]
-          if (prevInput) {
-            prevInput.commands.focus()
-          }
-        }
-      }}
-    >
-      <Box w="100%">
+    <Box w="100%" h="95vh" overflowY="scroll">
+      <Box
+        w="100%"
+        h="9vh"
+        onClick={() => {
+          const prevInput = blockRefs.current[0]
+          prevInput?.commands.focus()
+        }}
+      />
+      <Box w="100%" h="86vh">
         <Textarea
           ref={(el) => {
             titleRef.current = el
@@ -108,12 +102,10 @@ const TextPageComponent = () => {
           outline="none"
           fontSize={40}
           lineHeight="3rem"
-          py="auto"
-          pl="3vw"
-          pr={0}
+          pl="26vw"
+          pr="25vw"
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}
-          mb="0.5vh"
           textAlign="left"
           autoresize
           onKeyDown={(e) => {
@@ -170,6 +162,14 @@ const TextPageComponent = () => {
             />
           )
         })}
+        <Box
+          w="100%"
+          h="28vh"
+          onClick={() => {
+            const lastInput = blockRefs.current.slice(-1)[0]
+            lastInput?.commands.focus()
+          }}
+        />
       </Box>
     </Box>
   )

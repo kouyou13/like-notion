@@ -1,5 +1,24 @@
 import { Box, HStack, Separator } from '@chakra-ui/react'
 import { Editor } from '@tiptap/core'
+import ToggleList from '@tiptap/extension-blockquote' // blockquoteをトグルリストとして扱う
+import Bold from '@tiptap/extension-bold'
+import BulletList from '@tiptap/extension-bullet-list'
+import CodeBlock from '@tiptap/extension-code-block'
+import Document from '@tiptap/extension-document'
+import HardBreak from '@tiptap/extension-hard-break'
+import Heading from '@tiptap/extension-heading'
+import Italic from '@tiptap/extension-italic'
+import Link from '@tiptap/extension-link'
+import ListItem from '@tiptap/extension-list-item'
+import OrderedList from '@tiptap/extension-ordered-list'
+import Paragraph from '@tiptap/extension-paragraph'
+import Placeholder from '@tiptap/extension-placeholder'
+import Strike from '@tiptap/extension-strike'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
+import Text from '@tiptap/extension-text'
+import Underline from '@tiptap/extension-underline'
+import { useEditor, EditorContent } from '@tiptap/react'
 import React, { useMemo } from 'react'
 
 import AddBlockMenu from './AddBlockMenu'
@@ -8,46 +27,33 @@ import CallbackBlock from './CallbackBlock'
 import CitingBlock from './CitingBlock'
 import ListBlock from './ListBlock'
 import PageBlock from './PageBlock'
-import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
+import convertNodeTypeToPlaceHolder from '../utils/convertNodeTypeToPlaceHolder'
 import type { Action } from '../utils/pageDispatch'
+import textEditorHandleKeyDown from '../utils/textEditorHandleKeyDown'
+import textEditorOnUpdate from '../utils/textEditorOnUpdate'
 
 type BlockTypeProps = {
+  editor: Editor
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
   titleRef: React.RefObject<HTMLTextAreaElement | null>
   blockRefs: React.RefObject<(Editor | null)[]>
   listNumber: number
 }
-const BlockTypeComponent = ({
-  block,
-  dispatch,
-  titleRef,
-  blockRefs,
-  listNumber,
-}: BlockTypeProps) => {
+const BlockTypeComponent = ({ editor, block, dispatch, listNumber }: BlockTypeProps) => {
   switch (block.blockType) {
     case 'Text':
     case 'H1':
     case 'H2':
     case 'H3':
     case 'Code':
-      return (
-        <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
-      )
+      return <EditorContent editor={editor} style={{ width: '100%' }} />
     case 'List':
     case 'ListNumbers':
     case 'ToDoList':
     case 'ToggleList':
-      return (
-        <ListBlock
-          block={block}
-          dispatch={dispatch}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-          listNumber={listNumber}
-        />
-      )
+      return <ListBlock editor={editor} block={block} dispatch={dispatch} listNumber={listNumber} />
     case 'SeparatorLine':
       return (
         <Box w="100%" py={3}>
@@ -56,18 +62,9 @@ const BlockTypeComponent = ({
       )
     case 'Citing':
       // 引用
-      return (
-        <CitingBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
-      )
+      return <CitingBlock editor={editor} />
     case 'Callout':
-      return (
-        <CallbackBlock
-          block={block}
-          dispatch={dispatch}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-        />
-      )
+      return <CallbackBlock editor={editor} />
     case 'Page':
       return <PageBlock block={block} />
     default:
@@ -114,12 +111,69 @@ const BlockRowComponent = ({
     }
   }, [block.blockType])
 
+  const editor = useEditor({
+    extensions: [
+      Document,
+      Text,
+      Bold,
+      Underline,
+      Italic,
+      Strike,
+      Heading,
+      Paragraph,
+      BulletList,
+      OrderedList,
+      ListItem,
+      TaskItem,
+      TaskList,
+      ToggleList,
+      HardBreak,
+      Link.configure({
+        shouldAutoLink: (url) => url.startsWith('https://') || url.startsWith('http://'),
+      }).extend({
+        inclusive: false,
+      }),
+      CodeBlock.configure({
+        languageClassPrefix: 'language-',
+      }),
+      Placeholder.configure({
+        placeholder: ({ node, editor }) => {
+          return convertNodeTypeToPlaceHolder({ node, editor, block })
+        },
+      }),
+    ],
+    content: block.message,
+    immediatelyRender: false,
+    onUpdate: ({ editor }) => {
+      textEditorOnUpdate({ editor, block, dispatch, blockRefs })
+    },
+    editorProps: {
+      handleKeyDown: (_, event: KeyboardEvent): boolean => {
+        return textEditorHandleKeyDown({
+          editor,
+          event,
+          block,
+          dispatch,
+          titleRef,
+          blockRefs,
+        })
+      },
+    },
+  })
+
+  if (!editor) {
+    return
+  }
+
+  blockRefs.current[block.order] = editor
+
   return (
     <HStack
       gap={0}
       pt={pt}
       pl={`${String(block.indentIndex * 1.5)}vw`}
-      w="40vw"
+      w="100%"
+      h="2.7vh"
       onMouseEnter={() => {
         if (openBlockSettingIndex == null) {
           setHoverRowIndex(block.order)
@@ -171,6 +225,13 @@ const BlockRowComponent = ({
       }}
       cursor="text"
     >
+      <Box
+        w="23vw"
+        h="100%"
+        onClick={() => {
+          editor.commands.focus('start')
+        }}
+      />
       {hoverRowIndex === block.order || openBlockSettingIndex === block.order ? (
         <HStack w="3vw" gap={0}>
           <AddBlockMenu
@@ -196,6 +257,7 @@ const BlockRowComponent = ({
         }
       >
         <BlockTypeComponent
+          editor={editor}
           block={block}
           dispatch={dispatch}
           titleRef={titleRef}
@@ -203,6 +265,13 @@ const BlockRowComponent = ({
           listNumber={listNumber}
         />
       </HStack>
+      <Box
+        w="23vw"
+        h="100%"
+        onClick={() => {
+          editor.commands.focus('end')
+        }}
+      />
     </HStack>
   )
 }

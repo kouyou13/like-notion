@@ -1,26 +1,20 @@
 import { Flex, HStack } from '@chakra-ui/react'
 import { Editor } from '@tiptap/core'
+import { EditorContent } from '@tiptap/react'
 import React from 'react'
 import { FcIdea } from 'react-icons/fc'
 
-import TextBlock from './TextBlock'
-import type { Block } from '../../../types'
-import type { Action } from '../utils/pageDispatch'
-
 type CallbackBlockProps = {
-  block: Block
-  dispatch: React.ActionDispatch<[action: Action]>
-  titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(Editor | null)[]>
+  editor: Editor
 }
 
-const CallbackBlockComponent = ({ block, dispatch, titleRef, blockRefs }: CallbackBlockProps) => {
+const CallbackBlockComponent = ({ editor }: CallbackBlockProps) => {
   return (
     <HStack minH="3.5rem" justify="center" bgColor="gray.50" gap={0} w="100%" my={1} py={3}>
       <Flex w="3vw" align="center" justify="center">
         <FcIdea size={18} />
       </Flex>
-      <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
+      <EditorContent editor={editor} style={{ width: '100%' }} />
     </HStack>
   )
 }

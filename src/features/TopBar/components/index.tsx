@@ -49,7 +49,7 @@ const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
     [supabase, pageId],
   )
   return (
-    <HStack h="3vh" bgColor="white" px={2} my={1} gap={1}>
+    <HStack h="3vh" bgColor="white" px={2} my="1vh" gap={1}>
       {!isOpenSidebar && (
         <Box
           bgColor="white"

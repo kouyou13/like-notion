@@ -21,7 +21,7 @@ const App = () => {
       } = await supabase.auth.getUser()
       if (
         user?.id == null ||
-        (user.last_sign_in_at && dayjs().diff(dayjs(user.last_sign_in_at), 'second') >= 1)
+        (user.last_sign_in_at && dayjs().diff(dayjs(user.last_sign_in_at), 'day') >= 1)
       ) {
         errorToast('セッション切れです')
         await supabase.auth.refreshSession()

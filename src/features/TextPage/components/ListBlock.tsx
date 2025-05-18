@@ -1,9 +1,9 @@
 import { HStack, Box, Checkbox, Flex } from '@chakra-ui/react'
 import { Editor } from '@tiptap/core'
+import { EditorContent } from '@tiptap/react'
 import React, { useCallback } from 'react'
 import { BiSolidCircle, BiSolidRightArrow, BiSolidDownArrow } from 'react-icons/bi'
 
-import TextBlock from './TextBlock'
 import type { Block } from '../../../types'
 import type { Action } from '../utils/pageDispatch'
 
@@ -60,19 +60,12 @@ const ListSignComponent = ({ block, listNumber, handleChecked }: ListSignProps) 
 }
 
 type ListBlockProps = {
+  editor: Editor
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
-  titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(Editor | null)[]>
   listNumber: number
 }
-const ListBlockComponent = ({
-  block,
-  dispatch,
-  titleRef,
-  blockRefs,
-  listNumber,
-}: ListBlockProps) => {
+const ListBlockComponent = ({ editor, block, dispatch, listNumber }: ListBlockProps) => {
   const handleChecked = useCallback(
     (isChecked: boolean) => {
       dispatch({
@@ -88,7 +81,7 @@ const ListBlockComponent = ({
       <Flex w="1.5vw" pl={0.5}>
         <ListSignComponent block={block} listNumber={listNumber} handleChecked={handleChecked} />
       </Flex>
-      <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
+      <EditorContent editor={editor} style={{ width: '100%' }} />
     </HStack>
   )
 }

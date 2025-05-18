@@ -1,23 +1,17 @@
 import { Blockquote } from '@chakra-ui/react'
 import { Editor } from '@tiptap/core'
+import { EditorContent } from '@tiptap/react'
 import React from 'react'
 
-import TextBlock from './TextBlock'
-import type { Block } from '../../../types'
-import type { Action } from '../utils/pageDispatch'
-
 type CitingBlockProps = {
-  block: Block
-  dispatch: React.ActionDispatch<[action: Action]>
-  titleRef: React.RefObject<HTMLTextAreaElement | null>
-  blockRefs: React.RefObject<(Editor | null)[]>
+  editor: Editor
 }
 
-const CitingBlockComponent = ({ block, dispatch, titleRef, blockRefs }: CitingBlockProps) => {
+const CitingBlockComponent = ({ editor }: CitingBlockProps) => {
   return (
     <Blockquote.Root w="100%" my={1} colorPalette="black">
       <Blockquote.Content justifyContent="center" alignItems="center" display="flex" w="100%">
-        <TextBlock block={block} dispatch={dispatch} titleRef={titleRef} blockRefs={blockRefs} />
+        <EditorContent editor={editor} style={{ width: '100%' }} />
       </Blockquote.Content>
     </Blockquote.Root>
   )
