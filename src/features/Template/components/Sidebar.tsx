@@ -27,8 +27,8 @@ const SidebarComponent = ({
   const [isHoverFavorite, setIsHoverFavorite] = useState(false)
   const [isHoverPrivate, setIsHoverPrivate] = useState(false)
   return (
-    <Box w="12vw" bgColor="gray.100" minH="100vh" px={2} py={1} hidden={!isOpenSidebar}>
-      <HStack mb={1} h="3vh">
+    <Box w="12vw" bgColor="gray.100" minH="100vh" px={2} py={0} hidden={!isOpenSidebar}>
+      <HStack mb={1} h="3vh" my="0.5vh">
         <Spacer />
         <Box
           bgColor="gray.100"

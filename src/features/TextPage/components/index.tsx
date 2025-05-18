@@ -13,7 +13,8 @@ import showBlockFilter from '../utils/showBlockFilter'
 
 const TextPageComponent = () => {
   const router = useRouter()
-  const { pageId }: { pageId: string } = useParams()
+  const param: { pageId: string } | null = useParams()
+  const pageId = param?.pageId ?? ''
   const [pageTitle, setPageTitle] = useState<string | null>(null)
   const [blocks, dispatch] = useReducer(blocksReducer, [])
   const previousBlocksRef = useRef(blocks)
@@ -81,7 +82,7 @@ const TextPageComponent = () => {
     <Box w="100%" h="95vh" overflowY="scroll">
       <Box
         w="100%"
-        h="9vh"
+        h="8.5vh"
         onClick={() => {
           const prevInput = blockRefs.current[0]
           prevInput?.commands.focus()
@@ -103,6 +104,7 @@ const TextPageComponent = () => {
           fontSize={40}
           lineHeight="3rem"
           pl="26vw"
+          mb="0.3vh"
           pr="25vw"
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}

@@ -7,7 +7,6 @@ import React, { useEffect } from 'react'
 import { errorToast } from '@/common/toast'
 
 import Home from '../features/Home/components'
-import Template from '../features/Template/components'
 import { createSupabaseClient } from '../lib/supabase'
 
 const App = () => {
@@ -32,10 +31,6 @@ const App = () => {
     // eslint-disable-next-line
   }, [])
 
-  return (
-    <Template>
-      <Home />
-    </Template>
-  )
+  return <Home />
 }
 export default App

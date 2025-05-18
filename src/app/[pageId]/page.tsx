@@ -6,7 +6,6 @@ import React, { useEffect } from 'react'
 
 import { errorToast } from '@/common/toast'
 
-import Template from '../../features/Template/components'
 import TextPage from '../../features/TextPage/components'
 import { createSupabaseClient } from '../../lib/supabase'
 
@@ -32,10 +31,6 @@ const Page = () => {
     // eslint-disable-next-line
   }, [])
 
-  return (
-    <Template>
-      <TextPage />
-    </Template>
-  )
+  return <TextPage />
 }
 export default Page

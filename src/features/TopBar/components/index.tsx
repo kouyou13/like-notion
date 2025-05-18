@@ -18,7 +18,8 @@ type TopBarProps = {
 }
 
 const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
-  const { pageId }: { pageId?: string } = useParams()
+  const param: { pageId: string } | null = useParams()
+  const pageId = param?.pageId ?? ''
   const supabase = createSupabaseClient()
   const [page, setPage] = useState<Page | null>(null)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -39,7 +40,7 @@ const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
         const { error } = await supabase
           .from('page')
           .update({ favorited_at: isChecked ? dayjs().format() : null })
-          .eq('id', pageId ?? '')
+          .eq('id', pageId)
         if (error) {
           console.error(error)
         }
@@ -49,7 +50,7 @@ const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
     [supabase, pageId],
   )
   return (
-    <HStack h="3vh" bgColor="white" px={2} my="1vh" gap={1}>
+    <HStack h="3vh" bgColor="white" px={2} my="0.5vh" gap={1}>
       {!isOpenSidebar && (
         <Box
           bgColor="white"

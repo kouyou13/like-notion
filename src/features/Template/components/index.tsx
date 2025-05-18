@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import React, { useState, useEffect, useCallback } from 'react'
 import { v4 } from 'uuid'
 
-import useUser from '@/common/useUser'
 import { Toaster } from '@/components/ui/toaster'
 
 import SidebarComponent from './Sidebar'
@@ -20,7 +19,6 @@ type TemplateProps = {
 const TemplateComponent = ({ children }: TemplateProps) => {
   const supabase = createSupabaseClient()
   const router = useRouter()
-  const user = useUser()
 
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
@@ -29,9 +27,18 @@ const TemplateComponent = ({ children }: TemplateProps) => {
 
   useEffect(() => {
     const fetchPages = async () => {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser()
+      if (userError || user == null) {
+        router.push('/')
+        return
+      }
       const { data, error } = await supabase
         .from('page')
         .select('*')
+        .eq('user_id', user.id)
         .is('parent_block_id', null)
         .is('deleted_at', null)
       if (error) {
@@ -55,6 +62,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
       const { data: favoriteData, error: favoriteError } = await supabase
         .from('page')
         .select('*')
+        .eq('user_id', user.id)
         .is('deleted_at', null)
         .not('favorited_at', 'is', null)
       if (favoriteError) {
@@ -112,6 +120,12 @@ const TemplateComponent = ({ children }: TemplateProps) => {
         if (newPage.favoritedAt) {
           if (!favoritePages.find((page) => page.id === newPage.id)) {
             setFavoritePages([...favoritePages, newPage])
+          } else {
+            setFavoritePages((prev) =>
+              prev
+                .map((page) => (page.id === newPage.id ? newPage : page))
+                .filter((page) => page.deletedAt == null),
+            )
           }
         } else {
           setFavoritePages(favoritePages.filter((page) => page.id !== newPage.id))
@@ -121,6 +135,9 @@ const TemplateComponent = ({ children }: TemplateProps) => {
     .subscribe()
 
   const handleAddPage = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     const newPage: PageWithBlocks = {
       id: v4(),
       title: '',
@@ -169,7 +186,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
       })),
     )
     router.push(`/${newPage.id}`)
-  }, [supabase, router, pages.length, user?.id])
+  }, [supabase, router, pages.length])
 
   return (
     <Box w="100vw" h="100vh">
