@@ -28,10 +28,10 @@ const convertNodeTypeToPlaceHolder = ({ node, editor, block }: Props): string =>
     return 'トグル'
   } else if (node.type.name === 'taskList') {
     return 'ToDo'
-  } else if (node.type.name === 'paragraph' && editor.isFocused) {
-    return '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
   } else if (block.blockType === 'Citing') {
     return '入力してください...'
+  } else if (node.type.name === 'paragraph' && editor.isFocused) {
+    return '入力して、AIはスペースキーを、コマンドは半角の「/」を押す...'
   }
   return ''
 }

@@ -5,7 +5,7 @@ import { createSupabaseClient } from '../../../lib/supabase'
 import type { Page } from '../../../types'
 
 const selectPage = async (pageId: string | undefined): Promise<Page | null> => {
-  if (pageId == null) return null
+  if (pageId == null || pageId === '') return null
   const supabase = createSupabaseClient()
   const { data, error } = await supabase
     .from('page')

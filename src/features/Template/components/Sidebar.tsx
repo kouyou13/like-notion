@@ -1,5 +1,5 @@
 import { Box, HStack, Spacer, Text, Skeleton } from '@chakra-ui/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import { AiOutlineDoubleLeft } from 'react-icons/ai'
 import { GrHomeRounded, GrMore, GrAdd } from 'react-icons/gr'
@@ -24,10 +24,12 @@ const SidebarComponent = ({
   handleAddPage,
 }: SidebarProps) => {
   const router = useRouter()
+  const pathnames = usePathname().split('/').slice(1)
+  const pageId = pathnames[0]
   const [isHoverFavorite, setIsHoverFavorite] = useState(false)
   const [isHoverPrivate, setIsHoverPrivate] = useState(false)
   return (
-    <Box w="12vw" bgColor="gray.100" minH="100vh" px={2} py={0} hidden={!isOpenSidebar}>
+    <Box w="12vw" bgColor="gray.100" minH="100vh" px={1} py={0} hidden={!isOpenSidebar}>
       <HStack mb={1} h="3vh" my="0.5vh">
         <Spacer />
         <Box
@@ -50,7 +52,7 @@ const SidebarComponent = ({
           p={1}
           _hover={{ bgColor: 'gray.200' }}
           onClick={() => {
-            router.push('/')
+            router.push('/home')
           }}
         >
           <GrHomeRounded size={14} color="gray" />
@@ -93,7 +95,7 @@ const SidebarComponent = ({
             </HStack>
             <Skeleton loading={isLoading}>
               {favoritePages.map((page) => (
-                <PageTab key={`favorite-${String(page.id)}`} page={page} />
+                <PageTab key={`favorite-${String(page.id)}`} pageId={pageId} page={page} />
               ))}
             </Skeleton>
           </>
@@ -130,7 +132,7 @@ const SidebarComponent = ({
         </HStack>
         <Skeleton loading={isLoading}>
           {pages.map((page) => (
-            <PageTab key={`private-${String(page.id)}`} page={page} />
+            <PageTab key={`private-${String(page.id)}`} pageId={pageId} page={page} />
           ))}
         </Skeleton>
         {pages.length < 3 && (
@@ -143,7 +145,7 @@ const SidebarComponent = ({
             cursor="pointer"
           >
             <GrAdd size={16} color="gray" />
-            <Text color="gray.800" fontSize="sm" ml={2} onClick={handleAddPage}>
+            <Text color="gray.400" fontSize="sm" fontWeight="bold" ml={2} onClick={handleAddPage}>
               新規ページを追加
             </Text>
           </HStack>

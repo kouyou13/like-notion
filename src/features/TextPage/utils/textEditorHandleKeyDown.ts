@@ -33,11 +33,14 @@ const textEditorHandleKeyDown = ({
     event.preventDefault()
     if (editor?.isEmpty && block.blockType !== 'Text') {
       dispatch({
-        type: 'updateBlockType',
+        type: 'updateBlock',
         blockId: block.id,
         blockType: 'Text',
+        message: '<p></p>',
+        indentIndex: block.indentIndex,
       })
       setTimeout(() => {
+        blockRefs.current[block.order]?.commands.clearNodes()
         blockRefs.current[block.order]?.commands.focus()
       })
     } else if (block.blockType === 'ToggleList') {

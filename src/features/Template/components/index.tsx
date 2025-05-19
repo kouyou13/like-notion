@@ -2,7 +2,7 @@
 
 import { Box, HStack } from '@chakra-ui/react'
 import dayjs from 'dayjs'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import React, { useState, useEffect, useCallback } from 'react'
 import { v4 } from 'uuid'
 
@@ -19,6 +19,7 @@ type TemplateProps = {
 const TemplateComponent = ({ children }: TemplateProps) => {
   const supabase = createSupabaseClient()
   const router = useRouter()
+  const pathname = usePathname()
 
   const [isOpenSidebar, setIsOpenSidebar] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
@@ -32,7 +33,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
         error: userError,
       } = await supabase.auth.getUser()
       if (userError || user == null) {
-        router.push('/')
+        router.push('/home')
         return
       }
       const { data, error } = await supabase
@@ -188,25 +189,29 @@ const TemplateComponent = ({ children }: TemplateProps) => {
     router.push(`/${newPage.id}`)
   }, [supabase, router, pages.length])
 
-  return (
-    <Box w="100vw" h="100vh">
-      <Toaster />
-      <HStack gap={0}>
-        <SidebarComponent
-          isOpenSidebar={isOpenSidebar}
-          setIsOpenSidebar={setIsOpenSidebar}
-          isLoading={isLoading}
-          pages={pages}
-          favoritePages={favoritePages}
-          handleAddPage={handleAddPage}
-        />
-        <Box justifyContent="start" w={isOpenSidebar ? '88vw' : '100vw'} h="100vh">
-          <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
-          {children}
-        </Box>
-      </HStack>
-    </Box>
-  )
+  if (pathname === '/' || pathname === '/login') {
+    return children
+  } else {
+    return (
+      <Box w="100vw" h="100vh">
+        <Toaster />
+        <HStack gap={0}>
+          <SidebarComponent
+            isOpenSidebar={isOpenSidebar}
+            setIsOpenSidebar={setIsOpenSidebar}
+            isLoading={isLoading}
+            pages={pages}
+            favoritePages={favoritePages}
+            handleAddPage={handleAddPage}
+          />
+          <Box justifyContent="start" w={isOpenSidebar ? '88vw' : '100vw'} h="100vh">
+            <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
+            {children}
+          </Box>
+        </HStack>
+      </Box>
+    )
+  }
 }
 const Template = React.memo(TemplateComponent)
 export default Template

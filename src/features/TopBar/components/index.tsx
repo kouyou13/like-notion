@@ -18,8 +18,8 @@ type TopBarProps = {
 }
 
 const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
-  const param: { pageId: string } | null = useParams()
-  const pageId = param?.pageId ?? ''
+  const params = useParams()
+  const pageId = (params as { pageId?: string }).pageId ?? ''
   const supabase = createSupabaseClient()
   const [page, setPage] = useState<Page | null>(null)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -81,7 +81,7 @@ const TopBarComponent = ({ isOpenSidebar, setIsOpenSidebar }: TopBarProps) => {
         </Icon>
       </IconButton>
       {page && (
-        <Text textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden" w="14vw">
+        <Text textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden" w="14vw" ml={1}>
           {page.title !== '' ? page.title : '新規ページ'}
         </Text>
       )}

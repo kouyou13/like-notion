@@ -100,15 +100,17 @@ const textEditorOnUpdate = ({ editor, block, dispatch, blockRefs }: Props): void
         blockType: 'Text',
         indentIndex: block.indentIndex,
       })
+      setTimeout(() => {
+        blockRefs.current[block.order + 1]?.commands.focus()
+      })
     } else if (editor.options.content === '<p>| </p>') {
       dispatch({
-        type: 'updateBlock',
+        type: 'updateBlockType',
         blockId: block.id,
-        message: '<p></p>',
-        indentIndex: block.indentIndex,
         blockType: 'Citing',
       })
       setTimeout(() => {
+        blockRefs.current[block.order]?.commands.clearContent()
         blockRefs.current[block.order]?.commands.focus()
       })
     }

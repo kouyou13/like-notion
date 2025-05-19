@@ -1,36 +1,24 @@
 'use client'
 
-import dayjs from 'dayjs'
+import { Flex, Button, HStack } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
-import React, { useEffect } from 'react'
-
-import { errorToast } from '@/common/toast'
-
-import Home from '../features/Home/components'
-import { createSupabaseClient } from '../lib/supabase'
+import React from 'react'
 
 const App = () => {
-  const supabase = createSupabaseClient()
   const router = useRouter()
-
-  useEffect(() => {
-    const userJudge = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (
-        user?.id == null ||
-        (user.last_sign_in_at && dayjs().diff(dayjs(user.last_sign_in_at), 'day') >= 1)
-      ) {
-        errorToast('セッション切れです')
-        await supabase.auth.refreshSession()
-        router.push(`/login`)
-      }
-    }
-    void userJudge()
-    // eslint-disable-next-line
-  }, [])
-
-  return <Home />
+  return (
+    <Flex justifyContent="center" w="100vw" h="100vh">
+      <HStack>
+        <Button
+          onClick={() => {
+            router.push('/login')
+          }}
+        >
+          ログイン
+        </Button>
+        <Button>ログオン</Button>
+      </HStack>
+    </Flex>
+  )
 }
 export default App

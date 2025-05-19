@@ -13,8 +13,8 @@ import showBlockFilter from '../utils/showBlockFilter'
 
 const TextPageComponent = () => {
   const router = useRouter()
-  const param: { pageId: string } | null = useParams()
-  const pageId = param?.pageId ?? ''
+  const params = useParams()
+  const pageId = (params as { pageId?: string }).pageId ?? ''
   const [pageTitle, setPageTitle] = useState<string | null>(null)
   const [blocks, dispatch] = useReducer(blocksReducer, [])
   const previousBlocksRef = useRef(blocks)
@@ -35,10 +35,10 @@ const TextPageComponent = () => {
     const fetchPages = async () => {
       const { data: page, error } = await selectPageWithBlocks(pageId)
       if (page?.deletedAt != null) {
-        router.push('/')
+        router.push('/home')
       } else if (error) {
         console.error(error)
-        router.push('/')
+        router.push('/home')
       } else if (page != null) {
         if (page.title !== '') {
           setPageTitle(page.title)
@@ -79,7 +79,7 @@ const TextPageComponent = () => {
   }
 
   return (
-    <Box w="100%" h="95vh" overflowY="scroll">
+    <Box w="100%" h="96vh" overflowY="scroll">
       <Box
         w="100%"
         h="8.5vh"
@@ -169,7 +169,20 @@ const TextPageComponent = () => {
           h="28vh"
           onClick={() => {
             const lastInput = blockRefs.current.slice(-1)[0]
-            lastInput?.commands.focus()
+            if (lastInput?.options.content !== '<p></p>') {
+              dispatch({
+                type: 'addBlock',
+                order: blockRefs.current.length + 1,
+                blockType: 'Text',
+                indentIndex: 0,
+              })
+              setTimeout(() => {
+                const lastInput = blockRefs.current.slice(-1)[0]
+                lastInput?.commands.focus()
+              })
+            } else {
+              lastInput.commands.focus()
+            }
           }}
         />
       </Box>

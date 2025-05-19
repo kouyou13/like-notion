@@ -20,7 +20,7 @@ const LoginComponent = () => {
         errorToast('メールアドレスかパスワードが異なります')
         return
       }
-      router.push('/')
+      router.push('/home')
     }
     void login()
   }, [email, password, supabase, router])

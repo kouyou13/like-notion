@@ -12,9 +12,10 @@ import { createSupabaseClient } from '../../../lib/supabase'
 import type { Page } from '../../../types'
 
 type PageTabProps = {
+  pageId: string
   page: Page
 }
-const PageTabComponent = ({ page }: PageTabProps) => {
+const PageTabComponent = ({ pageId, page }: PageTabProps) => {
   const router = useRouter()
   const supabase = createSupabaseClient()
   const [isHover, setIsHover] = useState(false)
@@ -64,13 +65,15 @@ const PageTabComponent = ({ page }: PageTabProps) => {
       borderRadius="md"
       px={2}
       py={1}
-      _hover={{ bgColor: 'gray.200' }}
+      my={1}
+      bgColor={pageId === page.id ? 'gray.200' : undefined}
       onMouseEnter={() => {
         setIsHover(true)
       }}
       onMouseLeave={() => {
         setIsHover(false)
       }}
+      _hover={{ bgColor: 'gray.200' }}
     >
       <FaRegFileAlt size={16} color="gray" />
       <HStack gap={0} w="90%" cursor="pointer">
