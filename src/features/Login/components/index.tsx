@@ -1,6 +1,6 @@
 import { Heading, Flex, Box, Text, Input, Separator, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 
 import { errorToast } from '@/common/toast'
 
@@ -12,6 +12,17 @@ const LoginComponent = () => {
 
   const supabase = createSupabaseClient()
   const router = useRouter()
+
+  useEffect(() => {
+    const loginJudge = async () => {
+      const { error } = await supabase.auth.getUser()
+      if (!error) {
+        router.push('/home')
+      }
+    }
+    void loginJudge()
+    // eslint-disable-next-line
+  }, [])
 
   const handleLogin = useCallback(() => {
     const login = async () => {

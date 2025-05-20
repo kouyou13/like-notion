@@ -7,7 +7,7 @@ import { RiDeleteBinLine } from 'react-icons/ri'
 
 import useUser from '@/common/useUser'
 
-import { successToast } from '../../../common/toast'
+import { infoToast } from '../../../common/toast'
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { Page } from '../../../types'
 
@@ -53,8 +53,8 @@ const PageTabComponent = ({ pageId, page }: PageTabProps) => {
       if (updateError) {
         console.error(updateError)
       }
-      successToast('ゴミ箱に移動しました')
-      router.push(`/`)
+      infoToast('ゴミ箱に移動しました')
+      router.push(`/home`)
     } catch (err) {
       console.error('ページ削除中にエラーが発生しました:', err)
     }
@@ -76,7 +76,7 @@ const PageTabComponent = ({ pageId, page }: PageTabProps) => {
       _hover={{ bgColor: 'gray.200' }}
     >
       <FaRegFileAlt size={16} color="gray" />
-      <HStack gap={0} w="90%" cursor="pointer">
+      <HStack gap={0} w="10.2vw" cursor="pointer">
         <Text
           color="black"
           fontSize="sm"
@@ -115,7 +115,7 @@ const PageTabComponent = ({ pageId, page }: PageTabProps) => {
               </Menu.Trigger>
               <Portal>
                 <Menu.Positioner>
-                  <Menu.Content w={300}>
+                  <Menu.Content>
                     <Menu.Item value="Trash" onClick={handleDeletePage}>
                       <HStack _hover={{ color: 'red' }} color="gray.700" w="100%">
                         <RiDeleteBinLine size={18} />

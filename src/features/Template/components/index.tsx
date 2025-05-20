@@ -6,12 +6,12 @@ import { useRouter, usePathname } from 'next/navigation'
 import React, { useState, useEffect, useCallback } from 'react'
 import { v4 } from 'uuid'
 
-import { Toaster } from '@/components/ui/toaster'
+import { errorToast } from '@/common/toast'
 
-import SidebarComponent from './Sidebar'
+import Sidebar from './Sidebar'
+import TopBar from './TopBar'
 import { createSupabaseClient } from '../../../lib/supabase'
 import type { PageWithBlocks, Page } from '../../../types'
-import TopBar from '../../TopBar/components'
 
 type TemplateProps = {
   children: React.ReactNode
@@ -25,6 +25,22 @@ const TemplateComponent = ({ children }: TemplateProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const [pages, setPages] = useState<Page[]>([])
   const [favoritePages, setFavoritePages] = useState<Page[]>([])
+
+  useEffect(() => {
+    const userJudge = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const lastSignAt = user?.last_sign_in_at && dayjs(user.last_sign_in_at)
+      if (user == null || dayjs().diff(lastSignAt, 'hour') >= 12) {
+        await supabase.auth.signOut()
+        errorToast('セッション切れです')
+        router.push(`/login`)
+      }
+    }
+    void userJudge()
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     const fetchPages = async () => {
@@ -100,6 +116,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
             deletedAt: payload.new.deleted_at ?? null,
             parentBlockId: payload.new.parent_block_id ?? null,
             updatedAt: payload.new.updated_at,
+            favoritedAt: payload.new.favorited_at,
           }
           setPages((prev) => [...prev, newPage])
         }
@@ -194,9 +211,8 @@ const TemplateComponent = ({ children }: TemplateProps) => {
   } else {
     return (
       <Box w="100vw" h="100vh">
-        <Toaster />
-        <HStack gap={0}>
-          <SidebarComponent
+        <HStack gap={0} w="100vw" h="100vh">
+          <Sidebar
             isOpenSidebar={isOpenSidebar}
             setIsOpenSidebar={setIsOpenSidebar}
             isLoading={isLoading}
@@ -204,7 +220,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
             favoritePages={favoritePages}
             handleAddPage={handleAddPage}
           />
-          <Box justifyContent="start" w={isOpenSidebar ? '88vw' : '100vw'} h="100vh">
+          <Box justifyContent="start" w="100%" h="100vh">
             <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
             {children}
           </Box>

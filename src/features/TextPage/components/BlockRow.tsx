@@ -1,4 +1,4 @@
-import { Box, HStack, Separator } from '@chakra-ui/react'
+import { Box, Flex, HStack, Separator } from '@chakra-ui/react'
 import { Editor } from '@tiptap/core'
 import ToggleList from '@tiptap/extension-blockquote' // blockquoteをトグルリストとして扱う
 import Bold from '@tiptap/extension-bold'
@@ -174,24 +174,6 @@ const BlockRowComponent = ({
       pl={`${String(block.indentIndex * 1.5)}vw`}
       w="100%"
       h="2.7vh"
-      onMouseEnter={() => {
-        if (openBlockSettingIndex == null) {
-          setHoverRowIndex(block.order)
-        }
-      }}
-      onMouseLeave={() => {
-        setHoverRowIndex(null)
-        setGrabbedRowIndex(null)
-      }}
-      onDragStart={() => {
-        setGrabbedRowIndex(block.order)
-      }}
-      onDragOver={(e) => {
-        e.preventDefault()
-        if (grabbedRowIndex !== null) {
-          setHoverRowIndex(block.order)
-        }
-      }}
       onDrop={() => {
         if (grabbedRowIndex !== null && grabbedRowIndex !== block.order) {
           dispatch({
@@ -226,45 +208,66 @@ const BlockRowComponent = ({
       cursor="text"
     >
       <Box
-        w="23vw"
+        w="22vw"
         h="100%"
         onClick={() => {
           editor.commands.focus('start')
         }}
       />
-      {hoverRowIndex === block.order || openBlockSettingIndex === block.order ? (
-        <HStack w="3vw" gap={0}>
-          <AddBlockMenu
+      <Flex
+        onMouseEnter={() => {
+          if (openBlockSettingIndex == null) {
+            setHoverRowIndex(block.order)
+          }
+        }}
+        onMouseLeave={() => {
+          setHoverRowIndex(null)
+          setGrabbedRowIndex(null)
+        }}
+        onDragStart={() => {
+          setGrabbedRowIndex(block.order)
+        }}
+        onDragOver={(e) => {
+          e.preventDefault()
+          if (grabbedRowIndex !== null) {
+            setHoverRowIndex(block.order)
+          }
+        }}
+      >
+        {hoverRowIndex === block.order || openBlockSettingIndex === block.order ? (
+          <HStack w="3vw" gap={0}>
+            <AddBlockMenu
+              block={block}
+              dispatch={dispatch}
+              openBlockSettingIndex={openBlockSettingIndex}
+              setIsOpenBlockSettingIndex={setOpenBlockSettingIndex}
+              blockRefs={blockRefs}
+            />
+            <BlockMenu block={block} dispatch={dispatch} />
+          </HStack>
+        ) : (
+          <Box w="3vw" />
+        )}
+        <HStack
+          w="37vw"
+          borderBottom={
+            grabbedRowIndex != null &&
+            grabbedRowIndex !== hoverRowIndex &&
+            hoverRowIndex === block.order
+              ? '4px solid #e4edfa'
+              : 'none'
+          }
+        >
+          <BlockTypeComponent
+            editor={editor}
             block={block}
             dispatch={dispatch}
-            openBlockSettingIndex={openBlockSettingIndex}
-            setIsOpenBlockSettingIndex={setOpenBlockSettingIndex}
+            titleRef={titleRef}
             blockRefs={blockRefs}
+            listNumber={listNumber}
           />
-          <BlockMenu block={block} dispatch={dispatch} />
         </HStack>
-      ) : (
-        <Box w="3vw" />
-      )}
-      <HStack
-        w="37vw"
-        borderBottom={
-          grabbedRowIndex != null &&
-          grabbedRowIndex !== hoverRowIndex &&
-          hoverRowIndex === block.order
-            ? '4px solid #e4edfa'
-            : 'none'
-        }
-      >
-        <BlockTypeComponent
-          editor={editor}
-          block={block}
-          dispatch={dispatch}
-          titleRef={titleRef}
-          blockRefs={blockRefs}
-          listNumber={listNumber}
-        />
-      </HStack>
+      </Flex>
       <Box
         w="23vw"
         h="100%"

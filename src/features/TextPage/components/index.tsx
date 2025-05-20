@@ -93,6 +93,7 @@ const TextPageComponent = () => {
           ref={(el) => {
             titleRef.current = el
           }}
+          w="37vw"
           placeholder="新規ページ"
           value={pageTitle ?? ''}
           onChange={(e) => {
@@ -103,13 +104,14 @@ const TextPageComponent = () => {
           outline="none"
           fontSize={40}
           lineHeight="3rem"
-          pl="26vw"
+          px={0}
+          ml="25vw"
+          mr="20vw"
           mb="0.3vh"
-          pr="25vw"
           fontWeight="bold"
           _placeholder={{ color: 'gray.200' }}
           textAlign="left"
-          autoresize
+          resize="none"
           onKeyDown={(e) => {
             if (isComposingTitle) {
               // IME入力中は何もしない
