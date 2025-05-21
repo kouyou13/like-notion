@@ -1,5 +1,5 @@
 import { Box, HStack, Spacer, Text, Skeleton } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import { AiOutlineDoubleLeft } from 'react-icons/ai'
@@ -29,17 +29,19 @@ const SidebarComponent = ({
   const pageId = pathnames[0]
   const [isHoverFavorite, setIsHoverFavorite] = useState(false)
   const [isHoverPrivate, setIsHoverPrivate] = useState(false)
+
+  const MotionBox = motion(Box)
   return (
-    <>
+    <AnimatePresence>
       {isOpenSidebar && (
-        <motion.div
-          initial={{ x: '-100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '-100%', opacity: 0 }}
+        <MotionBox
+          initial={{ transform: 'translateX(-100%)', opacity: 0 }}
+          animate={{ transform: 'translateX(0%)', opacity: 1 }}
+          exit={{ transform: 'translateX(-100%)', opacity: 0 }}
           transition={{ duration: 0.1 }}
         >
-          <Box w="15vw" bgColor="gray.100" minH="100vh" px={1} py={0}>
-            <HStack mb={1} h="3vh" my="0.5vh">
+          <Box w="13vw" bgColor="gray.100" minH="100vh" px={1} py={0}>
+            <HStack mb={1} h="3vh" my="1vh">
               <Spacer />
               <Box
                 bgColor="gray.100"
@@ -172,9 +174,9 @@ const SidebarComponent = ({
               )}
             </Box>
           </Box>
-        </motion.div>
+        </MotionBox>
       )}
-    </>
+    </AnimatePresence>
   )
 }
 const Sidebar = React.memo(SidebarComponent)
