@@ -21,7 +21,13 @@ const App = () => {
           >
             ログイン
           </Button>
-          <Button>ログオン</Button>
+          <Button
+            onClick={() => {
+              router.push('/logon')
+            }}
+          >
+            ログオン
+          </Button>
         </HStack>
       </Box>
     </Flex>

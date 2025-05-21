@@ -38,7 +38,9 @@ const TemplateComponent = ({ children }: TemplateProps) => {
         router.push(`/login`)
       }
     }
-    void userJudge()
+    if (pathname !== '/' && pathname !== '/login' && pathname !== '/logon') {
+      void userJudge()
+    }
     // eslint-disable-next-line
   }, [])
 
@@ -49,7 +51,6 @@ const TemplateComponent = ({ children }: TemplateProps) => {
         error: userError,
       } = await supabase.auth.getUser()
       if (userError || user == null) {
-        router.push('/home')
         return
       }
       const { data, error } = await supabase
@@ -206,7 +207,7 @@ const TemplateComponent = ({ children }: TemplateProps) => {
     router.push(`/${newPage.id}`)
   }, [supabase, router, pages.length])
 
-  if (pathname === '/' || pathname === '/login') {
+  if (pathname === '/' || pathname === '/login' || pathname === '/logon') {
     return children
   } else {
     return (
