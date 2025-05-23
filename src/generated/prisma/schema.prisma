@@ -15,6 +15,7 @@ model Page {
   title         String    @default("")
   order         Int
   deletedAt     DateTime? @map("deleted_at") @db.Timestamptz()
+  favoritedAt   DateTime? @map("favorited_at") @db.Timestamptz()
   blocks        Block[]
   parentBlockId String?   @unique @map("parent_block_id") @db.Uuid
   userId        String    @map("user_id") @db.Uuid

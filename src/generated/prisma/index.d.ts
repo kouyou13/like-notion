@@ -1047,6 +1047,7 @@ export namespace Prisma {
     title: string | null
     order: number | null
     deletedAt: Date | null
+    favoritedAt: Date | null
     parentBlockId: string | null
     userId: string | null
   }
@@ -1058,6 +1059,7 @@ export namespace Prisma {
     title: string | null
     order: number | null
     deletedAt: Date | null
+    favoritedAt: Date | null
     parentBlockId: string | null
     userId: string | null
   }
@@ -1069,6 +1071,7 @@ export namespace Prisma {
     title: number
     order: number
     deletedAt: number
+    favoritedAt: number
     parentBlockId: number
     userId: number
     _all: number
@@ -1090,6 +1093,7 @@ export namespace Prisma {
     title?: true
     order?: true
     deletedAt?: true
+    favoritedAt?: true
     parentBlockId?: true
     userId?: true
   }
@@ -1101,6 +1105,7 @@ export namespace Prisma {
     title?: true
     order?: true
     deletedAt?: true
+    favoritedAt?: true
     parentBlockId?: true
     userId?: true
   }
@@ -1112,6 +1117,7 @@ export namespace Prisma {
     title?: true
     order?: true
     deletedAt?: true
+    favoritedAt?: true
     parentBlockId?: true
     userId?: true
     _all?: true
@@ -1210,6 +1216,7 @@ export namespace Prisma {
     title: string
     order: number
     deletedAt: Date | null
+    favoritedAt: Date | null
     parentBlockId: string | null
     userId: string
     _count: PageCountAggregateOutputType | null
@@ -1240,6 +1247,7 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    favoritedAt?: boolean
     parentBlockId?: boolean
     userId?: boolean
     blocks?: boolean | Page$blocksArgs<ExtArgs>
@@ -1253,6 +1261,7 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    favoritedAt?: boolean
     parentBlockId?: boolean
     userId?: boolean
   }, ExtArgs["result"]["page"]>
@@ -1264,6 +1273,7 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    favoritedAt?: boolean
     parentBlockId?: boolean
     userId?: boolean
   }, ExtArgs["result"]["page"]>
@@ -1275,11 +1285,12 @@ export namespace Prisma {
     title?: boolean
     order?: boolean
     deletedAt?: boolean
+    favoritedAt?: boolean
     parentBlockId?: boolean
     userId?: boolean
   }
 
-  export type PageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "order" | "deletedAt" | "parentBlockId" | "userId", ExtArgs["result"]["page"]>
+  export type PageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "order" | "deletedAt" | "favoritedAt" | "parentBlockId" | "userId", ExtArgs["result"]["page"]>
   export type PageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     blocks?: boolean | Page$blocksArgs<ExtArgs>
     _count?: boolean | PageCountOutputTypeDefaultArgs<ExtArgs>
@@ -1299,6 +1310,7 @@ export namespace Prisma {
       title: string
       order: number
       deletedAt: Date | null
+      favoritedAt: Date | null
       parentBlockId: string | null
       userId: string
     }, ExtArgs["result"]["page"]>
@@ -1731,6 +1743,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Page", 'String'>
     readonly order: FieldRef<"Page", 'Int'>
     readonly deletedAt: FieldRef<"Page", 'DateTime'>
+    readonly favoritedAt: FieldRef<"Page", 'DateTime'>
     readonly parentBlockId: FieldRef<"Page", 'String'>
     readonly userId: FieldRef<"Page", 'String'>
   }
@@ -3351,6 +3364,7 @@ export namespace Prisma {
     title: 'title',
     order: 'order',
     deletedAt: 'deletedAt',
+    favoritedAt: 'favoritedAt',
     parentBlockId: 'parentBlockId',
     userId: 'userId'
   };
@@ -3492,6 +3506,7 @@ export namespace Prisma {
     title?: StringFilter<"Page"> | string
     order?: IntFilter<"Page"> | number
     deletedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
+    favoritedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
     parentBlockId?: UuidNullableFilter<"Page"> | string | null
     userId?: UuidFilter<"Page"> | string
     blocks?: BlockListRelationFilter
@@ -3504,6 +3519,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    favoritedAt?: SortOrderInput | SortOrder
     parentBlockId?: SortOrderInput | SortOrder
     userId?: SortOrder
     blocks?: BlockOrderByRelationAggregateInput
@@ -3521,6 +3537,7 @@ export namespace Prisma {
     title?: StringFilter<"Page"> | string
     order?: IntFilter<"Page"> | number
     deletedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
+    favoritedAt?: DateTimeNullableFilter<"Page"> | Date | string | null
     userId?: UuidFilter<"Page"> | string
     blocks?: BlockListRelationFilter
   }, "id" | "parentBlockId" | "id_order">
@@ -3532,6 +3549,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    favoritedAt?: SortOrderInput | SortOrder
     parentBlockId?: SortOrderInput | SortOrder
     userId?: SortOrder
     _count?: PageCountOrderByAggregateInput
@@ -3551,6 +3569,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Page"> | string
     order?: IntWithAggregatesFilter<"Page"> | number
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Page"> | Date | string | null
+    favoritedAt?: DateTimeNullableWithAggregatesFilter<"Page"> | Date | string | null
     parentBlockId?: UuidNullableWithAggregatesFilter<"Page"> | string | null
     userId?: UuidWithAggregatesFilter<"Page"> | string
   }
@@ -3639,6 +3658,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    favoritedAt?: Date | string | null
     parentBlockId?: string | null
     userId: string
     blocks?: BlockCreateNestedManyWithoutPageInput
@@ -3651,6 +3671,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    favoritedAt?: Date | string | null
     parentBlockId?: string | null
     userId: string
     blocks?: BlockUncheckedCreateNestedManyWithoutPageInput
@@ -3663,6 +3684,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    favoritedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     blocks?: BlockUpdateManyWithoutPageNestedInput
@@ -3675,6 +3697,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    favoritedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     blocks?: BlockUncheckedUpdateManyWithoutPageNestedInput
@@ -3687,6 +3710,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    favoritedAt?: Date | string | null
     parentBlockId?: string | null
     userId: string
   }
@@ -3698,6 +3722,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    favoritedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
   }
@@ -3709,6 +3734,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    favoritedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
   }
@@ -3895,6 +3921,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrder
+    favoritedAt?: SortOrder
     parentBlockId?: SortOrder
     userId?: SortOrder
   }
@@ -3910,6 +3937,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrder
+    favoritedAt?: SortOrder
     parentBlockId?: SortOrder
     userId?: SortOrder
   }
@@ -3921,6 +3949,7 @@ export namespace Prisma {
     title?: SortOrder
     order?: SortOrder
     deletedAt?: SortOrder
+    favoritedAt?: SortOrder
     parentBlockId?: SortOrder
     userId?: SortOrder
   }
@@ -4486,6 +4515,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    favoritedAt?: Date | string | null
     parentBlockId?: string | null
     userId: string
   }
@@ -4497,6 +4527,7 @@ export namespace Prisma {
     title?: string
     order: number
     deletedAt?: Date | string | null
+    favoritedAt?: Date | string | null
     parentBlockId?: string | null
     userId: string
   }
@@ -4524,6 +4555,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    favoritedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
   }
@@ -4535,6 +4567,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    favoritedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parentBlockId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
   }

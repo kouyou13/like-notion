@@ -127,6 +127,7 @@ exports.Prisma.PageScalarFieldEnum = {
   title: 'title',
   order: 'order',
   deletedAt: 'deletedAt',
+  favoritedAt: 'favoritedAt',
   parentBlockId: 'parentBlockId',
   userId: 'userId'
 };
