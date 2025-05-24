@@ -1,6 +1,7 @@
 import { Heading, Flex, Box, Text, Input, Separator, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 import React, { useState, useCallback } from 'react'
+import { v4 } from 'uuid'
 
 import { errorToast } from '@/common/toast'
 
@@ -41,22 +42,38 @@ const LogonComponent = () => {
       return
     }
     const login = async () => {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { displayName: username } },
-      })
-      if (error) {
-        if (error.message.includes('User already registered')) {
-          // 既にそのメールアドレスのアカウントが存在する
-          errorToast('このメールアドレスは既に登録されています')
+      try {
+        const { data: userdata, error } = await supabase.auth.signUp({
+          email,
+          password,
+        })
+        if (error) {
+          if (error.message.includes('User already registered')) {
+            // 既にそのメールアドレスのアカウントが存在する
+            errorToast('このメールアドレスは既に登録されています')
+            return
+          }
+          console.error(error.message)
+          errorToast('アカウントの作成に失敗しました')
           return
         }
-        console.error(error.message)
-        errorToast('アカウントの作成に失敗しました')
+        if (userdata.user) {
+          const { error: infoError } = await supabase.from('user_information').insert({
+            id: v4(),
+            user_id: userdata.user.id,
+            name: username,
+          })
+          if (infoError) {
+            console.error(infoError.message)
+            errorToast('アカウントの作成に失敗しました')
+            return
+          }
+        }
+        router.push('/home')
         return
+      } catch (error) {
+        console.error('ログオンに失敗しました: ', error)
       }
-      router.push('/home')
     }
     void login()
   }, [username, email, password, confirmPassword, supabase, router])

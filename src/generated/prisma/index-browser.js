@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.7.0
- * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+ * Prisma Client JS version: 6.8.2
+ * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
  */
 Prisma.prismaVersion = {
-  client: "6.7.0",
-  engine: "3cff47a7f5d65c3ea74883f1d736e41d68ce91ed"
+  client: "6.8.2",
+  engine: "2060c79ba17c6bb9f5823312b6f6b7f4a845738e"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -144,6 +144,13 @@ exports.Prisma.BlockScalarFieldEnum = {
   pageId: 'pageId'
 };
 
+exports.Prisma.UserInformationScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  name: 'name',
+  userId: 'userId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -178,7 +185,8 @@ exports.BlockType = exports.$Enums.BlockType = {
 
 exports.Prisma.ModelName = {
   Page: 'Page',
-  Block: 'Block'
+  Block: 'Block',
+  UserInformation: 'UserInformation'
 };
 
 /**

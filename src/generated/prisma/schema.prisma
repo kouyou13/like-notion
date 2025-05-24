@@ -40,6 +40,17 @@ model Block {
   @@map("block")
 }
 
+model UserInformation {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  name      String
+  userId    String   @map("user_id") @db.Uuid
+
+  @@unique([userId])
+  @@index([userId])
+  @@map("user_information")
+}
+
 enum BlockType {
   Text
   H1
