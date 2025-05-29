@@ -182,7 +182,7 @@ const SidebarComponent = ({
     <AnimatePresence>
       {isOpenSidebar && (
         <MotionBox
-          initial={{ transform: 'translateX(-100%)', opacity: 0 }}
+          initial={{ transform: 'translateX(0%)', opacity: 1 }}
           animate={{ transform: 'translateX(0%)', opacity: 1 }}
           exit={{ transform: 'translateX(-100%)', opacity: 0 }}
           transition={{ duration: 0.1 }}

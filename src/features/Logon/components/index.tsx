@@ -1,4 +1,4 @@
-import { Heading, Flex, Box, Text, Input, Separator, Button } from '@chakra-ui/react'
+import { Heading, Flex, Box, Text, Input, Separator, Button, Link, Center } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 import React, { useState, useCallback } from 'react'
 import { v4 } from 'uuid'
@@ -144,6 +144,11 @@ const LogonComponent = () => {
             >
               アカウント作成
             </Button>
+            <Center>
+              <Link variant="underline" href="/login" fontSize="sm" mt={3}>
+                ログイン
+              </Link>
+            </Center>
           </Box>
         </Box>
       </Flex>
