@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Separator } from '@chakra-ui/react'
+import { Box, Flex, HStack } from '@chakra-ui/react'
 import { Editor } from '@tiptap/core'
 import ToggleList from '@tiptap/extension-blockquote' // blockquoteをトグルリストとして扱う
 import Bold from '@tiptap/extension-bold'
@@ -27,6 +27,7 @@ import CallbackBlock from './CallbackBlock'
 import CitingBlock from './CitingBlock'
 import ListBlock from './ListBlock'
 import PageBlock from './PageBlock'
+import SeparatorBlock from './SeparatorBlock'
 import type { Block } from '../../../types'
 import convertNodeTypeToPlaceHolder from '../utils/convertNodeTypeToPlaceHolder'
 import type { Action } from '../utils/pageDispatch'
@@ -37,11 +38,20 @@ type BlockTypeProps = {
   editor: Editor
   block: Block
   dispatch: React.ActionDispatch<[action: Action]>
-  titleRef: React.RefObject<HTMLTextAreaElement | null>
   blockRefs: React.RefObject<(Editor | null)[]>
   listNumber: number
+  selectedSeparatorIndex: number | null
+  onClickSeparator: (e: React.MouseEvent<HTMLDivElement>) => void
 }
-const BlockTypeComponent = ({ editor, block, dispatch, listNumber }: BlockTypeProps) => {
+const BlockTypeComponent = ({
+  editor,
+  block,
+  dispatch,
+  blockRefs,
+  listNumber,
+  selectedSeparatorIndex,
+  onClickSeparator,
+}: BlockTypeProps) => {
   switch (block.blockType) {
     case 'Text':
     case 'H1':
@@ -56,12 +66,17 @@ const BlockTypeComponent = ({ editor, block, dispatch, listNumber }: BlockTypePr
       return <ListBlock editor={editor} block={block} dispatch={dispatch} listNumber={listNumber} />
     case 'SeparatorLine':
       return (
-        <Box w="100%" py={3}>
-          <Separator color="black" />
+        <Box w="100%">
+          <SeparatorBlock
+            block={block}
+            dispatch={dispatch}
+            blockRefs={blockRefs}
+            selectedSeparatorIndex={selectedSeparatorIndex}
+            onClickSeparator={onClickSeparator}
+          />
         </Box>
       )
-    case 'Citing':
-      // 引用
+    case 'Citing': // 引用
       return <CitingBlock editor={editor} />
     case 'Callout':
       return <CallbackBlock editor={editor} />
@@ -81,6 +96,8 @@ type BlockRowProps = {
   setGrabbedRowIndex: React.Dispatch<React.SetStateAction<number | null>>
   openBlockSettingIndex: number | null
   setOpenBlockSettingIndex: React.Dispatch<React.SetStateAction<number | null>>
+  selectedSeparatorIndex: number | null
+  onClickSeparator: (e: React.MouseEvent<HTMLDivElement>) => void
   titleRef: React.RefObject<HTMLTextAreaElement | null>
   blockRefs: React.RefObject<(Editor | null)[]>
   listNumber: number
@@ -94,6 +111,8 @@ const BlockRowComponent = ({
   setGrabbedRowIndex,
   openBlockSettingIndex,
   setOpenBlockSettingIndex,
+  selectedSeparatorIndex,
+  onClickSeparator,
   titleRef,
   blockRefs,
   listNumber,
@@ -262,9 +281,10 @@ const BlockRowComponent = ({
             editor={editor}
             block={block}
             dispatch={dispatch}
-            titleRef={titleRef}
             blockRefs={blockRefs}
             listNumber={listNumber}
+            selectedSeparatorIndex={selectedSeparatorIndex}
+            onClickSeparator={onClickSeparator}
           />
         </HStack>
       </Flex>

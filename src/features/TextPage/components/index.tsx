@@ -28,6 +28,7 @@ const TextPageComponent = () => {
   const [grabbedRowIndex, setGrabbedRowIndex] = useState<number | null>(null)
   const [openBlockSettingIndex, setOpenBlockSettingIndex] = useState<number | null>(null)
   const [isComposingTitle, setIsComposingTitle] = useState(false)
+  const [selectedSeparatorIndex, setSelectedSeparatorIndex] = useState<number | null>(null)
 
   let listNumber = 0
 
@@ -79,7 +80,14 @@ const TextPageComponent = () => {
   }
 
   return (
-    <Box w="100%" h="96vh" overflowY="scroll">
+    <Box
+      w="100%"
+      h="96vh"
+      overflowY="scroll"
+      onClick={() => {
+        setSelectedSeparatorIndex(null)
+      }}
+    >
       <Box
         w="100%"
         h="8.5vh"
@@ -160,6 +168,15 @@ const TextPageComponent = () => {
               setGrabbedRowIndex={setGrabbedRowIndex}
               openBlockSettingIndex={openBlockSettingIndex}
               setOpenBlockSettingIndex={setOpenBlockSettingIndex}
+              selectedSeparatorIndex={selectedSeparatorIndex}
+              onClickSeparator={(e: React.MouseEvent<HTMLDivElement>) => {
+                e.stopPropagation()
+                if (selectedSeparatorIndex == null) {
+                  setSelectedSeparatorIndex(index)
+                } else {
+                  setSelectedSeparatorIndex(null)
+                }
+              }}
               titleRef={titleRef}
               blockRefs={blockRefs}
               listNumber={listNumber}
