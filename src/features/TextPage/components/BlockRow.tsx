@@ -122,11 +122,24 @@ const BlockRowComponent = ({
       case 'Text':
         return 0
       case 'H1':
-        return 9
+        return 8
       case 'H2':
         return 7
       case 'H3':
-        return 5
+        return 6
+    }
+  }, [block.blockType])
+
+  const my = useMemo(() => {
+    switch (block.blockType) {
+      case 'Callout':
+        return 3
+      case 'Citing':
+        return 2
+      case 'H1':
+      case 'H2':
+      case 'H3':
+        return 0
     }
   }, [block.blockType])
 
@@ -190,9 +203,9 @@ const BlockRowComponent = ({
     <HStack
       gap={0}
       pt={pt}
+      my={my}
       pl={`${String(block.indentIndex * 1.5)}vw`}
       w="100%"
-      h="2.7vh"
       onDrop={() => {
         if (grabbedRowIndex !== null && grabbedRowIndex !== block.order) {
           dispatch({
@@ -228,7 +241,6 @@ const BlockRowComponent = ({
     >
       <Box
         w="22vw"
-        h="100%"
         onClick={() => {
           editor.commands.focus('start')
         }}
@@ -290,7 +302,6 @@ const BlockRowComponent = ({
       </Flex>
       <Box
         w="23vw"
-        h="100%"
         onClick={() => {
           editor.commands.focus('end')
         }}

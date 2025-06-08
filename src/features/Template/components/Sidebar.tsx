@@ -30,7 +30,7 @@ const SidebarContents = ({
   return (
     <>
       <Box w="13vw" bgColor="gray.100" minH="100vh" px={1} py={0}>
-        <HStack mb={1} h="3vh" my="1vh">
+        <HStack h="3vh" py="2vh">
           <Spacer />
           <Box
             bgColor="gray.100"

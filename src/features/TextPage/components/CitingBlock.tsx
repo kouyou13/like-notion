@@ -9,7 +9,7 @@ type CitingBlockProps = {
 
 const CitingBlockComponent = ({ editor }: CitingBlockProps) => {
   return (
-    <Blockquote.Root w="100%" my={1} colorPalette="black">
+    <Blockquote.Root w="100%" colorPalette="black">
       <Blockquote.Content justifyContent="center" alignItems="center" display="flex" w="100%">
         <EditorContent editor={editor} style={{ width: '100%' }} />
       </Blockquote.Content>
