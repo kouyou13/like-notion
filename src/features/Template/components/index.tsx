@@ -221,6 +221,16 @@ const TemplateComponent = ({ children }: TemplateProps) => {
             favoritePages={favoritePages}
             handleAddPage={handleAddPage}
           />
+          <Box
+            w="0.1vw"
+            h="100%"
+            bgColor="red"
+            draggable
+            cursor="grab"
+            onDrag={(e) => {
+              console.log(e.clientX)
+            }}
+          />
           <Box justifyContent="start" w="100%" h="100vh">
             <TopBar isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
             {children}
