@@ -16,7 +16,7 @@
     "migrate:reset": "prisma migrate reset"
   },
   "dependencies": {
-    "next": "15.2.5",
+    "next": "15.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
